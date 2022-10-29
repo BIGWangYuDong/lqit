@@ -1,0 +1,5 @@
+mmcv
+mmdet
+mmengine
+torch
+torchvision
