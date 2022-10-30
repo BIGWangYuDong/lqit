@@ -1,4 +1,4 @@
-# Copyright (c) OpenMMLab. All rights reserved.
+# Modified from https://github.com/open-mmlab/mmdetection/tree/3.x/
 """Collecting some commonly used type hint in lqit."""
 from typing import List, Optional, Sequence, Tuple, Union
 

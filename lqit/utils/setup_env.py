@@ -1,4 +1,4 @@
-# Copyright (c) OpenMMLab. All rights reserved.
+# Modified from https://github.com/open-mmlab/mmdetection/tree/3.x/
 import datetime
 import os
 import platform

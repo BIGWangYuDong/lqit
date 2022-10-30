@@ -1,11 +1,10 @@
-# Copyright (c) OpenMMLab. All rights reserved.
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from mmcv.cnn import ConvModule
-from mmdet.utils import OptConfigType, OptMultiConfig
 
 from lqit.registry import MODELS
+from lqit.utils.typing import OptConfigType, OptMultiConfig
 from .base_enhance_head import BaseEnhanceHead
 
 
@@ -24,7 +23,7 @@ class SingleEnhanceHead(BaseEnhanceHead):
         gt_preprocessor: OptConfigType = None,
         single_img_loss: bool = False,
         depad_gt: bool = True,
-        loss_enhance=dict(type='mmdet.L1Loss', loss_weight=1.0),
+        loss_enhance=dict(type='lqit.L1Loss', loss_weight=1.0),
         init_cfg: OptMultiConfig = dict(
             type='Normal', layer='Conv2d', std=0.01)
     ) -> None:
@@ -244,7 +243,7 @@ class BasicEnhanceHead(BaseEnhanceHead):
                  norm_cfg=None,
                  act_cfg=dict(type='ReLU'),
                  gt_preprocessor=None,
-                 loss_enhance=dict(type='mmdet.L1Loss', loss_weight=1.0),
+                 loss_enhance=dict(type='lqit.L1Loss', loss_weight=1.0),
                  init_cfg=dict(type='Normal', layer='Conv2d', std=0.01)):
         super().__init__(
             loss_enhance=loss_enhance,

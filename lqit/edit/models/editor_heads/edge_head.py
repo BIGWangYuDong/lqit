@@ -1,4 +1,3 @@
-# Copyright (c) OpenMMLab. All rights reserved.
 import torch.nn as nn
 import torch.nn.functional as F
 from mmcv.cnn import ConvModule
@@ -19,7 +18,7 @@ class EdgeHead(BaseEnhanceHead):
                  norm_cfg=dict(type='GN', num_groups=32, requires_grad=True),
                  act_cfg=dict(type='ReLU'),
                  gt_preprocessor=None,
-                 loss_enhance=dict(type='mmdet.L1Loss', loss_weight=1.0),
+                 loss_enhance=dict(type='lqit.L1Loss', loss_weight=1.0),
                  init_cfg=dict(type='Normal', layer='Conv2d', std=0.01)):
         super().__init__(
             loss_enhance=loss_enhance,
