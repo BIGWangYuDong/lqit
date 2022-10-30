@@ -8,7 +8,7 @@ from mmdet.utils import ConfigType, OptConfigType, OptMultiConfig
 from torch import Tensor
 
 from lqit.common.structures import SampleList
-from lqit.edit.models import add_pixel_pred_to_datasample
+from lqit.edit.models.post_processor import add_pixel_pred_to_datasample
 
 
 @MODELS.register_module()
@@ -46,7 +46,7 @@ class TwoStageWithEnhanceHead(TwoStageDetector):
 
     @property
     def with_enhance_head(self) -> bool:
-        """bool: whether the detector has a RoI head"""
+        """bool: whether the detector has a Enhance head"""
         return hasattr(self, 'enhance_head') and self.enhance_head is not None
 
     def _forward(self, batch_inputs: Tensor,

@@ -8,7 +8,7 @@ model = dict(
         in_channels=256,
         feat_channels=256,
         num_convs=5,
-        loss_enhance=dict(type='mmdet.L1Loss', loss_weight=0.1),
+        loss_enhance=dict(type='lqit.L1Loss', loss_weight=0.1),
         gt_preprocessor=dict(
             type='lqit.GTPixelPreprocessor',
             mean=[123.675, 116.28, 103.53],

@@ -188,11 +188,7 @@ class BaseEditModel(BaseModel):
 
         losses = self.generator.loss(loss_input, batch_img_metas)
 
-        predictions = loss_input.get('de_output')
-        if predictions is None:
-            predictions = self.destructor_results(batch_outputs,
-                                                  batch_img_metas)
-
+        predictions = self.destructor_results(batch_outputs, batch_img_metas)
         return losses, predictions
 
     def predict(self, batch_inputs: Tensor,

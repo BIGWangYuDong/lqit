@@ -3,6 +3,7 @@ from typing import Optional
 from mmdet.models import SingleStageDetector
 from mmdet.registry import MODELS
 from mmdet.utils import ConfigType, OptConfigType, OptMultiConfig
+from mmengine.utils import is_list_of
 from torch import Tensor
 
 from lqit.common.structures import SampleList
@@ -10,7 +11,7 @@ from lqit.edit.models.post_processor import add_pixel_pred_to_datasample
 
 
 @MODELS.register_module()
-class SingleStageWithEnhanceHead(SingleStageDetector):
+class SingleStageWithEnhanceModel(SingleStageDetector):
     """Base class for two-stage detectors with enhance head.
 
     Two-stage detectors typically consisting of a region proposal network and a
@@ -21,10 +22,12 @@ class SingleStageWithEnhanceHead(SingleStageDetector):
                  backbone: ConfigType,
                  neck: OptConfigType = None,
                  bbox_head: OptConfigType = None,
-                 enhance_head: OptConfigType = None,
+                 enhance_model: OptConfigType = None,
                  vis_enhance: Optional[bool] = False,
                  train_cfg: OptConfigType = None,
                  test_cfg: OptConfigType = None,
+                 loss_weight: list = [0.5, 0.5],
+                 detach_enhance_img: bool = False,
                  data_preprocessor: OptConfigType = None,
                  init_cfg: OptMultiConfig = None) -> None:
         super().__init__(
@@ -36,14 +39,20 @@ class SingleStageWithEnhanceHead(SingleStageDetector):
             data_preprocessor=data_preprocessor,
             init_cfg=init_cfg)
 
-        if enhance_head is not None:
-            self.enhance_head = MODELS.build(enhance_head)
+        if enhance_model is not None:
+            self.enhance_model = MODELS.build(enhance_model)
         self.vis_enhance = vis_enhance
 
+        assert isinstance(loss_weight, list) and len(loss_weight) == 2
+        self.detach_enhance_img = detach_enhance_img
+        self.loss_weight = loss_weight
+        self.loss_name = ['raw', 'enhance']
+
     @property
-    def with_enhance_head(self) -> bool:
-        """bool: whether the detector has a Enhance head"""
-        return hasattr(self, 'enhance_head') and self.enhance_head is not None
+    def with_enhance_model(self) -> bool:
+        """bool: whether the detector has a Enhance Model"""
+        return (hasattr(self, 'enhance_model')
+                and self.enhance_model is not None)
 
     def _forward(self, batch_inputs: Tensor,
                  batch_data_samples: SampleList) -> tuple:
@@ -59,8 +68,8 @@ class SingleStageWithEnhanceHead(SingleStageDetector):
         """
         x = self.extract_feat(batch_inputs)
         results = self.bbox_head.forward(x)
-        if self.with_enhance_head:
-            enhance_outs = self.enhance_head.forward(x)
+        if self.with_enhance_model:
+            enhance_outs = self.enhance_model._forward(x)
             results = results + (enhance_outs, )
         return results
 
@@ -78,18 +87,34 @@ class SingleStageWithEnhanceHead(SingleStageDetector):
         Returns:
             dict: A dictionary of loss components
         """
-        x = self.extract_feat(batch_inputs)
+        x_raw = self.extract_feat(batch_inputs)
 
         losses = dict()
-        if self.with_enhance_head:
-
-            enhance_loss = self.enhance_head.loss(x, batch_data_samples)
-            # avoid loss override
-            assert not set(enhance_loss.keys()) & set(losses.keys())
+        if self.with_enhance_model:
+            enhance_loss, enhance_results = \
+                self.enhance_model.loss_and_predict(
+                    batch_inputs, batch_data_samples)
             losses.update(enhance_loss)
+            enhance_results = self.data_preprocessor(
+                dict(inputs=enhance_results))['inputs']
+            if self.detach_enhance_img:
+                enhance_results = enhance_results.detach()
+            x_enhance = self.extract_feat(enhance_results)
+        else:
+            # Ablation
+            x_enhance = self.extract_feat(batch_inputs)
 
-        det_losses = self.bbox_head.loss(x, batch_data_samples)
-        losses.update(det_losses)
+        for i, x in enumerate([x_raw, x_enhance]):
+            temp_losses = self.bbox_head.loss(x, batch_data_samples)
+            for loss_name, loss_value in temp_losses.items():
+                if 'loss' in loss_name:
+                    if isinstance(loss_value, Tensor):
+                        loss_value = loss_value * self.loss_weight[i]
+                    elif is_list_of(loss_value, Tensor):
+                        loss_value = sum(_loss.mean()
+                                         for _loss in loss_value) * \
+                                     self.loss_weight[i]
+                losses[f'{self.loss_name[i]}_{loss_name}'] = loss_value
         return losses
 
     def predict(self,
@@ -125,9 +150,10 @@ class SingleStageWithEnhanceHead(SingleStageDetector):
         results_list = self.bbox_head.predict(
             x, batch_data_samples, rescale=rescale)
 
-        if self.vis_enhance and self.with_enhance_head:
-            enhance_list = self.enhance_head.predict(
-                x, batch_data_samples, rescale=rescale)
+        if self.vis_enhance and self.with_enhance_model:
+            enhance_list = self.enhance_model.predict(batch_inputs,
+                                                      batch_data_samples)
+            # TODO: handle rescale case
             batch_data_samples = add_pixel_pred_to_datasample(
                 data_samples=batch_data_samples, pixel_list=enhance_list)
 
