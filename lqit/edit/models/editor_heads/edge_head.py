@@ -3,7 +3,7 @@ import torch.nn.functional as F
 from mmcv.cnn import ConvModule
 
 from lqit.registry import MODELS
-from .base_enhance_head import BaseEnhanceHead
+from .base_head import BaseEnhanceHead
 
 
 @MODELS.register_module()
