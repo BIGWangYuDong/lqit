@@ -1,5 +1,4 @@
-# Copyright (c) OpenMMLab. All rights reserved.
-# Modified from https://github.com/open-mmlab/mmediting/blob/1.x/
+# Modified from https://github.com/open-mmlab/mmediting/tree/1.x/
 import torch
 import torch.nn as nn
 import torchvision.models.vgg as vgg

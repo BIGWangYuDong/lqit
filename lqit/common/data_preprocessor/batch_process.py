@@ -15,15 +15,17 @@ def stack_batch(tensor_list,
     assert (mean is None) == (std is None), (
         'mean and std should be both None or tuple')
     if mean is not None:
-        assert len(mean) == 3 or len(mean) == 1, (
-            '`mean` should have 1 or 3 values, to be compatible with '
-            f'RGB or gray image, but got {len(mean)} values')
-        assert len(std) == 3 or len(std) == 1, (  # type: ignore
-            '`std` should have 1 or 3 values, to be compatible with RGB '  # type: ignore # noqa: E501
-            f'or gray image, but got {len(std)} values')
         enable_normalize = True
-        mean = torch.tensor(mean).view(-1, 1, 1)
-        std = torch.tensor(std).view(-1, 1, 1)
+        if not isinstance(mean, torch.Tensor):
+            assert len(mean) == 3 or len(mean) == 1, (
+                '`mean` should have 1 or 3 values, to be compatible with '
+                f'RGB or gray image, but got {len(mean)} values')
+            assert len(std) == 3 or len(std) == 1, (  # type: ignore
+                '`std` should have 1 or 3 values, to be compatible with RGB '  # type: ignore # noqa: E501
+                f'or gray image, but got {len(std)} values')
+
+            mean = torch.tensor(mean).view(-1, 1, 1)
+            std = torch.tensor(std).view(-1, 1, 1)
     else:
         enable_normalize = False
 

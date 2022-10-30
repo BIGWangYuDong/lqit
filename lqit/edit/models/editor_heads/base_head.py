@@ -1,23 +1,22 @@
-# Copyright (c) OpenMMLab. All rights reserved.
 from abc import ABCMeta, abstractmethod
 from typing import List, Tuple, Union
 
 import torch
 import torch.nn as nn
-from mmdet.utils import OptMultiConfig
 from mmengine.model import BaseModule
 from mmengine.utils import is_list_of
 from torch import Tensor
 
 from lqit.common.structures import SampleList
 from lqit.registry import MODELS
+from lqit.utils.typing import OptMultiConfig
 
 
 class BaseEnhanceHead(BaseModule, metaclass=ABCMeta):
     """Base class for EnhanceHead."""
 
     def __init__(self,
-                 loss_enhance=dict(type='mmdet.L1Loss', loss_weight=1.0),
+                 loss_enhance=dict(type='lqit.L1Loss', loss_weight=1.0),
                  gt_preprocessor=None,
                  init_cfg: OptMultiConfig = None) -> None:
         super().__init__(init_cfg=init_cfg)
@@ -38,6 +37,7 @@ class BaseEnhanceHead(BaseModule, metaclass=ABCMeta):
         enhance_img_list = []
         for i in range(len(batch_img_metas)):
             enhance_img = batch_enhance_img[i, ...]
+            # TODO: deal with gt_preprocessor do not run forward
             enhance_img = self.gt_preprocessor.destructor(
                 enhance_img, batch_img_metas[i], rescale=rescale)
             enhance_img_list.append(enhance_img)
