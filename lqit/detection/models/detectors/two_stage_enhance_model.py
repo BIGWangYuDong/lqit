@@ -1,6 +1,8 @@
+import copy
 from typing import Optional
 
-from mmdet.models import SingleStageDetector
+import torch
+from mmdet.models import TwoStageDetector
 from mmdet.registry import MODELS
 from mmdet.utils import ConfigType, OptConfigType, OptMultiConfig
 from mmengine.utils import is_list_of
@@ -11,7 +13,7 @@ from lqit.edit.models.post_processor import add_pixel_pred_to_datasample
 
 
 @MODELS.register_module()
-class SingleStageWithEnhanceModel(SingleStageDetector):
+class TwoStageWithEnhanceModel(TwoStageDetector):
     """Base class for two-stage detectors with enhance head.
 
     Two-stage detectors typically consisting of a region proposal network and a
@@ -21,7 +23,8 @@ class SingleStageWithEnhanceModel(SingleStageDetector):
     def __init__(self,
                  backbone: ConfigType,
                  neck: OptConfigType = None,
-                 bbox_head: OptConfigType = None,
+                 rpn_head: OptConfigType = None,
+                 roi_head: OptConfigType = None,
                  enhance_model: OptConfigType = None,
                  vis_enhance: Optional[bool] = False,
                  enhance_pred: bool = False,
@@ -34,7 +37,8 @@ class SingleStageWithEnhanceModel(SingleStageDetector):
         super().__init__(
             backbone=backbone,
             neck=neck,
-            bbox_head=bbox_head,
+            rpn_head=rpn_head,
+            roi_head=roi_head,
             train_cfg=train_cfg,
             test_cfg=test_cfg,
             data_preprocessor=data_preprocessor,
@@ -68,11 +72,24 @@ class SingleStageWithEnhanceModel(SingleStageDetector):
             tuple: A tuple of features from ``rpn_head`` and ``roi_head``
             forward.
         """
+        results = ()
         x = self.extract_feat(batch_inputs)
-        results = self.bbox_head.forward(x)
+
         if self.with_enhance_model and self.enhance_pred:
             enhance_outs = self.enhance_model._forward(batch_inputs)
             results = results + (enhance_outs, )
+
+        if self.with_rpn:
+            rpn_results_list = self.rpn_head.predict(
+                x, batch_data_samples, rescale=False)
+        else:
+            assert batch_data_samples[0].get('proposals', None) is not None
+            rpn_results_list = [
+                data_sample.proposals for data_sample in batch_data_samples
+            ]
+
+        roi_outs = self.roi_head.forward(x, rpn_results_list)
+        results = results + (roi_outs, )
         return results
 
     def loss(self, batch_inputs: Tensor,
@@ -92,6 +109,7 @@ class SingleStageWithEnhanceModel(SingleStageDetector):
         x_raw = self.extract_feat(batch_inputs)
 
         losses = dict()
+
         if self.with_enhance_model:
             enhance_loss, enhance_results = \
                 self.enhance_model.loss_and_predict(
@@ -106,8 +124,37 @@ class SingleStageWithEnhanceModel(SingleStageDetector):
             # Ablation
             x_enhance = self.extract_feat(batch_inputs)
 
+        # RPN forward and loss
         for i, x in enumerate([x_raw, x_enhance]):
-            temp_losses = self.bbox_head.loss(x, batch_data_samples)
+            temp_losses = dict()
+            if self.with_rpn:
+                proposal_cfg = self.train_cfg.get('rpn_proposal',
+                                                  self.test_cfg.rpn)
+                rpn_data_samples = copy.deepcopy(batch_data_samples)
+                # set cat_id of gt_labels to 0 in RPN
+                for data_sample in rpn_data_samples:
+                    data_sample.gt_instances.labels = \
+                        torch.zeros_like(data_sample.gt_instances.labels)
+
+                rpn_losses, rpn_results_list = self.rpn_head.loss_and_predict(
+                    x, rpn_data_samples, proposal_cfg=proposal_cfg)
+                # avoid get same name with roi_head loss
+                keys = rpn_losses.keys()
+                for key in keys:
+                    if 'loss' in key and 'rpn' not in key:
+                        rpn_losses[f'rpn_{key}'] = rpn_losses.pop(key)
+                temp_losses.update(rpn_losses)
+            else:
+                assert batch_data_samples[0].get('proposals', None) is not None
+                # use pre-defined proposals in InstanceData for the second
+                # stage to extract ROI features.
+                rpn_results_list = [
+                    data_sample.proposals for data_sample in batch_data_samples
+                ]
+            roi_losses = self.roi_head.loss(x, rpn_results_list,
+                                            batch_data_samples)
+            temp_losses.update(roi_losses)
+
             for loss_name, loss_value in temp_losses.items():
                 if 'loss' in loss_name:
                     if isinstance(loss_value, Tensor):
@@ -163,8 +210,17 @@ class SingleStageWithEnhanceModel(SingleStageDetector):
             batch_data_samples = add_pixel_pred_to_datasample(
                 data_samples=batch_data_samples, pixel_list=enhance_list)
 
-        results_list = self.bbox_head.predict(
-            x, batch_data_samples, rescale=rescale)
+        # If there are no pre-defined proposals, use RPN to get proposals
+        if batch_data_samples[0].get('proposals', None) is None:
+            rpn_results_list = self.rpn_head.predict(
+                x, batch_data_samples, rescale=False)
+        else:
+            rpn_results_list = [
+                data_sample.proposals for data_sample in batch_data_samples
+            ]
+
+        results_list = self.roi_head.predict(
+            x, rpn_results_list, batch_data_samples, rescale=rescale)
 
         batch_data_samples = self.add_pred_to_datasample(
             batch_data_samples, results_list)
