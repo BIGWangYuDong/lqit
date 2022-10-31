@@ -5,18 +5,18 @@ from mmengine.model import BaseModule
 
 from lqit.edit.structures import BatchPixelData
 from lqit.registry import MODELS
-from lqit.utils.typing import ConfigType, OptConfigType, OptMultiConfig
+from lqit.utils.typing import OptConfigType, OptMultiConfig
 
 
 class BaseGenerator(BaseModule, metaclass=ABCMeta):
     """Base class for EnhanceHead."""
 
     def __init__(self,
-                 pixel_loss: ConfigType,
+                 pixel_loss: OptConfigType = None,
                  perceptual_loss: OptConfigType = None,
                  init_cfg: OptMultiConfig = None) -> None:
         super().__init__(init_cfg=init_cfg)
-        self.pixel_loss = MODELS.build(pixel_loss)
+        self.pixel_loss = MODELS.build(pixel_loss) if pixel_loss else None
         self.perceptual_loss = MODELS.build(
             perceptual_loss) if perceptual_loss else None
 

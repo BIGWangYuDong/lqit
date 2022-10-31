@@ -6,16 +6,21 @@ model = dict(
     type='lqit.BaseEditModel',
     data_preprocessor=dict(
         type='lqit.EditDataPreprocessor',
-        mean=[123.675, 116.28, 103.53],
-        std=[58.395, 57.12, 57.375],
+        mean=[0.0, 0.0, 0.0],
+        std=[255.0, 255.0, 255.0],
         bgr_to_rgb=True,
         pad_size_divisor=32,
         gt_name='img'),
     generator=dict(
         _scope_='lqit',
-        type='UNetGenerator',
-        unet=dict(type='BaseUNet'),
-        pixel_loss=dict(type='L1Loss', loss_weight=1.0)))
+        type='ZeroDCEGenerator',
+        zero_dce=dict(type='ZeroDCE'),
+        color_loss=dict(type='ColorLoss', loss_weight=5.0),
+        spacial_loss=dict(type='SpatialLoss', loss_weight=1.0),
+        tv_loss=dict(type='MaskedTVLoss', loss_mode='mse', loss_weight=200.0),
+        exposure_loss=dict(
+            type='ExposureLoss', patch_size=16, mean_val=0.6,
+            loss_weight=10.0)))
 # dataset settings
 train_pipeline = [
     dict(
