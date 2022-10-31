@@ -188,11 +188,11 @@ class TwoStageWithEnhanceModel(TwoStageDetector):
             ``pred_instances`` usually contains following keys.
 
                 - scores (Tensor): Classification scores, has a shape
-                    (num_instance, )
+                  (num_instance, )
                 - labels (Tensor): Labels of bboxes, has a shape
-                    (num_instances, ).
+                  (num_instances, ).
                 - bboxes (Tensor): Has a shape (num_instances, 4),
-                    the last dimension 4 arrange as (x1, y1, x2, y2).
+                  the last dimension 4 arrange as (x1, y1, x2, y2).
                 - masks (Tensor): Has a shape (num_instances, H, W).
         """
         if self.enhance_pred:
