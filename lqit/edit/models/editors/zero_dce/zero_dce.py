@@ -1,4 +1,4 @@
-# Modified from https://github.com/Li-Chongyi/Zero-DCE/blob/master/Zero-DCE_code/lowlight_train.py  # noqa
+# Modified from https://github.com/Li-Chongyi/Zero-DCE/blob/master/Zero-DCE_code/model.py  # noqa
 import torch
 import torch.nn as nn
 from mmcv.cnn import ConvModule
