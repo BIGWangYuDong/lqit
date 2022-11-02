@@ -1,4 +1,4 @@
-_base_ = '../edffnet/atss_r50_fpn_1x.py'
+_base_ = '../edffnet/atss_r50_fpn_1x_2xb8_rtts.py'
 
 model = dict(
     type='EDFFNet',
@@ -37,19 +37,13 @@ train_pipeline = [
             dict(type='Resize', scale=(1333, 800), keep_ratio=True),
             dict(type='RandomFlip', prob=0.5)
         ]),
-    dict(type='lqit.PackInputs', )
+    dict(type='lqit.PackInputs')
 ]
-train_dataloader = dict(dataset=dict(pipeline=train_pipeline))
 
-param_scheduler = [
-    dict(
-        type='LinearLR', start_factor=0.001, by_epoch=False, begin=0,
-        end=1000),
-    dict(
-        type='MultiStepLR',
-        begin=0,
-        end=12,
-        by_epoch=True,
-        milestones=[8, 11],
-        gamma=0.1)
-]
+train_dataloader = dict(
+    batch_size=8,  # bs8 * 2
+    num_workers=2,
+    dataset=dict(pipeline=train_pipeline))
+
+optim_wrapper = dict(
+    optimizer=dict(type='SGD', lr=0.02, momentum=0.9, weight_decay=0.0001))

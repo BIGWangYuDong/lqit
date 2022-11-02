@@ -67,6 +67,9 @@ model = dict(
         nms=dict(type='nms', iou_threshold=0.6),
         max_per_img=100))
 
-# TODO: check the lr = 0.01 or 0.02
+train_dataloader = dict(
+    batch_size=8,  # bs8 * 2
+    num_workers=2)
+
 optim_wrapper = dict(
-    optimizer=dict(type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0001))
+    optimizer=dict(type='SGD', lr=0.02, momentum=0.9, weight_decay=0.0001))
