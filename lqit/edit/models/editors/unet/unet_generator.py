@@ -7,7 +7,7 @@ from lqit.utils.typing import ConfigType, OptConfigType, OptMultiConfig
 
 
 @MODELS.register_module()
-class UNet(BaseGenerator):
+class UNetGenerator(BaseGenerator):
 
     def __init__(self,
                  unet: ConfigType,

@@ -227,12 +227,12 @@ class MaskedTVLoss(nn.Module):
         """Forward function.
 
         Args:
-            pred (torch.Tensor): Tensor with shape of (n, c, h, w).
-            mask (torch.Tensor, optional): Tensor with shape of (n, 1, h, w).
-                Defaults to None.
+            pred (Tensor): of shape (N, C, H, W). Predicted tensor.
+            mask (torch.Tensor, optional): of shape (N, 1, H, W) or
+                (N, C, H, W). Defaults to None.
 
         Returns:
-            [type]: [description]
+            Tensor: Calculated loss.
         """
         if self.loss_mode == 'l1':
             loss_func = l1_loss
@@ -261,8 +261,8 @@ class MaskedTVLoss(nn.Module):
 
 
 @MODELS.register_module()
-class SpaceLoss(nn.Module):
-    """Perceptual loss with commonly used style loss.
+class SpatialLoss(nn.Module):
+    """Spatial consistency loss.
 
     Modified from
     https://github.com/Li-Chongyi/Zero-DCE/blob/master/Zero-DCE_code/Myloss.py
@@ -290,33 +290,121 @@ class SpaceLoss(nn.Module):
         self.weight_down = nn.Parameter(data=kernel_down, requires_grad=False)
         self.pool = nn.AvgPool2d(4)
 
-    def forward(self, enhance, org):
-        device = org.device
+    def forward(self, pred, target, *args, **kwargs):
+        """Forward function.
+
+        Args:
+            pred (Tensor): of shape (N, C, H, W). Predicted tensor.
+            target (Tensor): of shape (N, C, H, W). Ground truth tensor.
+
+        Returns:
+            Tensor: Calculated loss.
+        """
+        device = target.device
         weight_up = self.weight_up.to(device)
         weight_down = self.weight_down.to(device)
         weight_left = self.weight_left.to(device)
         weight_right = self.weight_right.to(device)
 
-        org_mean = torch.mean(org, 1, keepdim=True)
-        enhance_mean = torch.mean(enhance, 1, keepdim=True)
+        target_mean = torch.mean(target, 1, keepdim=True)
+        pred_mean = torch.mean(pred, 1, keepdim=True)
 
-        org_pool = self.pool(org_mean)
-        enhance_pool = self.pool(enhance_mean)
+        target_pool = self.pool(target_mean)
+        pred_pool = self.pool(pred_mean)
 
-        org_letf = F.conv2d(org_pool, weight_left, padding=1)
-        org_right = F.conv2d(org_pool, weight_right, padding=1)
-        org_up = F.conv2d(org_pool, weight_up, padding=1)
-        org_down = F.conv2d(org_pool, weight_down, padding=1)
+        target_letf = F.conv2d(target_pool, weight_left, padding=1)
+        target_right = F.conv2d(target_pool, weight_right, padding=1)
+        target_up = F.conv2d(target_pool, weight_up, padding=1)
+        target_down = F.conv2d(target_pool, weight_down, padding=1)
 
-        enhance_letf = F.conv2d(enhance_pool, weight_left, padding=1)
-        enhance_right = F.conv2d(enhance_pool, weight_right, padding=1)
-        enhance_up = F.conv2d(enhance_pool, weight_up, padding=1)
-        enhance_down = F.conv2d(enhance_pool, weight_down, padding=1)
+        pred_letf = F.conv2d(pred_pool, weight_left, padding=1)
+        pred_right = F.conv2d(pred_pool, weight_right, padding=1)
+        pred_up = F.conv2d(pred_pool, weight_up, padding=1)
+        pred_down = F.conv2d(pred_pool, weight_down, padding=1)
 
-        left = torch.pow(org_letf - enhance_letf, 2)
-        right = torch.pow(org_right - enhance_right, 2)
-        up = torch.pow(org_up - enhance_up, 2)
-        down = torch.pow(org_down - enhance_down, 2)
+        left = torch.pow(target_letf - pred_letf, 2)
+        right = torch.pow(target_right - pred_right, 2)
+        up = torch.pow(target_up - pred_up, 2)
+        down = torch.pow(target_down - pred_down, 2)
         loss = torch.mean(left + right + up + down)
 
+        return loss * self.loss_weight
+
+
+@MODELS.register_module()
+class ColorLoss(nn.Module):
+    """Color constancy loss.
+
+    Modified from
+    https://github.com/Li-Chongyi/Zero-DCE/blob/master/Zero-DCE_code/Myloss.py
+
+    Args:
+        loss_weight (float): The weight of loss.
+    """
+
+    def __init__(self, loss_mode='l2', loss_weight=1.0):
+        super().__init__()
+        assert loss_mode in ['l1', 'l2']
+        self.loss_mode = loss_mode
+        self.loss_weight = loss_weight
+
+    def forward(self, pred, *args, **kwargs):
+        """Forward function.
+
+        Args:
+            pred (torch.Tensor): Tensor with shape of (n, c, h, w).
+
+        Returns:
+            Tensor: Calculated loss.
+        """
+        assert pred.dim() == 4
+        mean_rgb = torch.mean(pred, [2, 3], keepdim=True)
+
+        mr, mg, mb = torch.split(mean_rgb, 1, dim=1)
+
+        distance_rg = torch.pow(mr - mg, 2)
+        distance_rb = torch.pow(mr - mb, 2)
+        distance_gb = torch.pow(mb - mg, 2)
+        if self.loss_mode == 'l2':
+            loss = torch.sqrt(
+                torch.pow(distance_rg, 2) + torch.pow(distance_rb, 2) +
+                torch.pow(distance_gb, 2) + 1e-6)
+        else:
+            loss = distance_rg + distance_rb + distance_gb
+        loss = loss.mean()
+        return loss * self.loss_weight
+
+
+@MODELS.register_module()
+class ExposureLoss(nn.Module):
+    """Exposure control loss.
+
+    Modified from
+    https://github.com/Li-Chongyi/Zero-DCE/blob/master/Zero-DCE_code/Myloss.py
+
+    Args:
+        loss_weight (float): The weight of loss.
+    """
+
+    def __init__(self, patch_size=16, mean_val=0.6, loss_weight=1.0):
+        super().__init__()
+        self.pool = nn.AvgPool2d(patch_size)
+        assert isinstance(mean_val, float)
+        self.mean_val = mean_val
+        self.loss_weight = loss_weight
+
+    def forward(self, pred, *args, **kwargs):
+        """Forward function.
+
+        Args:
+            pred (torch.Tensor): Tensor with shape of (n, c, h, w).
+
+        Returns:
+            Tensor: Calculated loss.
+        """
+        pred_mean = torch.mean(pred, 1, keepdim=True)
+
+        pred_mean = self.pool(pred_mean)
+
+        loss = ((pred_mean - self.mean_val)**2).mean()
         return loss * self.loss_weight

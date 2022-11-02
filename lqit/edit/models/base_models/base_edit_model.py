@@ -1,3 +1,4 @@
+import warnings
 from typing import Dict, List, Tuple, Union
 
 import torch
@@ -157,6 +158,9 @@ class BaseEditModel(BaseModel):
             Tuple: A dictionary of loss components and results of the
             input images.
         """
+        # batch_outputs should be a tensor, if it should returns a tuple,
+        # it is suggested to concat together, If cannot concat together,
+        # a subclass can be set.
         batch_outputs = self.generator(batch_inputs)
         if self.gt_preprocessor is None:
             batch_gt_pixel = self.data_preprocessor.stack_gt(
@@ -223,6 +227,11 @@ class BaseEditModel(BaseModel):
         results_list = []
         for i in range(len(batch_img_metas)):
             outputs = batch_outputs[i, ...]
+            if outputs.size(0) > 3:
+                warnings.warn('The channel of the outputs is larger than 3, '
+                              'it should call self.generator.post_precess '
+                              'to get the output image.')
+                outputs = self.generator.post_precess(outputs)
             img_meta = batch_img_metas[i]
             if self.gt_preprocessor is None:
                 outputs = self.data_preprocessor.destructor(outputs, img_meta)
@@ -231,7 +240,6 @@ class BaseEditModel(BaseModel):
                 if norm_input_flag is None:
                     # TODO: check
                     norm_input_flag = (batch_outputs.max() <= 1)
-
                 outputs = self.gt_preprocessor.destructor(
                     outputs, img_meta, norm_input_flag=norm_input_flag)
             results_list.append(outputs)
