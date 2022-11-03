@@ -14,6 +14,7 @@ Examples:
 import argparse
 import os.path as osp
 import xml.etree.ElementTree as ET
+from typing import List
 
 import numpy as np
 from mmcv import imread
@@ -27,17 +28,29 @@ def parse_args():
     parser = argparse.ArgumentParser(
         description='Convert XML (VOC) style annotations to coco format')
     parser.add_argument('dataset', type=str, help='Dataset name')
-    parser.add_argument('xml_path', help='Dataset xml file path')
-    parser.add_argument('img_path', help='Dataset image file path')
-    parser.add_argument('ann_file', help='Dataset annotation file path')
+    parser.add_argument(
+        'xml_path', help='The path of directory that saving xml file.')
+    parser.add_argument(
+        'img_path', help='The path of directory that saving images.')
+    parser.add_argument('ann_file', help='Annotation file path')
     parser.add_argument('-o', '--out-dir', help='output path')
     parser.add_argument('--img-suffix', default='jpg', help='The image suffix')
     args = parser.parse_args()
     return args
 
 
-def cvt_annotations(xml_path, img_path, ann_file, dataset_name, out_file,
-                    img_suffix):
+def cvt_annotations(xml_path: str, img_path: str, ann_file: str,
+                    dataset_name: str, out_file: str, img_suffix: str) -> None:
+    """Convert XML (VOC) style dataset to coco format.
+
+    Args:
+        xml_path (str): The path of directory that saving xml file.
+        img_path (str): The path of directory that saving images.
+        ann_file (str): Annotation file path.
+        dataset_name (str): The dataset name.
+        out_file (str): The saving file name.
+        img_suffix (str): The image suffix
+    """
     annotations = []
     img_names = list_from_file(ann_file)
 
@@ -59,8 +72,17 @@ def cvt_annotations(xml_path, img_path, ann_file, dataset_name, out_file,
     dump(annotations, out_file)
 
 
-def parse_xml(args):
-    xml_path, img_path, dataset_name = args
+def parse_xml(xml_path: str, img_path: str, dataset_name: str) -> dict:
+    """Parse xml annotation.
+
+    Args:
+        xml_path (str): The xml file path.
+        img_path (str): The image path.
+        dataset_name (str): The dataset name.
+
+    Returns:
+        dict: The annotation of the current image.
+    """
 
     dataset_class = get_classes(dataset_name)
     label_ids = {name: i for i, name in enumerate(dataset_class)}
@@ -132,7 +154,16 @@ def parse_xml(args):
     return annotation
 
 
-def cvt_to_coco_json(annotations, dataset_name):
+def cvt_to_coco_json(annotations: List[dict], dataset_name: str) -> dict:
+    """Convert to coco format.
+
+    Args:
+        annotations (List[dict]): A list of annotations.
+        dataset_name (str): The dataset name.
+
+    Returns:
+        dict: COCO format dictionary.
+    """
     dataset_class = get_classes(dataset_name)
     image_id = 0
     annotation_id = 0
@@ -144,6 +175,7 @@ def cvt_to_coco_json(annotations, dataset_name):
     image_set = set()
 
     def addAnnItem(annotation_id, image_id, category_id, bbox, difficult_flag):
+        """Process annotation item."""
         annotation_item = dict()
         annotation_item['segmentation'] = []
 

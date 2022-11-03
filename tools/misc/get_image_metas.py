@@ -18,8 +18,9 @@ from mmengine.utils import mkdir_or_exist
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Collect image metas')
-    parser.add_argument('ann_file', help='Dataset annotation file path')
-    parser.add_argument('img_path', help='Dataset image file path')
+    parser.add_argument('ann_file', help='Annotation file path')
+    parser.add_argument(
+        'img_path', help='The path of directory that saving images.')
     parser.add_argument(
         '--out-dir', default='data/tempImageMetas', help='output path')
     parser.add_argument('--img-suffix', default='jpg', help='The image suffix')
@@ -32,7 +33,17 @@ def parse_args():
     return args
 
 
-def get_image_metas(ann_file, img_path, out_file, img_suffix, nproc):
+def get_image_metas(ann_file: str, img_path: str, out_file: str,
+                    img_suffix: str, nproc: int):
+    """Get image metas.
+
+    Args:
+        ann_file (str): Annotation file path.
+        img_path (str): The path of directory that saving images.
+        out_file (str): The saving file name.
+        img_suffix (str): The image suffix.
+        nproc (int): Processes used for get image metas.
+    """
     image_metas = []
     img_names = list_from_file(ann_file)
 
@@ -50,7 +61,14 @@ def get_image_metas(ann_file, img_path, out_file, img_suffix, nproc):
 
 
 def get_simge_image_meta(img_path):
+    """Get single image meta information.
 
+    Args:
+        img_path (str): Image path.
+
+    Returns:
+        dict: Image meta information.
+    """
     img = imread(img_path, backend='cv2')
     shape = img.shape
 
@@ -63,7 +81,16 @@ def get_simge_image_meta(img_path):
     return img_meta
 
 
-def cvt_list_to_dict(image_metas):
+def cvt_list_to_dict(image_metas: list) -> dict:
+    """Convert to a dictionary.
+
+    Args:
+        image_metas (list[dict]): A list of image metas.
+
+    Returns:
+        dict: A dict of image metas, the key is image path and the
+        value is image shape.
+    """
     image_metas_dict = {}
     for image_meta in image_metas:
         assert image_meta['filename'] not in image_metas_dict

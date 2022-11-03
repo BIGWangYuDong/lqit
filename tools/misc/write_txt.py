@@ -51,7 +51,7 @@ def parse_args():
 
 
 def filter_suffix(filenames, suffix):
-    """filter files that not end with specific suffix."""
+    """Filter files that not end with specific suffix."""
     valid_indexes = []
     for i, filename in enumerate(filenames):
         if filename.endswith(suffix):
@@ -60,6 +60,7 @@ def filter_suffix(filenames, suffix):
 
 
 def write_txt_file(indexes, file_path, suffix):
+    """Write txt file."""
     with open(file_path, 'w') as f:
         for index in indexes:
             # ignore suffix
