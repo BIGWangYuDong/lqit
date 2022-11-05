@@ -1,6 +1,6 @@
 from .data_preprocessor import *  # noqa: F401,F403
-from .dataset_wrappers import DatasetWithGTImageWrapper
+from .dataset_wrappers import DatasetWithGTImageWrapper, DatasetWithClearImageWrapper
 from .structures import *  # noqa: F401,F403
 from .transforms import *  # noqa: F401,F403
 
-__all__ = ['DatasetWithGTImageWrapper']
+__all__ = ['DatasetWithGTImageWrapper', 'DatasetWithClearImageWrapper']
