@@ -10,7 +10,7 @@ from lqit.utils.typing import ConfigType, OptMultiConfig
 class ZeroDCEGenerator(BaseGenerator):
 
     def __init__(self,
-                 zero_dce: ConfigType,
+                 model: ConfigType,
                  color_loss: ConfigType = dict(
                      type='ColorLoss', loss_weight=5.0),
                  spacial_loss: ConfigType = dict(
@@ -26,7 +26,7 @@ class ZeroDCEGenerator(BaseGenerator):
                  **kwargs) -> None:
         super().__init__(init_cfg=init_cfg)
         # build network
-        self.model = MODELS.build(zero_dce)
+        self.model = MODELS.build(model)
 
         # build losses
         self.color_loss = MODELS.build(color_loss)

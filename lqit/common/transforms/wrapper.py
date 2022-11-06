@@ -1,8 +1,9 @@
 import copy
-from typing import Callable, Dict, List, Optional, Union
+from typing import Callable, Dict, List, Union
 
 from mmcv.transforms import BaseTransform, Compose
 from mmcv.transforms.utils import cache_random_params
+from mmengine.utils import is_list_of
 
 from lqit.registry import TRANSFORMS
 
@@ -25,16 +26,19 @@ class TransBroadcaster(BaseTransform):
         3. Gather the outputs, update the `dst_key` in the first item of
            the outputs with the `src_key` in the second.
 
-    NOTE: The transforms should be no pixel-level processing operations,
-    such as random brightening, etc.
+    Note:
+        1. The transforms should be no pixel-level processing operations,
+           such as random brightening, etc.
+        2. The `TransformBroadcaster` in MMCV can achieve the same operation as
+          `TransBroadcaster`, but need to set more complex parameters.
 
     Args:
         transforms (list[dict | callable]): Sequence of transform object or
             config dict to be wrapped.
         src_key (str): Source name of the key in the result dict from
             loading pipeline.
-        dst_key (str): Destination name of the key in the result dict from
-            loading pipeline.
+        dst_key (str or list[str]): Destination name of the key in the result
+            dict from loading pipeline.
     Examples:
         >>> pipeline = [
         ...     dict(type='LoadImageFromFile'),
@@ -52,13 +56,19 @@ class TransBroadcaster(BaseTransform):
         ...     dict(type='lqit.PackInputs')]
     """
 
-    def __init__(self, transforms: Optional[List[Transform]], src_key: str,
-                 dst_key: str) -> None:
-        if transforms is None:
-            transforms = []
+    def __init__(self, transforms: List[Transform], src_key: str,
+                 dst_key: Union[str, List[str]]) -> None:
         self.transforms = Compose(transforms)
+        assert isinstance(src_key, str)
         self.src_key = src_key
-        self.dst_key = dst_key
+
+        if isinstance(dst_key, str):
+            self.dst_key = [dst_key]
+        elif is_list_of(dst_key, str):
+            self.dst_key = dst_key
+        else:
+            raise TypeError('dst_key should be a str or a list of str, but '
+                            f'got {type(dst_key)}')
 
     def transform(self, results: dict) -> dict:
         """Apply wrapped transform functions to process both `src_key` and
@@ -72,8 +82,6 @@ class TransBroadcaster(BaseTransform):
         """
         assert results.get(self.src_key, None) is not None, \
             f'{self.src_key} should be in the results.'
-        assert results.get(self.dst_key, None) is not None, \
-            f'{self.dst_key} should be in the results.'
 
         inputs = self._process_input(results)
         outputs = self._apply_transforms(inputs)
@@ -90,9 +98,14 @@ class TransBroadcaster(BaseTransform):
         Returns:
             list[dict, dict]: A list of input data.
         """
-        cp_data = copy.deepcopy(data)
-        cp_data[self.src_key] = cp_data[self.dst_key]
-        scatters = [data, cp_data]
+        scatters = [data]
+        for dst_key in self.dst_key:
+            assert data.get(dst_key, None) is not None, \
+                f'{dst_key} should be in the results.'
+
+            cp_data = copy.deepcopy(data)
+            cp_data[self.src_key] = cp_data[dst_key]
+            scatters.append(cp_data)
         return scatters
 
     def _apply_transforms(self, inputs: list) -> list:
@@ -113,7 +126,7 @@ class TransBroadcaster(BaseTransform):
         """Gathering and renaming data items.
 
         Args:
-            output_scatters (list[dict, dict]): The output of the wrapped
+            output_scatters (list[dict]): The output of the wrapped
                 pipeline.
 
         Returns:
@@ -121,7 +134,8 @@ class TransBroadcaster(BaseTransform):
         """
         assert isinstance(output_scatters, list) and \
                isinstance(output_scatters[0], dict) and \
-               len(output_scatters) == 2
+               len(output_scatters) == (len(self.dst_key) + 1)
         outputs = output_scatters[0]
-        outputs[self.dst_key] = output_scatters[1][self.src_key]
+        for i, dst_key in enumerate(self.dst_key):
+            outputs[dst_key] = output_scatters[i + 1][self.src_key]
         return outputs
