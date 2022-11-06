@@ -9,7 +9,7 @@ from lqit.registry import METRICS
 class MSE(MMEVAL_MSE):
     """Mean Squared Error metric for image.
 
-    mean((a-b)^2)
+    mean((a - b) ^ 2)
 
     Args:
         gt_key (str): Key of ground-truth. Defaults to 'img'.

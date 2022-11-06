@@ -9,7 +9,7 @@ from lqit.registry import METRICS
 class MAE(MMEVAL_MAE):
     """Mean Absolute Error metric for image.
 
-    mean(abs(a-b))
+    mean(abs(a - b))
 
     Args:
         gt_key (str): Key of ground-truth. Defaults to 'img'.
