@@ -14,7 +14,7 @@ model = dict(
     generator=dict(
         _scope_='lqit',
         type='ZeroDCEGenerator',
-        zero_dce=dict(type='ZeroDCE'),
+        model=dict(type='ZeroDCE'),
         color_loss=dict(type='ColorLoss', loss_weight=5.0),
         spacial_loss=dict(type='SpatialLoss', loss_weight=1.0),
         tv_loss=dict(type='MaskedTVLoss', loss_mode='mse', loss_weight=200.0),

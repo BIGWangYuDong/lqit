@@ -3,10 +3,11 @@ import argparse
 import os
 import os.path as osp
 
-from mmdet.registry import RUNNERS
-from mmdet.utils import register_all_modules
 from mmengine.config import Config, DictAction
 from mmengine.runner import Runner
+
+from lqit.registry import RUNNERS
+from lqit.utils import register_all_modules
 
 
 # TODO: support fuse_conv_bn and format_only
