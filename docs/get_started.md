@@ -35,12 +35,13 @@ conda install pytorch torchvision cpuonly -c pytorch
 
 ## Installation
 
-**Step 0.** Install [MMEngine](https://github.com/open-mmlab/mmengine) and [MMCV](https://github.com/open-mmlab/mmcv) using [MIM](https://github.com/open-mmlab/mim).
+**Step 0.** Install [MMEngine](https://github.com/open-mmlab/mmengine), [MMEval](https://github.com/open-mmlab/mmeval/tree/main/mmeval) and [MMCV](https://github.com/open-mmlab/mmcv) using [MIM](https://github.com/open-mmlab/mim).
 
 ```shell
 pip install -U openmim
 mim install mmengine
 mim install "mmcv>=2.0.0rc1"
+mim install mmeval
 ```
 
 **Step 1.** Install [MMDetection](https://github.com/open-mmlab/mmdetection) from source.
@@ -89,5 +90,15 @@ cd mmcv
 pip install -r requirements/optional.txt
 pip install -e .
 
+# install mmeval
+git clone git@github.com:open-mmlab/mmeval.git
+cd mmeval && pip install -e . && cd ../
+
+# install mmdet
 git clone git@github.com:open-mmlab/mmdetection.git -b 3.x
+cd mmdetection && pip install -e . && cd ../
+
+git clone git@github.com:BIGWangYuDong/lqit.git
+cd lqit
+pip install -e .
 ```
