@@ -3,7 +3,7 @@ import os.path as osp
 from typing import Callable, List, Optional, Union
 
 from mmengine.dataset import BaseDataset
-from mmengine.fileio import list_dir_or_file, list_from_file
+from mmengine.fileio import FileClient, list_from_file
 
 from lqit.registry import DATASETS
 
@@ -31,7 +31,7 @@ class BasicImageDataset(BaseDataset):
             data_list. Defaults to 'gt'.
         file_client_args (dict, optional): Arguments to instantiate a
             FileClient. See :class:`mmengine.fileio.FileClient` for details.
-            Defaults to None.
+            Defaults to dict(backend='disk').
         img_suffix (str or dict[str]): Image suffix that we are interested in.
             Defaults to jpg.
         recursive (bool): If set to True, recursively scan the
@@ -48,7 +48,7 @@ class BasicImageDataset(BaseDataset):
                  pipeline: List[Union[dict, Callable]] = [],
                  test_mode: bool = False,
                  search_key: Optional[str] = None,
-                 file_client_args: Optional[dict] = None,
+                 file_client_args: dict = dict(backend='disk'),
                  img_suffix: Union[str, dict] = 'jpg',
                  recursive: bool = False,
                  **kwards):
@@ -66,6 +66,8 @@ class BasicImageDataset(BaseDataset):
         # else get from folder.
         self.use_ann_file = (ann_file != '')
         self.file_client_args = file_client_args
+        self.file_client = FileClient.infer_client(
+            file_client_args=file_client_args, uri=data_root)
 
         self.img_suffix = dict()
         if isinstance(img_suffix, str):
@@ -137,7 +139,9 @@ class BasicImageDataset(BaseDataset):
         img_ids = []
         for ann_id in ann_ids:
             # delete suffix to keep logic same
-            img_id, _ = osp.splitext(ann_id)
+            img_id, suffix = osp.splitext(ann_id)
+            if suffix not in IMG_EXTENSIONS:
+                img_id = ann_id
             img_ids.append(img_id)
 
         return img_ids
@@ -152,12 +156,11 @@ class BasicImageDataset(BaseDataset):
         img_ids = []
         folder = self.data_prefix[self.search_key]
         img_suffix = self.img_suffix[self.search_key]
-        for img_path in list_dir_or_file(
+        for img_path in self.file_client.list_dir_or_file(
                 dir_path=folder,
                 list_dir=False,
                 suffix=img_suffix,
-                recursive=self.recursive,
-                backend_args=self.file_client_args):
+                recursive=self.recursive):
             # delete suffix to keep logic same
             img_id, _ = osp.splitext(img_path)
             img_ids.append(img_id)
