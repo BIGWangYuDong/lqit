@@ -1,8 +1,8 @@
 # TODO: delete after fully support editor metric and datasets.
 _base_ = [
     '../_base_/models/unet.py',
-    '../_base_/datasets/underwater_enhancement.py',
-    # '../_base_/datasets/underwater_enhancement_with_ann.py',
+    # '../_base_/datasets/underwater_enhancement.py',
+    '../_base_/datasets/underwater_enhancement_with_ann.py',
     '../_base_/schedules/schedule_1x.py',
     '../_base_/default_runtime.py'
 ]

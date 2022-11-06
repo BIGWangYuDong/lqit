@@ -4,6 +4,7 @@ model = dict(
         type='EditDataPreprocessor',
         mean=[0.0, 0.0, 0.0],
         std=[255.0, 255.0, 255.0],
+        bgr_to_rgb=True,
         pad_size_divisor=32,
         gt_name='img'),
     generator=dict(

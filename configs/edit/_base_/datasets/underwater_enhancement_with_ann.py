@@ -56,6 +56,7 @@ val_dataloader = dict(
         type=dataset_type,
         data_root=data_root,
         test_mode=True,
+        ann_file='annotations/test.txt',
         metainfo=dict(
             dataset_type='underwater_enhancement', task_name='enhancement'),
         data_prefix=dict(img='input_test/', gt_img='gt_test/'),
@@ -65,6 +66,10 @@ val_dataloader = dict(
         pipeline=test_pipeline))
 test_dataloader = val_dataloader
 
-# TODO: Not implement yet
-val_evaluator = dict(type='DumpResults', out_file_path='work_dirs/temp.pkl')
+val_evaluator = [
+    dict(type='MAE', gt_key='img', pred_key='pred_img'),
+    dict(type='MSE', gt_key='img', pred_key='pred_img'),
+    dict(type='PSNR', gt_key='img', pred_key='pred_img'),
+    dict(type='SSIM', gt_key='img', pred_key='pred_img'),
+]
 test_evaluator = val_evaluator
