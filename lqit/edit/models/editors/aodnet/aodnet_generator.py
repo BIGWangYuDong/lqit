@@ -14,10 +14,7 @@ class AODNetGenerator(BaseGenerator):
                  pixel_loss: ConfigType = dict(
                      type='MSELoss', loss_weight=1.0),
                  init_cfg: OptMultiConfig = None) -> None:
-        super().__init__(
-            model=model,
-            pixel_loss=pixel_loss,
-            init_cfg=init_cfg)
+        super().__init__(model=model, pixel_loss=pixel_loss, init_cfg=init_cfg)
 
     def forward(self, x):
         """Forward function.
@@ -33,7 +30,6 @@ class AODNetGenerator(BaseGenerator):
     def loss(self, loss_input: BatchPixelData, batch_img_metas: List[dict]):
         """Calculate the loss based on the outputs of generator."""
         batch_outputs = loss_input.output
-        batch_inputs = loss_input.input
         batch_gt = loss_input.gt
 
         pixel_loss = self.pixel_loss(batch_outputs, batch_gt)

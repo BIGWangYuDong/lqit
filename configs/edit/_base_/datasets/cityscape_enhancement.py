@@ -1,5 +1,5 @@
 # dataset settings
-dataset_type = 'mmdet.CityscapesDataset'
+dataset_type = 'CityscapeFoggyImageDataset'
 data_root = 'data/Datasets/'
 
 file_client_args = dict(backend='disk')
@@ -36,17 +36,18 @@ train_dataloader = dict(
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=dict(
-        type='lqit.DatasetWithClearImageWrapper',
-        dataset=dict(
-            type=dataset_type,
-            data_root=data_root,
-            ann_file='cityscape_foggy/annotations_json/instancesonly_filtered_gtFine_train.json',
-            data_prefix=dict(img='cityscape_foggy/train/', gt_img_path='cityscape/train/'),
-            filter_cfg=dict(filter_empty_gt=True, min_size=32),
-            pipeline=train_pipeline),
-    suffix='png'
-    ))
-
+        type=dataset_type,
+        data_root=data_root,
+        metainfo=dict(
+            dataset_type='cityscape_enhancement', task_name='enhancement'),
+        ann_file='cityscape_foggy/train/train.txt',
+        data_prefix=dict(
+            img='cityscape_foggy/train/', gt_img='cityscape/train/'),
+        search_key='img',
+        img_suffix=dict(img='png', gt_img='png'),
+        file_client_args=file_client_args,
+        pipeline=train_pipeline,
+        split_str='_foggy'))
 val_dataloader = dict(
     batch_size=1,
     num_workers=2,
@@ -54,19 +55,19 @@ val_dataloader = dict(
     drop_last=False,
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
-        type='lqit.DatasetWithClearImageWrapper',
-        dataset=dict(
-            type=dataset_type,
-            data_root=data_root,
-            test_mode=True,
-            indices=100,
-            ann_file='cityscape_foggy/annotations_json/instancesonly_filtered_gtFine_test.json',
-            data_prefix=dict(img='cityscape_foggy/test/', gt_img_path='cityscape/test/'),
-            filter_cfg=dict(filter_empty_gt=True, min_size=32),
-            pipeline=test_pipeline),
-        suffix='png'
-    ))
-
+        type=dataset_type,
+        data_root=data_root,
+        test_mode=True,
+        metainfo=dict(
+            dataset_type='cityscape_enhancement', task_name='enhancement'),
+        ann_file='cityscape_foggy/test/test.txt',
+        data_prefix=dict(
+            img='cityscape_foggy/test/', gt_img='cityscape/test/'),
+        search_key='img',
+        img_suffix=dict(img='png', gt_img='png'),
+        file_client_args=file_client_args,
+        pipeline=test_pipeline,
+        split_str='_foggy'))
 test_dataloader = val_dataloader
 
 val_evaluator = [

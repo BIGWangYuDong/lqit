@@ -34,7 +34,7 @@ train_pipeline = [
         src_key='img',
         dst_key='gt_edge',
         transforms=[
-            dict(type='Resize', scale=(256, 256), keep_ratio=True),
+            dict(type='Resize', scale=(1333, 800), keep_ratio=True),
             dict(type='RandomFlip', prob=0.5)
         ]),
     dict(type='lqit.PackInputs', )

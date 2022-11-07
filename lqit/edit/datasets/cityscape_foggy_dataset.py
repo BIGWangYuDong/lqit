@@ -1,17 +1,15 @@
 # Modified from https://github.com/open-mmlab/mmediting/tree/1.x/
-import warnings
 import os.path as osp
-from typing import Any, Callable, List, Optional, Union
-
-from .basic_image_dataset import BasicImageDataset
+from typing import Callable, List, Optional, Union
 
 from lqit.registry import DATASETS
+from .basic_image_dataset import BasicImageDataset
 
 
 @DATASETS.register_module()
 class CityscapeFoggyImageDataset(BasicImageDataset):
-    """CityscapeFoggyImageDataset for pixel-level vision tasks that have aligned gts,
-    such as image dehaze using cityscape and cityscape foggy datasets.
+    """CityscapeFoggyImageDataset for pixel-level vision tasks that have
+    aligned gts.
 
     Args:
         ann_file (str): Annotation file path. Defaults to ''.
@@ -35,7 +33,7 @@ class CityscapeFoggyImageDataset(BasicImageDataset):
             Defaults to jpg.
         recursive (bool): If set to True, recursively scan the
             directory. Defaults to False.
-        split_str (str): split string that used to split image name to gt image name.
+        split_str (str): split image name to gt image name.
             Defaults to '_foggy'.
     """
 
@@ -70,31 +68,27 @@ class CityscapeFoggyImageDataset(BasicImageDataset):
             recursive=recursive,
             **kwards)
 
-
     def load_data_list(self) -> List[dict]:
-            """Load data list from folder or annotation file.
+        """Load data list from folder or annotation file.
 
-            Returns:
-                list[dict]: A list of annotation.
-            """
+        Returns:
+            list[dict]: A list of annotation.
+        """
+        img_ids = self._get_img_list()
 
-            img_ids = self._get_img_list()
+        data_list = []
+        # deal with img and gt img path
+        for img_id in img_ids:
+            data = dict(key=img_id)
+            data['img_id'] = img_id
+            for key in self.data_prefix:
+                img_id = self.mapping_table[key].format(img_id)
 
-            data_list = []
-            # deal with img and gt img path
-            for img_id in img_ids:
-                data = dict(key=img_id)
-                data['img_id'] = img_id
-                for key in self.data_prefix:
-                    img_id = self.mapping_table[key].format(img_id)
+                if key == 'gt_img':
+                    img_id = img_id.split(self.split_str)[0]
 
-                    if key == 'gt_img':
-                        img_id = img_id.split(self.split_str)[0]
-
-                    path = osp.join(self.data_prefix[key],
-                                    f'{img_id}.{self.img_suffix[key]}')
-                    data[f'{key}_path'] = path
-                data_list.append(data)
-            return data_list
-
-
+                path = osp.join(self.data_prefix[key],
+                                f'{img_id}.{self.img_suffix[key]}')
+                data[f'{key}_path'] = path
+            data_list.append(data)
+        return data_list
