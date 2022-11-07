@@ -25,6 +25,10 @@ class BaseEditModel(BaseModel):
                  gt_preprocessor=None,
                  destruct_gt=False,
                  init_cfg: OptMultiConfig = None) -> None:
+        assert not (data_preprocessor is not None and
+                    gt_preprocessor is not None), \
+            '`data_preprocessor` and `gt_preprocessor` cannot be set at ' \
+            'the same time'
         super().__init__(
             init_cfg=init_cfg, data_preprocessor=data_preprocessor)
 
