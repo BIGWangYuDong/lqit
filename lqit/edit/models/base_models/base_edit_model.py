@@ -39,6 +39,7 @@ class BaseEditModel(BaseModel):
         self.gt_preprocessor = MODELS.build(
             gt_preprocessor) if gt_preprocessor else None
 
+        # whether to destruct gt during calculate loss
         self.destruct_gt = destruct_gt
 
     def forward(self,

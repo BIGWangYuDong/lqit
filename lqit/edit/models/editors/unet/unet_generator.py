@@ -10,7 +10,7 @@ from lqit.utils.typing import ConfigType, OptConfigType, OptMultiConfig
 class UNetGenerator(BaseGenerator):
 
     def __init__(self,
-                 unet: ConfigType,
+                 model: ConfigType,
                  pixel_loss: ConfigType,
                  perceptual_loss: OptConfigType = None,
                  init_cfg: OptMultiConfig = None) -> None:
@@ -18,7 +18,7 @@ class UNetGenerator(BaseGenerator):
             pixel_loss=pixel_loss,
             perceptual_loss=perceptual_loss,
             init_cfg=init_cfg)
-        self.model = MODELS.build(unet)
+        self.model = MODELS.build(model)
 
     def forward(self, x):
         """Forward function.
