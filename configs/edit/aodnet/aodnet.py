@@ -15,7 +15,7 @@ model = dict(
     generator=dict(
         _scope_='lqit',
         type='AODNetGenerator',
-        aodnet=dict(type='AODNet'),
+        model=dict(type='AODNet'),
         pixel_loss=dict(type='MSELoss', loss_weight=1.0)
        ))
 

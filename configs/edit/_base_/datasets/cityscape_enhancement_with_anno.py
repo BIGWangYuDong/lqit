@@ -1,6 +1,6 @@
 # dataset settings
 dataset_type = 'mmdet.CityscapesDataset'
-data_root = '/home/tju531/hwr/Datasets/'
+data_root = 'data/Datasets/'
 
 file_client_args = dict(backend='disk')
 

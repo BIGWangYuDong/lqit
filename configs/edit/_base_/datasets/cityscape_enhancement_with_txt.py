@@ -1,6 +1,6 @@
 # dataset settings
-dataset_type = 'BasicImageDataset'
-data_root = '/home/tju531/hwr/Datasets/'
+dataset_type = 'CityscapeFoggyImageDataset'
+data_root = 'data/Datasets/'
 
 file_client_args = dict(backend='disk')
 
@@ -41,11 +41,13 @@ train_dataloader = dict(
         metainfo=dict(
             dataset_type='cityscape_enhancement', task_name='enhancement'),
         ann_file='cityscape_foggy/train/train.txt',
-        data_prefix=dict(img='cityscape_foggy/train/', gt_img_path='cityscape/train/'),
+        data_prefix=dict(img='cityscape_foggy/train/', gt_img='cityscape/train/'),
         search_key='img',
         img_suffix=dict(img='png', gt_img='png'),
         file_client_args=file_client_args,
-        pipeline=train_pipeline))
+        pipeline=train_pipeline,
+        split_str='_foggy'
+    ))
 val_dataloader = dict(
     batch_size=1,
     num_workers=2,
@@ -56,15 +58,16 @@ val_dataloader = dict(
         type=dataset_type,
         data_root=data_root,
         test_mode=True,
-        indices=100,
         metainfo=dict(
             dataset_type='cityscape_enhancement', task_name='enhancement'),
         ann_file='cityscape_foggy/test/test.txt',
-        data_prefix=dict(img='cityscape_foggy/test/', gt_img_path='cityscape/test/'),
+        data_prefix=dict(img='cityscape_foggy/test/', gt_img='cityscape/test/'),
         search_key='img',
         img_suffix=dict(img='png', gt_img='png'),
         file_client_args=file_client_args,
-        pipeline=test_pipeline))
+        pipeline=test_pipeline,
+        split_str='_foggy'
+    ))
 test_dataloader = val_dataloader
 
 val_evaluator = [

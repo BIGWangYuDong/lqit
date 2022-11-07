@@ -10,17 +10,14 @@ from lqit.utils.typing import ConfigType, OptMultiConfig
 class AODNetGenerator(BaseGenerator):
 
     def __init__(self,
-                 aodnet: ConfigType,
+                 model: ConfigType,
                  pixel_loss: ConfigType = dict(
                      type='MSELoss', loss_weight=1.0),
                  init_cfg: OptMultiConfig = None) -> None:
         super().__init__(
+            model=model,
             pixel_loss=pixel_loss,
             init_cfg=init_cfg)
-
-        # build network
-        self.model = MODELS.build(aodnet)
-
 
     def forward(self, x):
         """Forward function.
