@@ -24,26 +24,13 @@ class ZeroDCEGenerator(BaseGenerator):
                      loss_weight=10.),
                  init_cfg: OptMultiConfig = None,
                  **kwargs) -> None:
-        super().__init__(init_cfg=init_cfg)
-        # build network
-        self.model = MODELS.build(model)
+        super().__init__(model=model, init_cfg=init_cfg)
 
         # build losses
         self.color_loss = MODELS.build(color_loss)
         self.spacial_loss = MODELS.build(spacial_loss)
         self.tv_loss = MODELS.build(tv_loss)
         self.exposure_loss = MODELS.build(exposure_loss)
-
-    def forward(self, x):
-        """Forward function.
-
-        Args:
-            x (Tensor): Input tensor with shape (n, c, h, w).
-
-        Returns:
-            Tensor: Forward results.
-        """
-        return self.model(x)
 
     def loss(self, loss_input: BatchPixelData, batch_img_metas: List[dict]):
         """Calculate the loss based on the outputs of generator."""

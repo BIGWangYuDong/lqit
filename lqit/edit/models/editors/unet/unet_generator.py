@@ -15,21 +15,10 @@ class UNetGenerator(BaseGenerator):
                  perceptual_loss: OptConfigType = None,
                  init_cfg: OptMultiConfig = None) -> None:
         super().__init__(
+            model=model,
             pixel_loss=pixel_loss,
             perceptual_loss=perceptual_loss,
             init_cfg=init_cfg)
-        self.model = MODELS.build(model)
-
-    def forward(self, x):
-        """Forward function.
-
-        Args:
-            x (Tensor): Input tensor with shape (n, c, h, w).
-
-        Returns:
-            Tensor: Forward results.
-        """
-        return self.model(x)
 
     def loss(self, loss_input: BatchPixelData, batch_img_metas: List[dict]):
         """Calculate the loss based on the outputs of generator."""

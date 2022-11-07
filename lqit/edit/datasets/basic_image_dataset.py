@@ -22,8 +22,10 @@ class BasicImageDataset(BaseDataset):
             information. Defaults to None.
         data_root (str, optional): The root directory for ``data_prefix`` and
             ``ann_file``. Defaults to None.
-        data_prefix (dict, optional): Prefix for training data. Defaults to
+        data_prefix (dict, optional): Prefix for data. Defaults to
             dict(img='').
+        mapping_table (dict): Mapping table for data.
+            Defaults to dict().
         pipeline (list, optional): Processing pipeline. Defaults to [].
         test_mode (bool, optional): ``test_mode=True`` means in test phase.
             Defaults to False.
@@ -45,6 +47,7 @@ class BasicImageDataset(BaseDataset):
                  metainfo: Optional[dict] = None,
                  data_root: Optional[str] = None,
                  data_prefix: dict = dict(img=''),
+                 mapping_table: dict = dict(),
                  pipeline: List[Union[dict, Callable]] = [],
                  test_mode: bool = False,
                  search_key: Optional[str] = None,
@@ -61,6 +64,11 @@ class BasicImageDataset(BaseDataset):
         else:
             assert search_key in list(data_prefix.keys())
         self.search_key = search_key
+
+        for key in data_prefix.keys():
+            if key not in mapping_table:
+                mapping_table[key] = '{}'
+        self.mapping_table = mapping_table
 
         # if set ann_file, the data list will get from ann_file,
         # else get from folder.
@@ -108,6 +116,7 @@ class BasicImageDataset(BaseDataset):
             data = dict(key=img_id)
             data['img_id'] = img_id
             for key in self.data_prefix:
+                img_id = self.mapping_table[key].format(img_id)
                 path = osp.join(self.data_prefix[key],
                                 f'{img_id}.{self.img_suffix[key]}')
                 data[f'{key}_path'] = path
@@ -140,6 +149,7 @@ class BasicImageDataset(BaseDataset):
         for ann_id in ann_ids:
             # delete suffix to keep logic same
             img_id, suffix = osp.splitext(ann_id)
+            suffix = suffix.split('.')[-1]
             if suffix not in IMG_EXTENSIONS:
                 img_id = ann_id
             img_ids.append(img_id)
