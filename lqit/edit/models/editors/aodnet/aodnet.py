@@ -7,6 +7,8 @@ from lqit.registry import MODELS
 
 @MODELS.register_module()
 class AODNet(nn.Module):
+    """AOD-Net: All-in-One Dehazing Network.
+    https://ieeexplore.ieee.org/document/8237773"""
 
     def __init__(self):
         super(AODNet, self).__init__()

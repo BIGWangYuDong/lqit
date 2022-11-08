@@ -50,7 +50,7 @@ class CityscapeFoggyImageDataset(BasicImageDataset):
                  img_suffix: Union[str, dict] = 'jpg',
                  recursive: bool = False,
                  split_str: str = '_foggy',
-                 **kwards):
+                 **kwards) -> None:
 
         self.split_str = split_str
 
@@ -83,7 +83,8 @@ class CityscapeFoggyImageDataset(BasicImageDataset):
             data['img_id'] = img_id
             for key in self.data_prefix:
                 img_id = self.mapping_table[key].format(img_id)
-
+                # The gt img name and img name do not match.
+                # one gt img corresponds to three imgs
                 if key == 'gt_img':
                     img_id = img_id.split(self.split_str)[0]
 
