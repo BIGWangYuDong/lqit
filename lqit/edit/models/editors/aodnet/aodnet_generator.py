@@ -13,7 +13,8 @@ class AODNetGenerator(BaseGenerator):
                  model: ConfigType,
                  pixel_loss: ConfigType = dict(
                      type='MSELoss', loss_weight=1.0),
-                 init_cfg: OptMultiConfig = None) -> None:
+                 init_cfg: OptMultiConfig = None,
+                 **kwargs) -> None:
         super().__init__(model=model, pixel_loss=pixel_loss, init_cfg=init_cfg)
 
     def loss(self, loss_input: BatchPixelData, batch_img_metas: List[dict]):

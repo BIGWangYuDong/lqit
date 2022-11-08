@@ -33,8 +33,7 @@ class AODNet(nn.Module):
         cat3 = torch.cat((x1, x2, x3, x4), 1)
         k = F.relu(self.conv5(cat3))
 
-        if k.size() != x.size():
-            raise Exception('haze image are different size!')
+        assert k.size() == x.size(), 'haze image are different size'
 
         output = k * x - k + self.b
         return F.relu(output)
