@@ -1,4 +1,3 @@
-# Copyright (c) OpenMMLab. All rights reserved.
 from typing import Optional
 
 from mmdet.models import SingleStageDetector

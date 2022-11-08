@@ -1,5 +1,7 @@
-from mmdet.datasets import CocoDataset, XMLDataset
+from mmdet.datasets import CocoDataset
 from mmdet.registry import DATASETS
+
+from .xml_dataset import XMLDatasetWithMetaFile
 
 URPC_METAINFO = {
     'CLASSES': ('holothurian', 'echinus', 'scallop', 'starfish'),
@@ -17,10 +19,6 @@ class URPCCocoDataset(CocoDataset):
 
 
 @DATASETS.register_module()
-class URPCXMLDataset(XMLDataset):
+class URPCXMLDataset(XMLDatasetWithMetaFile):
     """"""
     METAINFO = URPC_METAINFO
-
-    def __init__(self, **kwargs):
-        # TODO: Currently not support
-        super().__init__(**kwargs)
