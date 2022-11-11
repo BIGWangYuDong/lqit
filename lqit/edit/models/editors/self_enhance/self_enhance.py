@@ -70,7 +70,7 @@ class SelfEnhance(BaseModule):
         x_stem = self.stem(x)
 
         out = self.layers(x_stem)  # enhanced img structure
-        out_img = out + x  # enhance img
+        out_img = 0.5 * out + 0.5 * x  # enhance img
         cat_tensor = torch.cat([out_img, out], dim=1)
         return cat_tensor
 
