@@ -16,7 +16,7 @@ class SelfEnhance(BaseModule):
                  in_channels=3,
                  feat_channels=64,
                  out_channels=3,
-                 num_convs=4,
+                 num_convs=3,
                  expand_ratio=1.0,
                  num_blocks=1,
                  add_identity=True,
