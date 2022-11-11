@@ -6,8 +6,8 @@ _base_ = [
 
 model = dict(bbox_head=dict(num_classes=4))
 
-# 8bs * 2GPUs
-train_dataloader = dict(batch_size=8, num_workers=4)
+# 4bs * 4GPUs
+train_dataloader = dict(batch_size=4, num_workers=4)
 
 optim_wrapper = dict(
     type='OptimWrapper',
