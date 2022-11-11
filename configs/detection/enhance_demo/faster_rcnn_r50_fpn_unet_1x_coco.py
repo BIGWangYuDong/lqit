@@ -17,7 +17,12 @@ model = dict(
             _scope_='lqit',
             type='UNet',
             unet=dict(type='BaseUNet'),
-            pixel_loss=dict(type='L1Loss', loss_weight=1.0))))
+            pixel_loss=dict(type='L1Loss', loss_weight=1.0),
+            perceptual_loss=dict(
+                type='PerceptualLoss',
+                layer_weights={'21': 1.},
+                perceptual_weight=1.,
+                style_weight=0))))
 # dataset settings
 train_pipeline = [
     dict(
