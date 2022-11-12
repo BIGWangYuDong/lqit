@@ -38,6 +38,7 @@ model = dict(
             spacial_loss=dict(type='SpatialLoss', loss_weight=1.0),
             tv_loss=dict(
                 type='MaskedTVLoss', loss_mode='mse', loss_weight=1.0),
+            structure_loss=dict(type='StructureFFTLoss', loss_weight=1.0),
             perceptual_loss=dict(
                 type='PerceptualLoss',
                 layer_weights={'21': 1.},
