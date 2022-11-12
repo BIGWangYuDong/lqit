@@ -3,6 +3,7 @@ _base_ = 'retinanet_r50_fpn_1x_urpc2020.py'
 model = dict(
     type='SingleStageWithEnhanceModel',
     backbone=dict(norm_eval=False),
+    loss_weight=[0.8, 0.2],
     enhance_model=dict(
         _scope_='lqit',
         type='lqit.BaseEditModel',
