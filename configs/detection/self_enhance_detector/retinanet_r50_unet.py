@@ -41,6 +41,8 @@ model = dict(
             structure_loss=dict(type='StructureFFTLoss', loss_weight=1.0),
             perceptual_loss=dict(
                 type='PerceptualLoss',
+                vgg_type='vgg16',
+                pretrained='torchvision://vgg16',
                 layer_weights={'21': 1.},
                 perceptual_weight=1.0,
                 style_weight=0))))
@@ -52,7 +54,7 @@ train_pipeline = [
         file_client_args={{_base_.file_client_args}}),
     dict(type='LoadAnnotations', with_bbox=True),
     dict(type='Resize', scale=(1333, 800), keep_ratio=True),
-    dict(type='RandomFlip', prob=0.5),
+    dict(type='RandomFlip', prob=0.),
     dict(type='lqit.SetInputImageAsGT'),
     dict(type='lqit.PackInputs')
 ]

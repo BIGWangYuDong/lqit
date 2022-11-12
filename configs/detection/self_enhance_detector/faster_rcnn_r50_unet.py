@@ -41,6 +41,8 @@ model = dict(
             structure_loss=dict(type='StructureFFTLoss', loss_weight=1.0),
             perceptual_loss=dict(
                 type='PerceptualLoss',
+                vgg_type='vgg16',
+                pretrained='torchvision://vgg16',
                 layer_weights={'21': 1.},
                 perceptual_weight=1.0,
                 style_weight=0))))
