@@ -113,7 +113,7 @@ class SelfEnhanceUNetGenerator(BaseGenerator):
                                              batch_img_metas)
         losses['structure_loss'] = structure_loss
 
-        if self.spacial_loss is not None:
+        if self.perceptual_loss is not None:
             de_batch_outputs = loss_input.de_output
             de_batch_inputs = loss_input.de_input
             # norm to 0-1
