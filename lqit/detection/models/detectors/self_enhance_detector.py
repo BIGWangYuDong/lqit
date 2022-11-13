@@ -1,10 +1,11 @@
 import copy
 from typing import Any, Dict, Optional, Tuple, Union
 
-from mmdet.registry import MODEL_WRAPPERS, MODELS
+from mmdet.registry import MODELS
 from mmdet.utils import ConfigType, OptConfigType, OptMultiConfig
 from mmengine.model import BaseModel
-from mmengine.model.wrappers import MMDistributedDataParallel as MMENGINE_DDP
+from mmengine.model.wrappers import MMDistributedDataParallel as MMDDP
+from mmengine.registry import MODEL_WRAPPERS
 from mmengine.utils import is_list_of
 from torch import Tensor
 
@@ -326,7 +327,7 @@ class SelfEnhanceDetector(BaseModel):
 
 
 @MODEL_WRAPPERS.register_module()
-class SelfEnhanceModelDDP(MMENGINE_DDP):
+class SelfEnhanceModelDDP(MMDDP):
 
     def _run_forward(self, data: Union[dict, tuple, list], mode: str) -> Any:
         """Unpacks data for :meth:`forward`
