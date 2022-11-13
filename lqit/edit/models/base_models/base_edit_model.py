@@ -22,27 +22,13 @@ class BaseEditModel(BaseModel):
     def __init__(self,
                  generator,
                  data_preprocessor=None,
-                 gt_preprocessor=None,
                  destruct_gt=False,
                  init_cfg: OptMultiConfig = None) -> None:
-        assert not (data_preprocessor is not None and
-                    gt_preprocessor is not None), \
-            '`data_preprocessor` and `gt_preprocessor` cannot be set at ' \
-            'the same time'
         super().__init__(
             init_cfg=init_cfg, data_preprocessor=data_preprocessor)
 
         # build generator
         self.generator = MODELS.build(generator)
-
-        # gt preprocessor is going to deal with edit model not going through
-        # the forward function, which means it directly called `loss`,
-        # `predict` ,or `loss_and_predict` outside. If gt_preprocessor is
-        # not None, gt will stack by `gt_preprocessor`, else
-        # `data_preprocessor.stack_gt`.
-        self.gt_preprocessor = MODELS.build(
-            gt_preprocessor) if gt_preprocessor else None
-
         # whether to destruct gt during calculate loss
         self.destruct_gt = destruct_gt
 
@@ -85,6 +71,8 @@ class BaseEditModel(BaseModel):
             return self.predict(inputs, data_samples)
         elif mode == 'tensor':
             return self._forward(inputs, data_samples)
+        elif mode == 'loss_and_predict':
+            return self.loss_and_predict(inputs, data_samples)
         else:
             raise RuntimeError(f'Invalid mode "{mode}". '
                                'Only supports loss, predict and tensor mode')
@@ -116,13 +104,20 @@ class BaseEditModel(BaseModel):
         Returns:
             dict: A dictionary of loss components.
         """
+        # batch_outputs should be a tensor, if it should returns a tuple,
+        # it is suggested to concat together, If cannot concat together,
+        # a subclass can be set.
         batch_outputs = self.generator(batch_inputs)
-        if self.gt_preprocessor is None:
-            batch_gt_pixel = self.data_preprocessor.stack_gt(
-                batch_data_samples)
-        else:
-            batch_gt_pixel = self.gt_preprocessor(
-                batch_data_samples, training=True)
+
+        losses = self.calculate_loss(
+            batch_inputs=batch_inputs,
+            batch_outputs=batch_outputs,
+            batch_data_samples=batch_data_samples)
+        return losses
+
+    def calculate_loss(self, batch_inputs: Tensor, batch_outputs: Tensor,
+                       batch_data_samples: SampleList) -> dict:
+        batch_gt_pixel = self.data_preprocessor.stack_gt(batch_data_samples)
 
         loss_input = BatchPixelData()
         loss_input.output = batch_outputs
@@ -163,41 +158,20 @@ class BaseEditModel(BaseModel):
             Tuple: A dictionary of loss components and results of the
             input images.
         """
-        # batch_outputs should be a tensor, if it should returns a tuple,
-        # it is suggested to concat together, If cannot concat together,
-        # a subclass can be set.
         batch_outputs = self.generator(batch_inputs)
-        if self.gt_preprocessor is None:
-            batch_gt_pixel = self.data_preprocessor.stack_gt(
-                batch_data_samples)
-        else:
-            batch_gt_pixel = self.gt_preprocessor(
-                batch_data_samples, training=True)
-
-        loss_input = BatchPixelData()
-        loss_input.output = batch_outputs
-        loss_input.gt = batch_gt_pixel
-        loss_input.input = batch_inputs
+        losses = self.calculate_loss(
+            batch_inputs=batch_inputs,
+            batch_outputs=batch_outputs,
+            batch_data_samples=batch_data_samples)
 
         batch_img_metas = [
             data_samples.metainfo for data_samples in batch_data_samples
         ]
 
-        if self.destruct_gt:
-            de_batch_outputs = self.destructor_batch(batch_outputs,
-                                                     batch_img_metas)
-            de_batch_gt_pixel = self.destructor_batch(batch_outputs,
-                                                      batch_img_metas)
-            de_batch_inputs = self.destructor_batch(batch_inputs,
-                                                    batch_img_metas)
+        results_list = self.destructor_results(batch_outputs, batch_img_metas)
 
-            loss_input.de_output = de_batch_outputs
-            loss_input.de_gt = de_batch_gt_pixel
-            loss_input.de_input = de_batch_inputs
-
-        losses = self.generator.loss(loss_input, batch_img_metas)
-
-        predictions = self.destructor_results(batch_outputs, batch_img_metas)
+        predictions = add_pixel_pred_to_datasample(
+            data_samples=batch_data_samples, pixel_list=results_list)
         return losses, predictions
 
     def predict(self, batch_inputs: Tensor,
@@ -238,15 +212,8 @@ class BaseEditModel(BaseModel):
                               'to get the output image.')
                 outputs = self.generator.post_precess(outputs)
             img_meta = batch_img_metas[i]
-            if self.gt_preprocessor is None:
-                outputs = self.data_preprocessor.destructor(outputs, img_meta)
-            else:
-                norm_input_flag = self.gt_preprocessor.norm_input_flag
-                if norm_input_flag is None:
-                    # TODO: check
-                    norm_input_flag = (batch_outputs.max() <= 1)
-                outputs = self.gt_preprocessor.destructor(
-                    outputs, img_meta, norm_input_flag=norm_input_flag)
+
+            outputs = self.data_preprocessor.destructor(outputs, img_meta)
             results_list.append(outputs)
 
         return results_list
@@ -254,9 +221,5 @@ class BaseEditModel(BaseModel):
     def destructor_batch(self, batch_outputs: Tensor,
                          batch_img_metas: List[dict]) -> Tensor:
         result_list = self.destructor_results(batch_outputs, batch_img_metas)
-        if self.gt_preprocessor is None:
-            destructor_batch = self.data_preprocessor.stack_batch(result_list)
-        else:
-            destructor_batch = self.gt_preprocessor.stack_batch(result_list)
-
+        destructor_batch = self.data_preprocessor.stack_batch(result_list)
         return destructor_batch

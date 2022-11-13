@@ -101,9 +101,7 @@ class SelfEnhanceUNetGenerator(BaseGenerator):
         batch_inputs = loss_input.input
 
         tv_loss = self.tv_loss(batch_outputs)
-        # tv_loss = self.tv_loss(batch_outputs) * 3   # keep same with mmdet2.x
         spacial_loss = self.spacial_loss(batch_outputs, batch_inputs)
-
         losses['tv_loss'] = tv_loss
         losses['spacial_loss'] = spacial_loss
 

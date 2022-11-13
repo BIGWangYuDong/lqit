@@ -1,5 +1,5 @@
 # Modified from https://github.com/open-mmlab/mmediting/tree/1.x/
-from typing import Optional, Sequence, Tuple, Union
+from typing import Sequence, Union
 
 import torch
 import torch.nn.functional as F
@@ -73,9 +73,7 @@ class EditDataPreprocessor(BaseDataPreprocessor):
         assert isinstance(gt_name, str)
         self.gt_name = gt_name
 
-    def forward(self,
-                data: Sequence[dict],
-                training: bool = False) -> Tuple[torch.Tensor, Optional[list]]:
+    def forward(self, data: dict, training: bool = False) -> dict:
         """Pre-process the data into the model input format.
 
         After the data pre-processing of :meth:`collate_data`, ``forward``
@@ -88,13 +86,12 @@ class EditDataPreprocessor(BaseDataPreprocessor):
                 Default: False.
 
         Returns:
-            Tuple[torch.Tensor, Optional[list]]: Data in the same format as the
-            model input.
+            dict: Data in the same format as the model input.
         """
 
         # inputs, batch_data_samples = self.collate_data(data)
         data = super().forward(data=data, training=training)
-        inputs, batch_data_samples = data['inputs'], data['data_samples']
+        inputs, data_samples = data['inputs'], data['data_samples']
 
         # Check if input is normalized to [0, 1]
         self.norm_input_flag = (inputs[0].max() <= 1)
@@ -108,9 +105,7 @@ class EditDataPreprocessor(BaseDataPreprocessor):
             mean=self.mean,
             std=self.std)
 
-        data['inputs'] = inputs
-        data['data_samples'] = batch_data_samples
-        return data
+        return {'inputs': inputs, 'data_samples': data_samples}
 
     def stack_gt(self, batch_data_samples):
         gt_pixel_list = []
@@ -128,11 +123,7 @@ class EditDataPreprocessor(BaseDataPreprocessor):
 
         return batch_gt_pixel
 
-    def destructor(self,
-                   img_tensor,
-                   img_meta,
-                   rescale=False,
-                   norm_input_flag=None):
+    def destructor(self, img_tensor, img_meta, rescale=False):
         assert img_tensor.dim() == 3
         # De-normalization
         img_tensor = img_tensor * self.std + self.mean
@@ -140,15 +131,10 @@ class EditDataPreprocessor(BaseDataPreprocessor):
         h, w = img_meta['img_shape']
         no_padding_img = img_tensor[:, :h, :w]
 
-        if norm_input_flag is not None:
-            norm_input_flag_ = norm_input_flag
-        else:
-            norm_input_flag_ = self.norm_input_flag
-
-        assert norm_input_flag_ is not None, (
+        assert self.norm_input_flag is not None, (
             'Please kindly run `forward` before running `destructor` or '
             'set `norm_input_flag`.')
-        if norm_input_flag_:
+        if self.norm_input_flag:
             no_padding_img *= 255
         no_padding_img = no_padding_img.clamp_(0, 255)
 
