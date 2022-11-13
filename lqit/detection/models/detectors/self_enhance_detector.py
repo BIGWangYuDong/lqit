@@ -1,9 +1,10 @@
 import copy
-from typing import Dict, Optional, Tuple, Union
+from typing import Any, Dict, Optional, Tuple, Union
 
-from mmdet.registry import MODELS
+from mmdet.registry import MODEL_WRAPPERS, MODELS
 from mmdet.utils import ConfigType, OptConfigType, OptMultiConfig
 from mmengine.model import BaseModel
+from mmengine.model.wrappers import MMDistributedDataParallel as MMENGINE_DDP
 from mmengine.utils import is_list_of
 from torch import Tensor
 
@@ -322,3 +323,25 @@ class SelfEnhanceDetector(BaseModel):
             # cp_batch_data_samples = copy.deepcopy(batch_data_samples)
             # cp_batch_data_samples = self.detector(
             #     enhance_batch_inputs, cp_batch_data_samples, mode='predict')
+
+
+@MODEL_WRAPPERS.register_module()
+class SelfEnhanceModelDDP(MMENGINE_DDP):
+
+    def _run_forward(self, data: Union[dict, tuple, list], mode: str) -> Any:
+        """Unpacks data for :meth:`forward`
+
+        Args:
+            data (dict or tuple or list): Data sampled from dataset.
+            mode (str): Mode of forward.
+
+        Returns:
+            dict or list: Results of training or testing mode.
+        """
+        assert isinstance(data, dict), \
+            'The output of DataPreprocessor should be a dict, ' \
+            'which only deal with `cast_data`. The data_preprocessor ' \
+            'should process in forward.'
+        results = self(data, mode=mode)
+
+        return results
