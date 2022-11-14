@@ -16,7 +16,7 @@ enhance_model = dict(
             feat_channels=64,
             out_channels=3,
             num_blocks=4,
-            expand_ratio=1.0,  # TODO: try 0.5 if oom
+            expand_ratio=0.5,  # TODO: try 0.5 if oom
             kernel_size=[1, 3, 5, 7],
             conv_cfg=None,
             norm_cfg=dict(type='BN'),
