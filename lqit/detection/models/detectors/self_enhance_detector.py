@@ -28,12 +28,14 @@ class SelfEnhanceDetector(BaseModel):
                  enhance_model: OptConfigType = None,
                  loss_weight: list = [0.5, 0.5],
                  vis_enhance: Optional[bool] = False,
+                 train_mode: str = 'both',
                  pred_mode: str = 'raw',
                  detach_enhance_img: bool = False,
                  init_cfg: OptMultiConfig = None) -> None:
         super().__init__(init_cfg=init_cfg)
         assert isinstance(loss_weight, list) and len(loss_weight) == 2
         assert pred_mode in ['raw', 'enhance', 'both']
+        assert train_mode in ['raw', 'enhance', 'both']
 
         self.detector = MODELS.build(detector)
         if enhance_model is not None:
@@ -48,11 +50,28 @@ class SelfEnhanceDetector(BaseModel):
             self.vis_enhance = vis_enhance
         self.pred_mode = pred_mode
 
-        self.loss_weight = loss_weight
+        self.train_mode = train_mode
+
         if self.with_enhance_model:
-            self.prefix_name = ['raw', 'enhance']
+            if self.train_mode == 'both':
+                self.prefix_name = ['raw', 'enhance']
+                self.loss_weight = loss_weight
+            elif self.train_mode == 'enhance':
+                self.prefix_name = ['enhance']
+                self.loss_weight = [1.0]
+            else:
+                raise KeyError('enhance_mode is not None, train_mode only '
+                               'support `both` or `enhance`')
         else:
-            self.prefix_name = ['raw_1', 'raw_2']
+            if self.train_mode == 'both':
+                self.prefix_name = ['raw_1', 'raw_2']
+                self.loss_weight = loss_weight
+            elif self.train_mode == 'raw':
+                self.prefix_name = ['raw']
+                self.loss_weight = [1.0]
+            else:
+                raise KeyError('enhance_mode is None, train_mode only '
+                               'support `both` or `raw`')
 
     @property
     def with_enhance_model(self) -> bool:
@@ -75,7 +94,7 @@ class SelfEnhanceDetector(BaseModel):
             raise RuntimeError(f'Invalid mode "{mode}". '
                                'Only supports loss, predict and tensor mode')
 
-    def _run_forward(self, data: Union[dict, tuple, list],
+    def _run_forward(self, data: dict,
                      mode: str) -> Union[Dict[str, Tensor], list]:
         """Unpacks data for :meth:`forward`
 
@@ -99,7 +118,11 @@ class SelfEnhanceDetector(BaseModel):
         forward without any post-processing.
 
         Args:
-            batch_inputs (Tensor): Inputs with shape (N, C, H, W).
+            data (dict): Data sampled from dataloader, usually contains
+                following keys.
+
+                - inputs (list[Tensor]): A list of input image.
+                - data_samples (:obj:`DataSample`): A list of DataSample.
 
         Returns:
             tuple: A tuple of features from ``rpn_head`` and ``roi_head``
@@ -153,11 +176,11 @@ class SelfEnhanceDetector(BaseModel):
         """Calculate losses from a batch of inputs and data samples.
 
         Args:
-            batch_inputs (Tensor): Input images of shape (N, C, H, W).
-                These should usually be mean centered and std scaled.
-            batch_data_samples (List[:obj:`DetDataSample`]): The batch
-                data samples. It usually includes information such
-                as `gt_instance` or `gt_panoptic_seg` or `gt_sem_seg`.
+            data (dict): Data sampled from dataloader, usually contains
+                following keys.
+
+                - inputs (list[Tensor]): A list of input image.
+                - data_samples (:obj:`DataSample`): A list of DataSample.
 
         Returns:
             dict: A dictionary of loss components
@@ -219,8 +242,14 @@ class SelfEnhanceDetector(BaseModel):
             # the enhance_batch_inputs same as raw_batch_inputs
             enhance_batch_inputs = copy.deepcopy(raw_batch_inputs)
 
-        for i, batch_inputs in \
-                enumerate([raw_batch_inputs, enhance_batch_inputs]):
+        if self.train_mode == 'both':
+            batch_inputs_list = [raw_batch_inputs, enhance_batch_inputs]
+        elif self.train_mode == 'raw':
+            batch_inputs_list = [raw_batch_inputs]
+        else:
+            batch_inputs_list = [enhance_batch_inputs]
+
+        for i, batch_inputs in enumerate(batch_inputs_list):
             temp_losses = self.detector(
                 batch_inputs, batch_det_data_samples, mode='loss')
 
@@ -238,16 +267,15 @@ class SelfEnhanceDetector(BaseModel):
         processing.
 
         Args:
-            batch_inputs (Tensor): Inputs with shape (N, C, H, W).
-            batch_data_samples (List[:obj:`DetDataSample`]): The Data
-                Samples. It usually includes information such as
-                `gt_instance`, `gt_panoptic_seg` and `gt_sem_seg`.
-            rescale (bool): Whether to rescale the results.
-                Defaults to True.
+            data (dict): Data sampled from dataloader, usually contains
+                following keys.
+
+                - inputs (list[Tensor]): A list of input image.
+                - data_samples (:obj:`DataSample`): A list of DataSample.
 
         Returns:
             list[:obj:`DataSample`]: Return the detection results of the
-            input images. The returns value is DetDataSample,
+            input images. The returns value is DataSample,
             which usually contain 'pred_instances'. And the
             ``pred_instances`` usually contains following keys.
 

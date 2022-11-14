@@ -15,6 +15,7 @@ class SelfEnhanceGenerator(BaseGenerator):
                      type='SpatialLoss', loss_weight=1.0),
                  tv_loss: ConfigType = dict(
                      type='MaskedTVLoss', loss_mode='mse', loss_weight=10.0),
+                 structure_loss: OptConfigType = None,
                  perceptual_loss: OptConfigType = None,
                  init_cfg: OptMultiConfig = None,
                  **kwargs) -> None:
@@ -24,6 +25,10 @@ class SelfEnhanceGenerator(BaseGenerator):
         # build losses
         self.spacial_loss = MODELS.build(spacial_loss)
         self.tv_loss = MODELS.build(tv_loss)
+        if structure_loss is not None:
+            self.structure_loss = MODELS.build(structure_loss)
+        else:
+            self.structure_loss = None
 
     def loss(self, loss_input: BatchPixelData, batch_img_metas: List[dict]):
         """Calculate the loss based on the outputs of generator."""
@@ -38,11 +43,18 @@ class SelfEnhanceGenerator(BaseGenerator):
 
         tv_loss = self.tv_loss(batch_enhance_structure)
         spacial_loss = self.spacial_loss(batch_enhance_img, batch_inputs)
-
         losses['tv_loss'] = tv_loss
         losses['spacial_loss'] = spacial_loss
 
-        if self.spacial_loss is not None:
+        if self.structure_loss is not None:
+            de_batch_outputs = loss_input.de_output
+            de_batch_inputs = loss_input.de_input
+            structure_loss = self.structure_loss(de_batch_outputs,
+                                                 de_batch_inputs,
+                                                 batch_img_metas)
+            losses['structure_loss'] = structure_loss
+
+        if self.perceptual_loss is not None:
             de_batch_outputs = loss_input.de_output
             de_batch_inputs = loss_input.de_input
             if de_batch_outputs.shape[1] > 3:
