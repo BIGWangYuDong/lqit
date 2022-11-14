@@ -1,4 +1,4 @@
-_base_ = '.self_enhance_base_loss.py'
+_base_ = './self_enhance_base_loss.py'
 
 enhance_model = dict(
     generator=dict(
