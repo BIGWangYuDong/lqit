@@ -135,7 +135,12 @@ class BaseEditModel(BaseModel):
                                                       batch_img_metas)
             de_batch_inputs = self.destructor_batch(batch_inputs,
                                                     batch_img_metas)
-
+            # TODO: More elegant way
+            if batch_outputs.size(1) == 6:
+                batch_structure = batch_outputs[:, 3:, ...]
+                de_batch_structure = self.destructor_batch(
+                    batch_structure, batch_img_metas)
+                loss_input.de_structure = de_batch_structure
             loss_input.de_output = de_batch_outputs
             loss_input.de_gt = de_batch_gt_pixel
             loss_input.de_input = de_batch_inputs

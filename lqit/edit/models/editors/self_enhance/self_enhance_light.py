@@ -23,6 +23,7 @@ class SelfEnhanceLight(BaseModule):
                  norm_cfg: ConfigType = dict(type='BN'),
                  act_cfg: ConfigType = dict(type='SiLU'),
                  use_depthwise: bool = True,
+                 output_weight: list = [0.8, 0.2],
                  init_cfg=[
                      dict(type='Normal', layer='Conv2d', mean=0, std=0.02),
                      dict(
@@ -61,11 +62,16 @@ class SelfEnhanceLight(BaseModule):
             layers.append(layer)
         self.layers = nn.Sequential(*layers)
 
+        assert len(output_weight) == 2
+        self.raw_weight = output_weight[0]
+        self.structure_weight = output_weight[1]
+
     def forward(self, x: Tensor) -> Tensor:
         x_stem = self.stem(x)
 
         out = self.layers(x_stem)  # enhanced img structure
-        out_img = 0.8 * out + 0.2 * x  # enhance img
+        out_img = self.raw_weight * out + \
+            self.structure_weight * x  # enhance img
         cat_tensor = torch.cat([out_img, out], dim=1)
         return cat_tensor
 

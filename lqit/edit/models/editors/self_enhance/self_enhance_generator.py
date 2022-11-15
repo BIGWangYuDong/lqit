@@ -16,12 +16,19 @@ class SelfEnhanceGenerator(BaseGenerator):
                  tv_loss: ConfigType = dict(
                      type='MaskedTVLoss', loss_mode='mse', loss_weight=10.0),
                  structure_loss: OptConfigType = None,
+                 spacial_pred: str = 'structure',
+                 structure_pred: str = 'structure',
                  perceptual_loss: OptConfigType = None,
                  init_cfg: OptMultiConfig = None,
                  **kwargs) -> None:
         super().__init__(
             model=model, perceptual_loss=perceptual_loss, init_cfg=init_cfg)
 
+        assert structure_pred in ['output', 'structure']
+        self.structure_pred = structure_pred
+
+        assert spacial_pred in ['output', 'structure']
+        self.spacial_pred = spacial_pred
         # build losses
         self.spacial_loss = MODELS.build(spacial_loss)
         self.tv_loss = MODELS.build(tv_loss)
@@ -42,12 +49,20 @@ class SelfEnhanceGenerator(BaseGenerator):
         batch_enhance_structure = batch_outputs[:, in_channels:, :, :]
 
         tv_loss = self.tv_loss(batch_enhance_structure)
-        spacial_loss = self.spacial_loss(batch_enhance_img, batch_inputs)
         losses['tv_loss'] = tv_loss
+
+        if self.spacial_pred == 'output':
+            spacial_loss = self.spacial_loss(batch_enhance_img, batch_inputs)
+        else:
+            spacial_loss = self.spacial_loss(batch_enhance_structure,
+                                             batch_inputs)
         losses['spacial_loss'] = spacial_loss
 
         if self.structure_loss is not None:
-            de_batch_outputs = loss_input.de_output
+            if self.structure_pred == 'output':
+                de_batch_outputs = loss_input.de_output
+            else:
+                de_batch_outputs = loss_input.de_structure
             de_batch_inputs = loss_input.de_input
             structure_loss = self.structure_loss(de_batch_outputs,
                                                  de_batch_inputs,

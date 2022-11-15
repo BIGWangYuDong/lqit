@@ -8,10 +8,7 @@ from lqit.registry import MODELS
 @MODELS.register_module()
 class StructureFFTLoss(nn.Module):
 
-    def __init__(self,
-                 radius: int = 16,
-                 shape: str = 'cycle',
-                 loss_weight=1.0):
+    def __init__(self, radius: int = 8, shape: str = 'cycle', loss_weight=1.0):
         super().__init__()
         if shape == 'cycle':
             self.center_mask = self._cycle_mask(radius)
