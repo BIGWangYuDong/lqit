@@ -1,5 +1,5 @@
 _base_ = [
-    '../base_editor/self_enhance_base_loss.py',
+    '../base_editor/self_enhance_no_loss.py',
     '../base_detector/faster_rcnn_r50_fpn_1x_rtts.py'
 ]
 
