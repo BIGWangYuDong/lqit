@@ -30,8 +30,16 @@ class SelfEnhanceGenerator(BaseGenerator):
         assert spacial_pred in ['output', 'structure']
         self.spacial_pred = spacial_pred
         # build losses
-        self.spacial_loss = MODELS.build(spacial_loss)
-        self.tv_loss = MODELS.build(tv_loss)
+        if spacial_loss is not None:
+            self.spacial_loss = MODELS.build(spacial_loss)
+        else:
+            self.spacial_loss = None
+
+        if tv_loss is not None:
+            self.tv_loss = MODELS.build(tv_loss)
+        else:
+            self.tv_loss = None
+
         if structure_loss is not None:
             self.structure_loss = MODELS.build(structure_loss)
         else:
@@ -47,16 +55,18 @@ class SelfEnhanceGenerator(BaseGenerator):
         in_channels = self.model.in_channels
         batch_enhance_img = batch_outputs[:, :in_channels, :, :]
         batch_enhance_structure = batch_outputs[:, in_channels:, :, :]
+        if self.tv_loss is not None:
+            tv_loss = self.tv_loss(batch_enhance_structure)
+            losses['tv_loss'] = tv_loss
 
-        tv_loss = self.tv_loss(batch_enhance_structure)
-        losses['tv_loss'] = tv_loss
-
-        if self.spacial_pred == 'output':
-            spacial_loss = self.spacial_loss(batch_enhance_img, batch_inputs)
-        else:
-            spacial_loss = self.spacial_loss(batch_enhance_structure,
-                                             batch_inputs)
-        losses['spacial_loss'] = spacial_loss
+        if self.spacial_loss is not None:
+            if self.spacial_pred == 'output':
+                spacial_loss = self.spacial_loss(batch_enhance_img,
+                                                 batch_inputs)
+            else:
+                spacial_loss = self.spacial_loss(batch_enhance_structure,
+                                                 batch_inputs)
+            losses['spacial_loss'] = spacial_loss
 
         if self.structure_loss is not None:
             if self.structure_pred == 'output':

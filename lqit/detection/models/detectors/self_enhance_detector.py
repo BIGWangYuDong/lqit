@@ -28,8 +28,8 @@ class SelfEnhanceDetector(BaseModel):
                  enhance_model: OptConfigType = None,
                  loss_weight: list = [0.5, 0.5],
                  vis_enhance: Optional[bool] = False,
-                 train_mode: str = 'both',
-                 pred_mode: str = 'raw',
+                 train_mode: str = 'enhance',
+                 pred_mode: str = 'enhance',
                  detach_enhance_img: bool = False,
                  init_cfg: OptMultiConfig = None) -> None:
         super().__init__(init_cfg=init_cfg)
