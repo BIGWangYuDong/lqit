@@ -7,17 +7,10 @@ from numpy import random
 
 from lqit.registry import TRANSFORMS
 
-try:
-    from mmdet.structures.bbox import BaseBoxes  # noqa
-    mmdet = True
-except ImportError:
-    mmdet = False
-
 
 class FFTFilterBase(BaseTransform, metaclass=ABCMeta):
 
     def __init__(self, shape='cycle', choose=False, radius=16, get_gt=False):
-        # TODO: support rhombus and soft cycle
         assert shape in ['cycle', 'square', 'r_square', 'cycle_band']
         self.shape = shape
         self.radius = radius

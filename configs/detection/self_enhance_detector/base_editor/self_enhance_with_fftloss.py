@@ -4,4 +4,5 @@ enhance_model = dict(
     generator=dict(
         spacial_loss=dict(type='SpatialLoss', loss_weight=1.0),
         tv_loss=dict(type='MaskedTVLoss', loss_mode='mse', loss_weight=10.0),
-        structure_loss=dict(type='StructureFFTLoss', loss_weight=0.2)))
+        structure_loss=dict(type='HighPassFFTLoss', loss_weight=0.01),
+        perceptual_loss=None))

@@ -96,3 +96,30 @@ MASTER_PORT=2617  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det rtts2 c
 MASTER_PORT=3183  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det rtts3 configs/detection/self_enhance_detector/rtts/tood_r50_base_loss.py      work_dirs/work_dirs/self_enhance_light/rtts/tood/base_loss --cfg-options dist_params.port=1666
 
 MASTER_PORT=7483  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det rtts4 configs/detection/self_enhance_detector/rtts/tood_r50_no_loss.py      work_dirs/work_dirs/self_enhance_light/rtts/tood/no_loss --cfg-options dist_params.port=1666
+
+
+# exp2 faster loss ab
+MASTER_PORT=9183  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det urpc1 configs/detection/self_enhance_detector/exp_2_ab_faster_loss/faster_r50_fft_loss.py           work_dirs/work_dirs/self_enhance_light/exp2_ab_faster_loss/fft_los --cfg-options dist_params.port=1666
+
+MASTER_PORT=8483  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det urpc2 configs/detection/self_enhance_detector/exp_2_ab_faster_loss/faster_r50_spactial_loss.py      work_dirs/work_dirs/self_enhance_light/exp2_ab_faster_loss/spactial_loss --cfg-options dist_params.port=1666
+
+MASTER_PORT=1318  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det urpc3 configs/detection/self_enhance_detector/exp_2_ab_faster_loss/faster_r50_struc_loss.py         work_dirs/work_dirs/self_enhance_light/exp2_ab_faster_loss/struc_loss   --cfg-options dist_params.port=1666
+
+MASTER_PORT=2617  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det urpc4 configs/detection/self_enhance_detector/exp_2_ab_faster_loss/faster_r50_tv_loss.py            work_dirs/work_dirs/self_enhance_light/exp2_ab_faster_loss/tv_loss --cfg-options dist_params.port=1666
+
+MASTER_PORT=3183  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det urpc5 configs/detection/self_enhance_detector/exp_2_ab_faster_loss/faster_r50_with_fft_loss.py      work_dirs/work_dirs/self_enhance_light/exp2_ab_faster_loss/with_fft_loss --cfg-options dist_params.port=1666
+
+MASTER_PORT=7483  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det urpc6 configs/detection/self_enhance_detector/exp_2_ab_faster_loss/faster_r50_with_struc_loss.py    work_dirs/work_dirs/self_enhance_light/exp2_ab_faster_loss/with_struc_loss --cfg-options dist_params.port=1666
+
+# exp2 retina loss ab
+MASTER_PORT=9321  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det urpc_r1 configs/detection/self_enhance_detector/exp_2_ab_retina_loss/retina_r50_fft_loss.py           work_dirs/work_dirs/self_enhance_light/exp2_ab_retina_loss/fft_los --cfg-options dist_params.port=1666
+
+MASTER_PORT=8186  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det urpc_r2 configs/detection/self_enhance_detector/exp_2_ab_retina_loss/retina_r50_spactial_loss.py      work_dirs/work_dirs/self_enhance_light/exp2_ab_retina_loss/spactial_loss --cfg-options dist_params.port=1666
+
+MASTER_PORT=3138  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det urpc_r3 configs/detection/self_enhance_detector/exp_2_ab_retina_loss/retina_r50_struc_loss.py         work_dirs/work_dirs/self_enhance_light/exp2_ab_retina_loss/struc_loss   --cfg-options dist_params.port=1666
+
+MASTER_PORT=2917  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det urpc_r4 configs/detection/self_enhance_detector/exp_2_ab_retina_loss/retina_r50_tv_loss.py            work_dirs/work_dirs/self_enhance_light/exp2_ab_retina_loss/tv_loss --cfg-options dist_params.port=1666
+
+MASTER_PORT=3347  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det urpc_r5 configs/detection/self_enhance_detector/exp_2_ab_retina_loss/retina_r50_with_fft_loss.py      work_dirs/work_dirs/self_enhance_light/exp2_ab_retina_loss/with_fft_loss --cfg-options dist_params.port=1666
+
+MASTER_PORT=1962  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det urpc_r6 configs/detection/self_enhance_detector/exp_2_ab_retina_loss/retina_r50_with_struc_loss.py    work_dirs/work_dirs/self_enhance_light/exp2_ab_retina_loss/with_struc_loss --cfg-options dist_params.port=1666
