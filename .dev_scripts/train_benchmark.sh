@@ -89,10 +89,10 @@ MASTER_PORT=8483  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det urpc4 c
 
 
 
-MASTER_PORT=4318  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det rtts1 configs/detection/self_enhance_detector/rtts/atss_r50_base_loss.py    work_dirs/work_dirs/self_enhance_light/rtts/atts/base_loss   --cfg-options dist_params.port=1666
+MASTER_PORT=1318  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det rtts1 configs/detection/self_enhance_detector/rtts/atss_r50_base_loss.py    work_dirs/work_dirs/self_enhance_light/rtts/atts/base_loss   --cfg-options dist_params.port=1666
 
-MASTER_PORT=4617  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det rtts2 configs/detection/self_enhance_detector/rtts/atss_r50_no_loss.py      work_dirs/work_dirs/self_enhance_light/rtts/atts/no_loss --cfg-options dist_params.port=1666
+MASTER_PORT=2617  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det rtts2 configs/detection/self_enhance_detector/rtts/atss_r50_no_loss.py      work_dirs/work_dirs/self_enhance_light/rtts/atts/no_loss --cfg-options dist_params.port=1666
 
-MASTER_PORT=8183  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det rtts3 configs/detection/self_enhance_detector/rtts/tood_r50_base_loss.py      work_dirs/work_dirs/self_enhance_light/rtts/tood/base_loss --cfg-options dist_params.port=1666
+MASTER_PORT=3183  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det rtts3 configs/detection/self_enhance_detector/rtts/tood_r50_base_loss.py      work_dirs/work_dirs/self_enhance_light/rtts/tood/base_loss --cfg-options dist_params.port=1666
 
-MASTER_PORT=8483  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det rtts4 configs/detection/self_enhance_detector/rtts/tood_r50_no_loss.py      work_dirs/work_dirs/self_enhance_light/rtts/tood/no_loss --cfg-options dist_params.port=1666
+MASTER_PORT=7483  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det rtts4 configs/detection/self_enhance_detector/rtts/tood_r50_no_loss.py      work_dirs/work_dirs/self_enhance_light/rtts/tood/no_loss --cfg-options dist_params.port=1666

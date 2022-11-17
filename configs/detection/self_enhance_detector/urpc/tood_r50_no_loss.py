@@ -1,6 +1,6 @@
 _base_ = [
     '../base_editor/self_enhance_no_loss.py',
-    '../base_detector/tood_fpn_1x_urpc2020.py.py'
+    '../base_detector/tood_fpn_1x_urpc2020.py'
 ]
 
 model = dict(
