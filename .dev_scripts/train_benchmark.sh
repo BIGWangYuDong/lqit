@@ -123,3 +123,5 @@ MASTER_PORT=2917  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det urpc_r4
 MASTER_PORT=3347  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det urpc_r5 configs/detection/self_enhance_detector/exp_2_ab_retina_loss/retina_r50_with_fft_loss.py      work_dirs/work_dirs/self_enhance_light/exp2_ab_retina_loss/with_fft_loss --cfg-options dist_params.port=1666
 
 MASTER_PORT=1962  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det urpc_r6 configs/detection/self_enhance_detector/exp_2_ab_retina_loss/retina_r50_with_struc_loss.py    work_dirs/work_dirs/self_enhance_light/exp2_ab_retina_loss/with_struc_loss --cfg-options dist_params.port=1666
+
+SRUN_ARGS='--quotatype=auto'

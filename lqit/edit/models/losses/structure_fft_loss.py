@@ -127,7 +127,7 @@ class HighPassFFTLoss(StructureFFTLoss):
         channel_img_list = []
         for i in range(img.size(0)):
             channel_img = img[i, ...]
-            f = torch.fft.fft2(channel_img)
+            f = torch.fft.fft2(channel_img, norm='ortho')
             fshift = torch.fft.fftshift(f)
             filter_fshift = fshift * mask
 
