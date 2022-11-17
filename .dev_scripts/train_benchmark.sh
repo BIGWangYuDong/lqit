@@ -76,3 +76,23 @@ MASTER_PORT=1235 SRUN_ARGS='--quotatype=auto' GPUS=4  GPUS_PER_NODE=4  ./tools/s
 MASTER_PORT=1238 SRUN_ARGS='--quotatype=auto' GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det retina_no_loss configs/detection/self_enhance_detector/urpc/retinanet_r50_base_loss_detach.py      work_dirs/work_dirs/self_enhance_light/urpc/retinanet/base_loss_detach --cfg-options dist_params.port=1666
 
 MASTER_PORT=2331 SRUN_ARGS='--quotatype=auto' GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det retina_loss_detach configs/detection/self_enhance_detector/urpc/retinanet_r50_no_loss.py      work_dirs/work_dirs/self_enhance_light/urpc/retinanet/no_loss --cfg-options dist_params.port=1666
+
+
+## exp 2
+MASTER_PORT=4318  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det urpc1 configs/detection/self_enhance_detector/urpc/atss_r50_base_loss.py    work_dirs/work_dirs/self_enhance_light/urpc/atts/base_loss   --cfg-options dist_params.port=1666
+
+MASTER_PORT=4617  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det urpc2 configs/detection/self_enhance_detector/urpc/atss_r50_no_loss.py      work_dirs/work_dirs/self_enhance_light/urpc/atts/no_loss --cfg-options dist_params.port=1666
+
+MASTER_PORT=8183  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det urpc3 configs/detection/self_enhance_detector/urpc/tood_r50_base_loss.py      work_dirs/work_dirs/self_enhance_light/urpc/tood/base_loss --cfg-options dist_params.port=1666
+
+MASTER_PORT=8483  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det urpc4 configs/detection/self_enhance_detector/urpc/tood_r50_no_loss.py      work_dirs/work_dirs/self_enhance_light/urpc/tood/no_loss --cfg-options dist_params.port=1666
+
+
+
+MASTER_PORT=4318  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det rtts1 configs/detection/self_enhance_detector/rtts/atss_r50_base_loss.py    work_dirs/work_dirs/self_enhance_light/rtts/atts/base_loss   --cfg-options dist_params.port=1666
+
+MASTER_PORT=4617  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det rtts2 configs/detection/self_enhance_detector/rtts/atss_r50_no_loss.py      work_dirs/work_dirs/self_enhance_light/rtts/atts/no_loss --cfg-options dist_params.port=1666
+
+MASTER_PORT=8183  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det rtts3 configs/detection/self_enhance_detector/rtts/tood_r50_base_loss.py      work_dirs/work_dirs/self_enhance_light/rtts/tood/base_loss --cfg-options dist_params.port=1666
+
+MASTER_PORT=8483  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det rtts4 configs/detection/self_enhance_detector/rtts/tood_r50_no_loss.py      work_dirs/work_dirs/self_enhance_light/rtts/tood/no_loss --cfg-options dist_params.port=1666
