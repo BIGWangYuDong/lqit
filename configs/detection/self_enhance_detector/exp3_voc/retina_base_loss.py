@@ -1,4 +1,4 @@
-_base_ = ['../base_editor/self_enhance_fft_loss.py', './base_retina.py']
+_base_ = ['../base_editor/self_enhance_base_loss.py', './base_retina.py']
 
 model = dict(
     _delete_=True,
