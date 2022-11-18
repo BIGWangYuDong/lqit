@@ -13,6 +13,8 @@ class StructureFFTLoss(nn.Module):
                  radius: int = 8,
                  shape: str = 'cycle',
                  channel_mean: bool = False,
+                 pred_fft: bool = False,
+                 loss_type: str = 'mse',
                  loss_weight=1.0):
         super().__init__()
         if shape == 'cycle':
@@ -22,8 +24,12 @@ class StructureFFTLoss(nn.Module):
         else:
             raise NotImplementedError('Only support `cycle` and `square`, '
                                       f'but got {shape}')
+
+        assert loss_type in ['l1', 'mse']
+        self.loss_type = loss_type
         self.channel_mean = channel_mean
         self.radius = radius
+        self.pred_fft = pred_fft
         self.loss_weight = loss_weight
 
     def _cycle_mask(self, radius):
@@ -72,14 +78,25 @@ class StructureFFTLoss(nn.Module):
             no_padding_pred = _pred[:, :h, :w]
             no_padding_target = _target[:, :h, :w]
             mask = self._get_mask(no_padding_pred)
-            high_pass_pred = self.get_high_pass_img(no_padding_pred, mask)
+
             high_pass_target = self.get_high_pass_img(no_padding_target, mask)
+            if self.pred_fft:
+                high_pass_pred = self.get_high_pass_img(no_padding_pred, mask)
+            else:
+                high_pass_pred = pred
 
             norm_high_pass_pred = high_pass_pred / 255
             norm_high_pass_target = high_pass_target / 255
-
-            loss = F.l1_loss(
-                norm_high_pass_pred, norm_high_pass_target, reduction='mean')
+            if self.loss_type == 'l1':
+                loss = F.l1_loss(
+                    norm_high_pass_pred,
+                    norm_high_pass_target,
+                    reduction='mean')
+            else:
+                loss = F.mse_loss(
+                    norm_high_pass_pred,
+                    norm_high_pass_target,
+                    reduction='mean')
             losses.append(loss)
         total_loss = sum(_loss.mean() for _loss in losses)
         return total_loss * self.loss_weight
