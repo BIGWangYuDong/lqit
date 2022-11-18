@@ -132,3 +132,12 @@ SRUN_ARGS='--quotatype=auto'
 SRUN_ARGS='--quotatype=auto' MASTER_PORT=3347  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det urpc_r5 configs/detection/self_enhance_detector/exp2_atss_ab_loss/atss_r50_base_loss.py      work_dirs/work_dirs/self_enhance_light/exp2_atss_ab_loss/base_loss --cfg-options dist_params.port=1666
 
 SRUN_ARGS='--quotatype=auto' MASTER_PORT=1962  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det urpc_r6 configs/detection/self_enhance_detector/exp2_atss_ab_loss/atss_r50_with_struc_loss.py    work_dirs/work_dirs/self_enhance_light/exp2_atss_ab_loss/with_struc_loss --cfg-options dist_params.port=1666
+
+# voc
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=7127  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det voc_f   configs/detection/self_enhance_detector/exp3_voc/base_faster.py         work_dirs/work_dirs/self_enhance_light/exp3_voc/base_faster --cfg-options dist_params.port=1666
+
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=1370  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det voc_r   configs/detection/self_enhance_detector/exp3_voc/base_retina.py         work_dirs/work_dirs/self_enhance_light/exp3_voc/base_retina --cfg-options dist_params.port=1666
+
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=4931  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det voc_f_1 configs/detection/self_enhance_detector/exp3_voc/faster_base_loss.py    work_dirs/work_dirs/self_enhance_light/exp3_voc/faster_base_loss --cfg-options dist_params.port=1666
+
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=6128  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det voc_r_1 configs/detection/self_enhance_detector/exp3_voc/retina_base_loss.py    work_dirs/work_dirs/self_enhance_light/exp3_voc/retina_base_loss --cfg-options dist_params.port=1666
