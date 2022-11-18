@@ -10,13 +10,15 @@ from .utils import mask_reduce_loss
 class StructureFFTLoss(nn.Module):
 
     def __init__(self,
-                 radius: int = 8,
+                 radius: int = 64,
+                 pass_type: str = 'high',
                  shape: str = 'cycle',
                  channel_mean: bool = False,
-                 pred_fft: bool = False,
                  loss_type: str = 'mse',
                  loss_weight=1.0):
         super().__init__()
+        assert pass_type in ['high', 'low']
+        self.pass_type = pass_type
         if shape == 'cycle':
             self.center_mask = self._cycle_mask(radius)
         elif shape == 'square':
@@ -29,7 +31,6 @@ class StructureFFTLoss(nn.Module):
         self.loss_type = loss_type
         self.channel_mean = channel_mean
         self.radius = radius
-        self.pred_fft = pred_fft
         self.loss_weight = loss_weight
 
     def _cycle_mask(self, radius):
@@ -52,7 +53,8 @@ class StructureFFTLoss(nn.Module):
 
         mask[y_c - self.radius:y_c + self.radius,
              x_c - self.radius:x_c + self.radius] = center_mask
-        mask = ~mask
+        if self.pass_type == 'high':
+            mask = ~mask
         return mask
 
     def forward(self, pred, target, batch_img_metas, **kwargs):
@@ -79,12 +81,8 @@ class StructureFFTLoss(nn.Module):
             no_padding_target = _target[:, :h, :w]
             mask = self._get_mask(no_padding_pred)
 
-            high_pass_target = self.get_high_pass_img(no_padding_target, mask)
-            if self.pred_fft:
-                high_pass_pred = self.get_high_pass_img(no_padding_pred, mask)
-            else:
-                high_pass_pred = no_padding_pred
-
+            high_pass_target = self.get_pass_img(no_padding_target, mask)
+            high_pass_pred = self.get_pass_img(no_padding_pred, mask)
             norm_high_pass_pred = high_pass_pred / 255
             norm_high_pass_target = high_pass_target / 255
             if self.loss_type == 'l1':
@@ -102,7 +100,7 @@ class StructureFFTLoss(nn.Module):
         return total_loss * self.loss_weight
 
     @staticmethod
-    def get_high_pass_img(img, mask):
+    def get_pass_img(img, mask):
         channel_img_list = []
         for i in range(img.size(0)):
             channel_img = img[i, ...]
