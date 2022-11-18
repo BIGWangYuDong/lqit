@@ -138,7 +138,6 @@ class HighPassFFTLoss(StructureFFTLoss):
     def fft_loss(self, pred, target, weight=None, reduction='mean'):
         pred_real, pred_imaginary = self.get_real(pred)
         gt_real, gt_imaginary = self.get_real(target)
-
         real_loss = torch.pow((pred_real - gt_real), exponent=2)
         imaginary_loss = torch.pow((pred_imaginary - gt_imaginary), exponent=2)
         loss = torch.sqrt((real_loss + imaginary_loss) + 1e-10)
@@ -146,6 +145,22 @@ class HighPassFFTLoss(StructureFFTLoss):
             assert weight.ndim == loss.ndim
             assert len(weight) == len(pred)
         loss = mask_reduce_loss(loss, weight=weight, reduction=reduction)
+        return loss
+
+    def fft_domain_loss(self, pred, target, *args, **kwargs):
+        pred_real, pred_imaginary = self.get_real(pred)
+        gt_real, gt_imaginary = self.get_real(target)
+
+        pred_amp = torch.sqrt(pred_real**2 + pred_imaginary**2 + 1e-10)
+        pred_pha = torch.atan2(pred_imaginary, pred_real)
+
+        gt_amp = torch.sqrt(gt_real**2 + gt_imaginary**2 + 1e-10)
+        gt_pha = torch.atan2(gt_imaginary, gt_real)
+
+        loss_amp = F.l1_loss(pred_amp, gt_amp)
+        loss_pha = F.l1_loss(pred_pha, gt_pha)
+
+        loss = loss_amp + loss_pha
         return loss
 
     def forward(self, pred, target, batch_img_metas, weight=None, **kwargs):
