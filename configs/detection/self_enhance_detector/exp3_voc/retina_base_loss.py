@@ -1,32 +1,26 @@
+_base_ = ['../base_editor/self_enhance_fft_loss.py', './base_retina.py']
+
+model = dict(
+    _delete_=True,
+    type='SelfEnhanceDetector',
+    detector={{_base_.model}},
+    enhance_model={{_base_.enhance_model}})
+
 # dataset settings
-dataset_type = 'VOCDataset'
-data_root = 'data/VOCdevkit/'
-
-# file_client_args = dict(
-#     backend='petrel',
-#     path_mapping=dict({
-#         './data/': 's3://openmmlab/datasets/detection/',
-#         'data/': 's3://openmmlab/datasets/detection/'
-#     }))
-file_client_args = dict(backend='disk')
-
 train_pipeline = [
-    dict(type='LoadImageFromFile', file_client_args=file_client_args),
+    dict(
+        type='LoadImageFromFile',
+        file_client_args={{_base_.file_client_args}}),
     dict(type='LoadAnnotations', with_bbox=True),
     dict(type='Resize', scale=(1000, 600), keep_ratio=True),
     dict(type='RandomFlip', prob=0.5),
-    dict(type='PackDetInputs')
+    dict(type='lqit.SetInputImageAsGT'),
+    dict(type='lqit.PackInputs')
 ]
-test_pipeline = [
-    dict(type='LoadImageFromFile', file_client_args=file_client_args),
-    dict(type='Resize', scale=(1000, 600), keep_ratio=True),
-    # avoid bboxes being resized
-    dict(type='LoadAnnotations', with_bbox=True),
-    dict(
-        type='PackDetInputs',
-        meta_keys=('img_id', 'img_path', 'ori_shape', 'img_shape',
-                   'scale_factor'))
-]
+
+dataset_type = 'VOCDataset'
+data_root = 'data/VOCdevkit/'
+
 train_dataloader = dict(
     batch_size=2,
     num_workers=2,
@@ -61,22 +55,7 @@ train_dataloader = dict(
                     pipeline=train_pipeline)
             ])))
 
-val_dataloader = dict(
-    batch_size=1,
-    num_workers=2,
-    persistent_workers=True,
-    drop_last=False,
-    sampler=dict(type='DefaultSampler', shuffle=False),
-    dataset=dict(
-        type=dataset_type,
-        data_root=data_root,
-        ann_file='VOC2007/ImageSets/Main/test.txt',
-        data_prefix=dict(sub_data_root='VOC2007/'),
-        test_mode=True,
-        pipeline=test_pipeline))
-test_dataloader = val_dataloader
-
-# Pascal VOC2007 uses `11points` as default evaluate mode, while PASCAL
-# VOC2012 defaults to use 'area'.
-val_evaluator = dict(type='VOCMetric', metric='mAP', eval_mode='11points')
-test_evaluator = val_evaluator
+model_wrapper_cfg = dict(
+    type='SelfEnhanceModelDDP',
+    broadcast_buffers=False,
+    find_unused_parameters=False)
