@@ -83,7 +83,7 @@ class StructureFFTLoss(nn.Module):
             if self.pred_fft:
                 high_pass_pred = self.get_high_pass_img(no_padding_pred, mask)
             else:
-                high_pass_pred = pred
+                high_pass_pred = no_padding_pred
 
             norm_high_pass_pred = high_pass_pred / 255
             norm_high_pass_target = high_pass_target / 255
