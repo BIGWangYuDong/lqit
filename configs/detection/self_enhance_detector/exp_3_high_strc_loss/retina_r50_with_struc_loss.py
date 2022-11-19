@@ -1,5 +1,5 @@
 _base_ = [
-    '../base_editor/self_enhance_with_high_strcloss.py',
+    '../base_editor/self_enhance_with_high_strcloss_gf.py',
     '../base_detector/retinanet_r50_fpn_1x_urpc2020.py'
 ]
 
