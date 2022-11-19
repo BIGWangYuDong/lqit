@@ -96,6 +96,7 @@ class StructureFFTLoss(nn.Module):
                 high_pass_target = self.guid_filter(
                     high_pass_target[None, ...], no_padding_target[None,
                                                                    ...])[0]
+                high_pass_target = high_pass_target.clip_(0, 255)
 
             high_pass_pred = self.get_pass_img(no_padding_pred, mask)
             norm_high_pass_pred = high_pass_pred / 255
@@ -157,7 +158,7 @@ class GuidedFilter2d(nn.Module):
                                                       self.fast_s)
                     channel_result.append(result)
 
-                results = torch.cat(channel_result, dim=1).clamp_(0, 255)
+                results = torch.cat(channel_result, dim=1)
                 return results
             else:
                 return self.guidedfilter2d_color(guide, x, self.r, self.eps,
