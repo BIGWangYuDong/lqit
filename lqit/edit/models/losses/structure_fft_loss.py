@@ -137,16 +137,31 @@ class GuidedFilter2d(nn.Module):
     def __init__(self,
                  radius: int = 30,
                  eps: float = 1e-4,
-                 fast_s: Optional[int] = None):
+                 fast_s: Optional[int] = None,
+                 channel_wise: bool = True):
         super().__init__()
         self.r = radius
         self.eps = eps
         self.fast_s = fast_s
+        self.channel_wise = channel_wise
 
     def forward(self, x, guide):
         if guide.shape[1] == 3:
-            return self.guidedfilter2d_color(guide, x, self.r, self.eps,
-                                             self.fast_s)
+            if self.channel_wise:
+                assert x.shape == guide.shape
+                channel_result = []
+                for i in range(3):
+                    result = self.guidedfilter2d_gray(guide[:, i:i + 1, ...],
+                                                      x[:, i:i + 1,
+                                                        ...], self.r, self.eps,
+                                                      self.fast_s)
+                    channel_result.append(result)
+
+                results = torch.cat(channel_result, dim=1).clamp_(0, 255)
+                return results
+            else:
+                return self.guidedfilter2d_color(guide, x, self.r, self.eps,
+                                                 self.fast_s)
         elif guide.shape[1] == 1:
             return self.guidedfilter2d_gray(guide, x, self.r, self.eps,
                                             self.fast_s)
