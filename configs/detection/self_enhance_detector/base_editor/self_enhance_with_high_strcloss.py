@@ -31,6 +31,6 @@ enhance_model = dict(
             type='StructureFFTLoss',
             radius=8,
             pass_type='high',
-            channel_mean=True,
+            channel_mean=False,
             loss_type='mse',
             loss_weight=0.2)))

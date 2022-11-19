@@ -172,14 +172,25 @@ SRUN_ARGS='--quotatype=auto' MASTER_PORT=1373  GPUS=4  GPUS_PER_NODE=4  ./tools/
 
 # try high pass
 SRUN_ARGS='--quotatype=auto' MASTER_PORT=7127  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det faster   configs/detection/self_enhance_detector/exp_3_high_strc_loss/faster_r50_with_struc_loss.py         work_dirs/work_dirs/self_enhance_light/exp_3_high_strc_loss/faster_r8_high     --cfg-options dist_params.port=1666
+
 SRUN_ARGS='--quotatype=auto' MASTER_PORT=1370  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det faster   configs/detection/self_enhance_detector/exp_3_high_strc_loss/faster_r50_with_struc_loss.py         work_dirs/work_dirs/self_enhance_light/exp_3_high_strc_loss/faster_r8_high_cm  --cfg-options dist_params.port=1666 model.enhance_model.generator.structure_loss.channel_mean=True
+
 SRUN_ARGS='--quotatype=auto' MASTER_PORT=1093  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det faster   configs/detection/self_enhance_detector/exp_3_high_strc_loss/faster_r50_with_struc_loss.py         work_dirs/work_dirs/self_enhance_light/exp_3_high_strc_loss/faster_r4_high     --cfg-options dist_params.port=1666 model.enhance_model.generator.structure_loss.radius=4
+
 SRUN_ARGS='--quotatype=auto' MASTER_PORT=2831  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det faster   configs/detection/self_enhance_detector/exp_3_high_strc_loss/faster_r50_with_struc_loss.py         work_dirs/work_dirs/self_enhance_light/exp_3_high_strc_loss/faster_r16_high    --cfg-options dist_params.port=1666 model.enhance_model.generator.structure_loss.radius=16
+
 SRUN_ARGS='--quotatype=auto' MASTER_PORT=3161  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det faster   configs/detection/self_enhance_detector/exp_3_high_strc_loss/faster_r50_with_struc_loss.py         work_dirs/work_dirs/self_enhance_light/exp_3_high_strc_loss/faster_r4_high_cm  --cfg-options dist_params.port=1666 model.enhance_model.generator.structure_loss.radius=4 model.enhance_model.generator.structure_loss.channel_mean=True
+
 SRUN_ARGS='--quotatype=auto' MASTER_PORT=2347  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det faster   configs/detection/self_enhance_detector/exp_3_high_strc_loss/faster_r50_with_struc_loss.py         work_dirs/work_dirs/self_enhance_light/exp_3_high_strc_loss/faster_r16_high_cm --cfg-options dist_params.port=1666 model.enhance_model.generator.structure_loss.radius=16 model.enhance_model.generator.structure_loss.channel_mean=True
+
 SRUN_ARGS='--quotatype=auto' MASTER_PORT=4931  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det retina   configs/detection/self_enhance_detector/exp_3_high_strc_loss/retina_r50_with_struc_loss.py         work_dirs/work_dirs/self_enhance_light/exp_3_high_strc_loss/retina_r8_high      --cfg-options dist_params.port=1666
+
 SRUN_ARGS='--quotatype=auto' MASTER_PORT=6128  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det retina   configs/detection/self_enhance_detector/exp_3_high_strc_loss/retina_r50_with_struc_loss.py         work_dirs/work_dirs/self_enhance_light/exp_3_high_strc_loss/retina_r8_high_cm   --cfg-options dist_params.port=1666 model.enhance_model.generator.structure_loss.channel_mean=True
+
 SRUN_ARGS='--quotatype=auto' MASTER_PORT=4931  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det retina   configs/detection/self_enhance_detector/exp_3_high_strc_loss/retina_r50_with_struc_loss.py         work_dirs/work_dirs/self_enhance_light/exp_3_high_strc_loss/retina_r4_high      --cfg-options dist_params.port=1666 model.enhance_model.generator.structure_loss.radius=4
+
 SRUN_ARGS='--quotatype=auto' MASTER_PORT=6128  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det retina   configs/detection/self_enhance_detector/exp_3_high_strc_loss/retina_r50_with_struc_loss.py         work_dirs/work_dirs/self_enhance_light/exp_3_high_strc_loss/retina_r16_high     --cfg-options dist_params.port=1666 model.enhance_model.generator.structure_loss.radius=16
+
 SRUN_ARGS='--quotatype=auto' MASTER_PORT=1842  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det retina   configs/detection/self_enhance_detector/exp_3_high_strc_loss/retina_r50_with_struc_loss.py         work_dirs/work_dirs/self_enhance_light/exp_3_high_strc_loss/retina_r4_high_cm   --cfg-options dist_params.port=1666 model.enhance_model.generator.structure_loss.radius=4 model.enhance_model.generator.structure_loss.channel_mean=True
+
 SRUN_ARGS='--quotatype=auto' MASTER_PORT=1373  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det retina   configs/detection/self_enhance_detector/exp_3_low_strc_loss/retina_r50_with_struc_loss.py          work_dirs/work_dirs/self_enhance_light/exp_3_high_strc_loss/retina_r16_high_cm  --cfg-options dist_params.port=1666 model.enhance_model.generator.structure_loss.radius=16 model.enhance_model.generator.structure_loss.channel_mean=True
