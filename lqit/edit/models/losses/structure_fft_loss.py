@@ -96,7 +96,7 @@ class StructureFFTLoss(nn.Module):
                 high_pass_target = self.guid_filter(
                     high_pass_target[None, ...], no_padding_target[None,
                                                                    ...])[0]
-                high_pass_target = high_pass_target.clip_(0, 255)
+                high_pass_target = high_pass_target.clip_(min=1e-7, max=255)
 
             high_pass_pred = self.get_pass_img(no_padding_pred, mask)
             norm_high_pass_pred = high_pass_pred / 255
@@ -126,7 +126,7 @@ class StructureFFTLoss(nn.Module):
 
             ishift = torch.fft.ifftshift(filter_fshift)
             high_pass_img = torch.fft.ifft2(ishift)
-            high_pass_img = torch.abs(high_pass_img).clip_(min=0, max=255)
+            high_pass_img = torch.abs(high_pass_img).clip_(min=1e-7, max=255)
             channel_img_list.append(high_pass_img[None, ...])
         result_img = torch.cat(channel_img_list, dim=0)
         return result_img
