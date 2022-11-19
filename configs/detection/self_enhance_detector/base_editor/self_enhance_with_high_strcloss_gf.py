@@ -34,5 +34,5 @@ enhance_model = dict(
             channel_mean=False,
             loss_type='mse',
             guid_filter=dict(
-                type='GuidedFilter2d', radius=32, eps=1e-4, fast_s=2),
-            loss_weight=0.2)))
+                type='GuidedFilter2d', radius=30, eps=1e-4, fast_s=2),
+            loss_weight=0.1)))
