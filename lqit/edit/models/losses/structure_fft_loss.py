@@ -101,6 +101,26 @@ class StructureFFTLoss(nn.Module):
             high_pass_pred = self.get_pass_img(no_padding_pred, mask)
             norm_high_pass_pred = high_pass_pred / 255
             norm_high_pass_target = high_pass_target / 255
+
+            # TODO: Check if here got NaN of inf
+            nan_number1 = torch.where(torch.isnan(norm_high_pass_pred) == 1)[0]
+            nan_number2 = torch.where(
+                torch.isnan(norm_high_pass_target) == 1)[0]
+            if len(nan_number1) > 0 or len(nan_number2) > 0:
+                print('pred is nan', nan_number1)
+                print('target is nan', nan_number2)
+                norm_high_pass_pred[torch.isnan(norm_high_pass_pred)] = 1.0
+                norm_high_pass_target[torch.isnan(norm_high_pass_target)] = 1.0
+            inf_number1 = torch.where(torch.isinf(norm_high_pass_pred) == 1)[0]
+            inf_number2 = torch.where(
+                torch.isinf(norm_high_pass_target) == 1)[0]
+
+            if len(inf_number1) > 0 or len(inf_number2) > 0:
+                print('pred is inf', nan_number1)
+                print('target is inf', nan_number2)
+                norm_high_pass_pred[torch.isinf(norm_high_pass_pred)] = 0.0
+                norm_high_pass_target[torch.isinf(norm_high_pass_target)] = 0.0
+
             if self.loss_type == 'l1':
                 loss = F.l1_loss(
                     norm_high_pass_pred,
