@@ -266,3 +266,22 @@ SRUN_ARGS='--quotatype=auto' MASTER_PORT=2392  GPUS=4  GPUS_PER_NODE=4  ./tools/
 SRUN_ARGS='--quotatype=auto' MASTER_PORT=7362  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det tood_rtss   configs/detection/self_enhance_detector/urpc_with_strucloss/tood_r50_with_struc_loss.py         work_dirs/work_dirs/self_enhance_light/urpc_with_strucloss/tood_r4_high_gh    --cfg-options dist_params.port=1666
 
 SRUN_ARGS='--quotatype=auto' MASTER_PORT=5932  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det tood_rtss   configs/detection/self_enhance_detector/urpc_with_strucloss/tood_r50_with_struc_loss.py         work_dirs/work_dirs/self_enhance_light/urpc_with_strucloss/tood_r4_high_cm_gh  --cfg-options dist_params.port=1666 model.enhance_model.generator.structure_loss.channel_mean=True
+
+
+# exp 4
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=1325  ./tools/slurm_train.sh mm_det voc_f_base   configs/detection/self_enhance_detector/exp_4_extra_experiment/voc_base_faster.py                   work_dirs/work_dirs/self_enhance_light/voc/voc_base_faster              --cfg-options randomness.seed=None
+
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=1267  ./tools/slurm_train.sh mm_det voc_r_base   configs/detection/self_enhance_detector/exp_4_extra_experiment/voc_base_retina.py                   work_dirs/work_dirs/self_enhance_light/voc/voc_base_retina              --cfg-options randomness.seed=None
+
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=4792  ./tools/slurm_train.sh mm_det voc_f_se     configs/detection/self_enhance_detector/exp_4_extra_experiment/voc_faster_with_strucloss.py         work_dirs/work_dirs/self_enhance_light/voc/voc_faster_with_strucloss    --cfg-options randomness.seed=None
+
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=7093  ./tools/slurm_train.sh mm_det voc_r_se     configs/detection/self_enhance_detector/exp_4_extra_experiment/voc_retina_with_strucloss.py         work_dirs/work_dirs/self_enhance_light/voc/voc_retina_with_strucloss    --cfg-options randomness.seed=None
+
+
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=7127  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det faster_base     configs/detection/self_enhance_detector/exp_4_extra_experiment/urpc_faster_r50_base_loss.py          work_dirs/work_dirs/self_enhance_light/exp_4_extra_experiment/urpc_faster_r50_base_loss          --cfg-options randomness.seed=None
+
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=1370  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det faster_struc    configs/detection/self_enhance_detector/exp_4_extra_experiment/urpc_faster_r50_struc_loss.py         work_dirs/work_dirs/self_enhance_light/exp_4_extra_experiment/urpc_faster_r50_struc_loss         --cfg-options randomness.seed=None
+
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=7127  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det faster_wstruc   configs/detection/self_enhance_detector/exp_4_extra_experiment/urpc_faster_r50_with_struc_loss.py    work_dirs/work_dirs/self_enhance_light/exp_4_extra_experiment/urpc_faster_r50_with_struc_loss    --cfg-options randomness.seed=None
+
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=1370  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det retina_struc    configs/detection/self_enhance_detector/exp_4_extra_experiment/urpc_retina_r50_struc_loss.py         work_dirs/work_dirs/self_enhance_light/exp_4_extra_experiment/urpc_retina_r50_struc_loss         --cfg-options dist_params.port=1666 randomness.seed=None

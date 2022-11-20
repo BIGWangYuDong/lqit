@@ -8,6 +8,10 @@ default_hooks = dict(
     sampler_seed=dict(type='DistSamplerSeedHook'),
     visualization=dict(type='DetVisualizationHook'))
 
+custom_hooks = [
+    dict(type='CheckInvalidLossHook', interval=50, priority='VERY_LOW')
+]
+
 # set seed = 0 as default
 randomness = dict(seed=0, deterministic=False)
 

@@ -26,6 +26,14 @@ enhance_model = dict(
         spacial_pred='structure',
         structure_pred='structure',
         spacial_loss=None,
-        structure_loss=dict(type='StructureFFTLoss', loss_weight=0.2),
+        structure_loss=dict(
+            type='StructureFFTLoss',
+            radius=4,
+            pass_type='high',
+            channel_mean=True,
+            loss_type='mse',
+            guid_filter=dict(
+                type='GuidedFilter2d', radius=32, eps=1e-4, fast_s=2),
+            loss_weight=0.1),
         perceptual_loss=None,
         tv_loss=None))
