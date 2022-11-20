@@ -62,3 +62,9 @@ model_wrapper_cfg = dict(
     type='SelfEnhanceModelDDP',
     broadcast_buffers=False,
     find_unused_parameters=False)
+
+# optimizer
+optim_wrapper = dict(
+    type='OptimWrapper',
+    optimizer=dict(type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0001),
+    clip_grad=dict(max_norm=35, norm_type=2))
