@@ -6,8 +6,7 @@ default_hooks = dict(
     param_scheduler=dict(type='ParamSchedulerHook'),
     checkpoint=dict(type='CheckpointHook', interval=1, max_keep_ckpts=1),
     sampler_seed=dict(type='DistSamplerSeedHook'),
-    visualization=dict(
-        type='lqit.DetEnhanceVisualizationHook', show_in_enhance=True))
+    visualization=dict(type='DetVisualizationHook'))
 
 custom_hooks = [
     dict(type='CheckInvalidLossHook', interval=50, priority='VERY_LOW')
