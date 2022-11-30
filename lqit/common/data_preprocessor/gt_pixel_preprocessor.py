@@ -78,6 +78,10 @@ class GTPixelPreprocessor(ImgDataPreprocessor):
         if norm_input_flag_:
             no_padding_img *= 255
         no_padding_img = no_padding_img.clamp_(0, 255)
+
+        if self._channel_conversion:
+            no_padding_img = no_padding_img[[2, 1, 0], ...]
+
         # TODO: check whether need to move to api or vis hook
         if rescale:
             ori_h, ori_w = img_meta['ori_shape']

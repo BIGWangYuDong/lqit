@@ -312,17 +312,17 @@ class SpatialLoss(nn.Module):
         target_pool = self.pool(target_mean)
         pred_pool = self.pool(pred_mean)
 
-        target_letf = F.conv2d(target_pool, weight_left, padding=1)
+        target_left = F.conv2d(target_pool, weight_left, padding=1)
         target_right = F.conv2d(target_pool, weight_right, padding=1)
         target_up = F.conv2d(target_pool, weight_up, padding=1)
         target_down = F.conv2d(target_pool, weight_down, padding=1)
 
-        pred_letf = F.conv2d(pred_pool, weight_left, padding=1)
+        pred_left = F.conv2d(pred_pool, weight_left, padding=1)
         pred_right = F.conv2d(pred_pool, weight_right, padding=1)
         pred_up = F.conv2d(pred_pool, weight_up, padding=1)
         pred_down = F.conv2d(pred_pool, weight_down, padding=1)
 
-        left = torch.pow(target_letf - pred_letf, 2)
+        left = torch.pow(target_left - pred_left, 2)
         right = torch.pow(target_right - pred_right, 2)
         up = torch.pow(target_up - pred_up, 2)
         down = torch.pow(target_down - pred_down, 2)
