@@ -4,13 +4,14 @@ model = dict(
     type='TwoStageWithEnhanceHead',
     backbone=dict(norm_eval=False),
     enhance_head=dict(
-        type='lqit.BasicEnhanceHead',
+        _scope_='lqit',
+        type='BasicEnhanceHead',
         in_channels=256,
         feat_channels=256,
         num_convs=5,
-        loss_enhance=dict(type='lqit.L1Loss', loss_weight=0.1),
+        loss_enhance=dict(type='L1Loss', loss_weight=0.1),
         gt_preprocessor=dict(
-            type='lqit.GTPixelPreprocessor',
+            type='GTPixelPreprocessor',
             mean=[123.675, 116.28, 103.53],
             std=[58.395, 57.12, 57.375],
             bgr_to_rgb=True,
