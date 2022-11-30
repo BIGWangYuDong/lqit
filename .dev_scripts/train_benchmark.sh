@@ -329,3 +329,7 @@ SRUN_ARGS='--quotatype=auto' MASTER_PORT=2392  GPUS=4  GPUS_PER_NODE=4  ./tools/
 SRUN_ARGS='--quotatype=auto' MASTER_PORT=4792  ./tools/slurm_train.sh mm_det voc_f_se     configs/detection/self_enhance_detector/exp_4_extra_experiment/voc_faster_with_strucloss.py         work_dirs/work_dirs/self_enhance_light/voc/voc_faster_with_strucloss    --cfg-options randomness.seed=None
 
 SRUN_ARGS='--quotatype=auto' MASTER_PORT=7093  ./tools/slurm_train.sh mm_det voc_r_se     configs/detection/self_enhance_detector/exp_4_extra_experiment/voc_retina_with_strucloss.py         work_dirs/work_dirs/self_enhance_light/voc/voc_retina_with_strucloss    --cfg-options randomness.seed=None
+
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=1157  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det faster_wstruc   configs/detection/self_enhance_detector/exp_4_extra_experiment/urpc_faster_r50_with_struc_loss.py    work_dirs/work_dirs/self_enhance_light/exp_4_extra_experiment/urpc_faster_r50_with_struc_loss_tmp    --cfg-options randomness.seed=None
+
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=2157  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det faster_wstruc   configs/detection/self_enhance_detector/exp_4_extra_experiment/urpc_faster_r50_with_struc_loss.py    work_dirs/work_dirs/self_enhance_light/exp_4_extra_experiment/urpc_faster_r50_with_struc_loss_tmp2    --cfg-options randomness.seed=None
