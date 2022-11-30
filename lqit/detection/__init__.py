@@ -18,6 +18,7 @@ if HAS_MMDET:
         f'Please install mmdet>={mmdet_minimum_version}, ' \
         f'<{mmdet_maximum_version}.'
     from .datasets import *  # noqa: F401,F403
+    from .engine import *  # noqa: F401,F403
     from .models import *  # noqa: F401,F403
 else:
     warnings.warn('Please install mmdet to import `lqit.detection`.')
