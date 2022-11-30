@@ -12,7 +12,6 @@ from mmengine.runner import Runner
 from mmengine.utils import mkdir_or_exist
 
 
-# TODO: Need fully check
 @HOOKS.register_module()
 class EnhanceDetVisualizationHook(DetVisualizationHook):
     """Detection and Enhancement Visualization Hook. Used to visualize
@@ -46,6 +45,11 @@ class EnhanceDetVisualizationHook(DetVisualizationHook):
         file_client_args (dict): Arguments to instantiate a FileClient.
             See :class:`mmengine.fileio.FileClient` for details.
             Defaults to ``dict(backend='disk')``.
+        show_on_enhance (bool): Whether show the detection results on the
+            enhanced image. Defaults to False
+        draw_gt (bool): Whether to draw GT DetDataSample. Default to False.
+        draw_pred (bool): Whether to draw Prediction DetDataSample.
+            Defaults to True.
     """
 
     def __init__(self,
@@ -57,7 +61,7 @@ class EnhanceDetVisualizationHook(DetVisualizationHook):
                  test_out_dir: Optional[str] = None,
                  file_client_args: dict = dict(backend='disk'),
                  show_on_enhance: bool = False,
-                 draw_gt: bool = True,
+                 draw_gt: bool = False,
                  draw_pred: bool = True) -> None:
         super().__init__(
             draw=draw,
@@ -98,7 +102,8 @@ class EnhanceDetVisualizationHook(DetVisualizationHook):
         if self.show_on_enhance:
             img = outputs[0].pred_pixel.pred_img
             img = img.cpu().numpy().astype(np.uint8).transpose(1, 2, 0)
-            img = mmcv.imresize(img, size=outputs[0].ori_shape)
+            h, w = outputs[0].ori_shape
+            img = mmcv.imresize(img, size=(w, h))
         else:
             img_bytes = self.file_client.get(img_path)
             img = mmcv.imfrombytes(img_bytes, channel_order='rgb')
@@ -141,8 +146,8 @@ class EnhanceDetVisualizationHook(DetVisualizationHook):
             if self.show_on_enhance:
                 img = data_sample.pred_pixel.pred_img
                 img = img.cpu().numpy().astype(np.uint8).transpose(1, 2, 0)
-                # TODO: Need check
-                img = mmcv.imresize(img, size=data_sample.ori_shape)
+                h, w = data_sample.ori_shape
+                img = mmcv.imresize(img, size=(w, h))
             else:
                 img_bytes = self.file_client.get(img_path)
                 img = mmcv.imfrombytes(img_bytes, channel_order='rgb')
