@@ -18,7 +18,7 @@ LQIT 基于 [PyTorch](https://pytorch.org/) 和 [OpenMMLab 2.0 系列](https://g
 LQIT 依赖于 [PyTorch](https://pytorch.org/), [MMEngine](https://github.com/open-mmlab/mmengine), [MMCV](https://github.com/open-mmlab/mmcv) 和 [MMEval](https://github.com/open-mmlab/mmeval) 。
 它也可以把 [OpenMMLab](https://github.com/open-mmlab) 相关代码库作为三方依赖，例如 [MMDetection](https://github.com/open-mmlab/mmdetection/tree/master) 。
 
-请参考[安装文档](docs/en/get_started.md)进行安装和参考[数据准备](data/README.md)准备数据集。
+请参考[安装文档](docs/zh_cn/get_started.md)进行安装和参考[数据准备](data/README_zh-CN.md)准备数据集。
 
 ## 贡献指南
 
