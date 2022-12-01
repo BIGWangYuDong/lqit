@@ -37,15 +37,13 @@ lqit
 │   │   │   │   ├── Main
 │   │   │   │   │   ├── train.txt
 │   │   │   │   │   ├── val.txt
-│   │   │   │   │   ├── ...
 │   │   │   ├── annotations_xml     # pascal voc style annotations
 │   │   │   │   ├── AM_Bing_211.xml
 │   │   │   │   ├── AM_Bing_217.xml
 │   │   │   │   ├── ...
 │   │   │   ├── annotations_json    # coco style annotations
 │   │   │   │   ├── rtts_train.json
-│   │   │   │   ├── rtts_test.json
-│   │   │   │   ├── ...
+│   │   │   │   ├── rtts_val.json
 │   │   │   ├── JPEGImages
 │   │   │   │   ├── AM_Bing_211.png
 │   │   │   │   ├── AM_Bing_217.png
