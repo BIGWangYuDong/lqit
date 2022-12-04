@@ -1,4 +1,4 @@
-# 对LQIT的贡献
+# 对 LQIT 的贡献
 
 > Modified from [MMCV](https://github.com/open-mmlab/mmcv/blob/master/CONTRIBUTING.md).
 
