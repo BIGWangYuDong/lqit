@@ -2,7 +2,7 @@
 
 <div align="center">
 
-[English](/README.md) | 简体中文
+[English](README.md) | 简体中文
 
 </div>
 
@@ -22,7 +22,7 @@ LQIT 依赖于 [PyTorch](https://pytorch.org/), [MMEngine](https://github.com/op
 
 ## 贡献指南
 
-我们感谢所有的贡献者为改进和提升 LQIT 所作出的努力。请参考[贡献指南](CONTRIBUTING.md)来了解参与项目贡献的相关指引。
+我们感谢所有的贡献者为改进和提升 LQIT 所作出的努力。请参考[贡献指南](CONTRIBUTING_zh-CN.md)来了解参与项目贡献的相关指引。
 
 ## 开源许可证
 

@@ -2,6 +2,8 @@
 
 > Modified from [MMCV](https://github.com/open-mmlab/mmcv/blob/master/CONTRIBUTING.md).
 
+English | [简体中文](CONTRIBUTING_zh-CN.md)
+
 All kinds of contributions are welcome, including but not limited to the following.
 
 **Fix bug**
@@ -39,7 +41,7 @@ Then, you can clone the repositories to local:
 git clone git@github.com:{username}/lqit.git
 ```
 
-After that, you should ddd official repository as the upstream repository
+After that, you should add official repository as the upstream repository
 
 ```bash
 git remote add upstream git@github.com:BIGWangYuDong/lqit.git
@@ -102,8 +104,6 @@ git pull upstream main
 ```
 
 #### 4. Commit the code and pass the unit test
-
-- LQIT introduces mypy to do static type checking to increase the robustness of the code. Therefore, we need to add Type Hints to our code and pass the mypy check. If you are not familiar with Type Hints, you can refer to [this tutorial](https://docs.python.org/3/library/typing.html).
 
 - The committed code should pass through the unit test
 
@@ -200,3 +200,5 @@ The config for a pre-commit hook is stored in [.pre-commit-config](./.pre-commit
    - Prefix: add new feature \[Feature\], fix bug \[Fix\], related to documents \[Docs\], in developing \[WIP\] (which will not be reviewed temporarily)
    - Introduce main changes, results and influences on other modules in short description
    - Associate related issues and pull requests with a milestone
+
+6. If you introduce other third-party libraries, or borrow codes from third-party libraries, please confirm that their licenses are compatible with LQIT, and add `This code is inspired from http://` to the borrowed code
