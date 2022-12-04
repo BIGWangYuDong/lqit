@@ -1,0 +1,2 @@
+mmdet>=3.0.0rc0,<3.1.0
+pycocotools

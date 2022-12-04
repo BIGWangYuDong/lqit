@@ -12,7 +12,6 @@ from mmengine.runner import Runner
 from mmengine.utils import mkdir_or_exist
 
 
-# TODO: Need fully check
 @HOOKS.register_module()
 class EnhanceDetVisualizationHook(DetVisualizationHook):
     """Detection and Enhancement Visualization Hook. Used to visualize
@@ -46,6 +45,11 @@ class EnhanceDetVisualizationHook(DetVisualizationHook):
         file_client_args (dict): Arguments to instantiate a FileClient.
             See :class:`mmengine.fileio.FileClient` for details.
             Defaults to ``dict(backend='disk')``.
+        show_on_enhance (bool): Whether show the detection results on the
+            enhanced image. Defaults to False
+        draw_gt (bool): Whether to draw GT DetDataSample. Default to False.
+        draw_pred (bool): Whether to draw Prediction DetDataSample.
+            Defaults to True.
     """
 
     def __init__(self,
