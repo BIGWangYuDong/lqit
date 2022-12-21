@@ -31,3 +31,12 @@ model_wrapper_cfg = dict(
     type='SelfEnhanceModelDDP',
     broadcast_buffers=False,
     find_unused_parameters=False)
+
+default_hooks = dict(
+    visualization=dict(
+        type='EnhanceDetVisualizationHook',
+        draw=True,
+        test_out_dir='structure_img',
+        show_on_enhance=True,
+        draw_gt=False,
+        draw_pred=True))

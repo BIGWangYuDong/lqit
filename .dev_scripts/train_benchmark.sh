@@ -261,7 +261,7 @@ SRUN_ARGS='--quotatype=auto' MASTER_PORT=7093  GPUS=4  GPUS_PER_NODE=4  ./tools/
 
 SRUN_ARGS='--quotatype=auto' MASTER_PORT=3489  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det retina_rtss   configs/detection/self_enhance_detector/urpc_with_strucloss/retina_r50_with_struc_loss.py         work_dirs/work_dirs/self_enhance_light/urpc_with_strucloss/retina_r4_high_gh     --cfg-options dist_params.port=1666
 
-SRUN_ARGS='--quotatype=auto' MASTER_PORT=2392  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det retina_rtss   configs/detection/self_enhance_detector/urpc_with_strucloss/retina_r50_with_struc_loss.py         work_dirs/work_dirs/self_enhance_light/urpc_with_strucloss/retina_r4_high_cm_gh  --cfg-options dist_params.port=1666 model.enhance_model.generator.structure_loss.channel_mean=True
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=2392  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det retina_rtss   configs/detection/self_enhance_detector/urpc_with_strucloss/retina_r50_with_struc_loss.py         work_dirs/work_dirs/self_enhance_light/urpc_with_strucloss/retina_r4_high_cm_gh  --cfg-options dist_params.port=1666 model.enhance_model.generator.structure_loss.channel_mean=True randomness.seed=None
 
 SRUN_ARGS='--quotatype=auto' MASTER_PORT=7362  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det tood_rtss   configs/detection/self_enhance_detector/urpc_with_strucloss/tood_r50_with_struc_loss.py         work_dirs/work_dirs/self_enhance_light/urpc_with_strucloss/tood_r4_high_gh    --cfg-options dist_params.port=1666
 
