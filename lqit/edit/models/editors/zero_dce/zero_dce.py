@@ -1,4 +1,6 @@
 # Modified from https://github.com/Li-Chongyi/Zero-DCE/blob/master/Zero-DCE_code/model.py  # noqa
+# This work is licensed under Attribution-NonCommercial 4.0 International License.  # noqa
+
 import torch
 import torch.nn as nn
 from mmcv.cnn import ConvModule

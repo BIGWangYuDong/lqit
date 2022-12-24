@@ -1,6 +1,10 @@
 # 低质图像开源工具箱
 
 <div align="center">
+  <img src="resources/lqit-logo.jpg" width="600"/>
+</div>
+
+<div align="center">
 
 [English](README.md) | 简体中文
 
@@ -26,7 +30,7 @@ LQIT 依赖于 [PyTorch](https://pytorch.org/), [MMEngine](https://github.com/op
 
 ## 开源许可证
 
-该项目采用 [Apache 2.0 开源许可证](LICENSE)。
+`LQIT` 采用 [Apache 2.0 开源许可证](LICENSE)，但是其中有一部分功能并不是使用的 Apache2.0 许可证，我们在 [许可证](LICENSES.md) 中详细地列出了这些功能以及他们对应的许可证，如果您正在从事盈利性活动，请谨慎参考此文档。
 
 ## 联系
 

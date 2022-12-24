@@ -101,6 +101,8 @@ class EnhanceDetVisualizationHook(DetVisualizationHook):
         img_path = outputs[0].img_path
         if self.show_on_enhance:
             img = outputs[0].pred_pixel.pred_img
+            # convert to rgb
+            img = img[[2, 1, 0], ...]
             img = img.cpu().numpy().astype(np.uint8).transpose(1, 2, 0)
             h, w = outputs[0].ori_shape
             img = mmcv.imresize(img, size=(w, h))
@@ -145,6 +147,8 @@ class EnhanceDetVisualizationHook(DetVisualizationHook):
 
             if self.show_on_enhance:
                 img = data_sample.pred_pixel.pred_img
+                # convert to rgb
+                img = img[[2, 1, 0], ...]
                 img = img.cpu().numpy().astype(np.uint8).transpose(1, 2, 0)
                 h, w = data_sample.ori_shape
                 img = mmcv.imresize(img, size=(w, h))
