@@ -171,7 +171,7 @@ def load_json_logs(json_logs):
     # value of sub dict is a list of corresponding values of all iterations
     log_dicts = [dict() for _ in json_logs]
     for json_log, log_dict in zip(json_logs, log_dicts):
-        with open(json_log, 'r') as log_file:
+        with open(json_log) as log_file:
             epoch = 1
             for i, line in enumerate(log_file):
                 log = json.loads(line.strip())
@@ -208,15 +208,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-# bbox_mAP setting
-# plot_curve
-# /home/dong/BigDongDATA/cvpr2023/base_1x_fft/new/faster_rcnn_r50_fpn_1x_coco_20200130_204655.log.json
-# /home/dong/BigDongDATA/cvpr2023/base_1x_fft/new/20221006_152046/vis_data/20221006_152046.json
-# /home/dong/BigDongDATA/cvpr2023/base_1x_fft/new/l1loss/20221003_133622/vis_data/20221003_133622.json
-# --keys
-# bbox_mAP
-# --legend
-# base_AP
-# rebuild_fft_AP
-# rebuild_l1_AP

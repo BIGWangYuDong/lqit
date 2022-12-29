@@ -1,3 +1,4 @@
+# This work is licensed under Attribution-NonCommercial 4.0 International License.  # noqa
 from typing import List
 
 from lqit.edit.models.base_models import BaseGenerator
@@ -8,6 +9,7 @@ from lqit.utils.typing import ConfigType, OptMultiConfig
 
 @MODELS.register_module()
 class ZeroDCEGenerator(BaseGenerator):
+    """"""
 
     def __init__(self,
                  model: ConfigType,

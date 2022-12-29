@@ -77,6 +77,12 @@ pre-commit run --all-files
 
 <img src="https://user-images.githubusercontent.com/57566630/202368856-0465a90d-8fce-4345-918e-67b8b9c82614.png" width="1200">
 
+> If you are a Chinese user, the installation may fail due to network reasons, then you can use Chinese domestic sources
+>
+> `pre-commit install -c .pre-commit-config-zh-cn.yaml`
+>
+> `pre-commit run --all-files -c .pre-commit-config-zh-cn.yaml`
+
 If the installation process is interrupted, you can repeatedly run `pre-commit run ... ` to continue the installation.
 
 If the code does not conform to the code style specification, pre-commit will raise a warning and fixes some of the errors automatically.
