@@ -4,8 +4,8 @@ from mmdet.registry import DATASETS
 from .xml_dataset import XMLDatasetWithMetaFile
 
 URPC_METAINFO = {
-    'CLASSES': ('holothurian', 'echinus', 'scallop', 'starfish'),
-    'PALETTE': [(235, 211, 70), (106, 90, 205), (160, 32, 240), (176, 23, 31)]
+    'classes': ('holothurian', 'echinus', 'scallop', 'starfish'),
+    'palette': [(235, 211, 70), (106, 90, 205), (160, 32, 240), (176, 23, 31)]
 }
 
 
