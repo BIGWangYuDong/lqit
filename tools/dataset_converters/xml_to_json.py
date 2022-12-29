@@ -214,7 +214,7 @@ def cvt_to_coco_json(annotations: List[dict], dataset_name: str) -> dict:
 
     for category_id, name in enumerate(dataset_class):
         category_item = dict()
-        category_item['supercategory'] = str('none')
+        category_item['supercategory'] = 'none'
         category_item['id'] = int(category_id)
         category_item['name'] = str(name)
         coco['categories'].append(category_item)
