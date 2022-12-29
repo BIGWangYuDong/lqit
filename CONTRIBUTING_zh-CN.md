@@ -86,6 +86,12 @@ pre-commit run --all-files
 
 <img src="https://user-images.githubusercontent.com/57566630/202368856-0465a90d-8fce-4345-918e-67b8b9c82614.png" width="1200">
 
+> 如果你是中国用户，由于网络原因，可能会出现安装失败的情况，这时可以使用国内源
+>
+> `pre-commit install -c .pre-commit-config-zh-cn.yaml`
+>
+> `pre-commit run --all-files -c .pre-commit-config-zh-cn.yaml`
+
 如果安装过程被中断，可以重复执行 `pre-commit run ...` 继续安装。
 
 如果提交的代码不符合代码风格规范，pre-commit 会发出警告，并自动修复部分错误。
