@@ -31,3 +31,15 @@ model_wrapper_cfg = dict(
     type='SelfEnhanceModelDDP',
     broadcast_buffers=False,
     find_unused_parameters=False)
+
+# For visualization
+# default_hooks = dict(
+#     visualization=dict(
+#         type='EnhanceDetVisualizationHook',
+#         draw=True,
+#         test_out_dir='enhance_img_with_result',
+#         show_on_enhance=True,
+#         draw_gt=False,
+#         draw_pred=True))
+#
+# work_dir = 'work_dirs/vis/rtss/tood'
