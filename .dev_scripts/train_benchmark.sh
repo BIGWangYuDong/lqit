@@ -333,3 +333,21 @@ SRUN_ARGS='--quotatype=auto' MASTER_PORT=7093  ./tools/slurm_train.sh mm_det voc
 SRUN_ARGS='--quotatype=auto' MASTER_PORT=1157  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det faster_wstruc   configs/detection/self_enhance_detector/exp_4_extra_experiment/urpc_faster_r50_with_struc_loss.py    work_dirs/work_dirs/self_enhance_light/exp_4_extra_experiment/urpc_faster_r50_with_struc_loss_tmp    --cfg-options randomness.seed=None
 
 SRUN_ARGS='--quotatype=auto' MASTER_PORT=2157  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det faster_wstruc   configs/detection/self_enhance_detector/exp_4_extra_experiment/urpc_faster_r50_with_struc_loss.py    work_dirs/work_dirs/self_enhance_light/exp_4_extra_experiment/urpc_faster_r50_with_struc_loss_tmp2    --cfg-options randomness.seed=None
+
+
+# --cfg-options randomness.seed=None
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=1157  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det faster_rtts   configs/detection/cycle_det/cycle_det_faster/cycle_faster_ufpn_1x_rtts.py           work_dirs/work_dirs/cycle_det/faster/cycle_faster_ufpn_1x_rtts
+
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=2157  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det faster_urpc   configs/detection/cycle_det/cycle_det_faster/cycle_faster_ufpn_1x_urpc2020.py       work_dirs/work_dirs/cycle_det/faster/cycle_faster_ufpn_1x_urpc2020
+
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=1157  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det atss_rtts     configs/detection/cycle_det/cycle_det_atss/cycle_atss_ufpn_1x_rtts.py               work_dirs/work_dirs/cycle_det/atss/cycle_atss_ufpn_1x_rtts
+
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=2157  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det atss_urpc     configs/detection/cycle_det/cycle_det_atss/cycle_atss_ufpn_1x_urpc2020.py           work_dirs/work_dirs/cycle_det/atss/cycle_atss_ufpn_1x_urpc2020
+
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=1157  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det retina_rtts   configs/detection/cycle_det/cycle_det_retina/cycle_retinanet_ufpn_1x_rtts.py        work_dirs/work_dirs/cycle_det/retina/cycle_retinanet_ufpn_1x_rtts
+
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=2157  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det retina_urpc   configs/detection/cycle_det/cycle_det_retina/cycle_retinanet_ufpn_1x_urpc2020.py    work_dirs/work_dirs/cycle_det/retina/cycle_retinanet_ufpn_1x_urpc2020
+
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=1157  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det tood_rtts     configs/detection/cycle_det/cycle_det_tood/cycle_tood_ufpn_1x_rtts.py               work_dirs/work_dirs/cycle_det/tood/cycle_tood_ufpn_1x_rtts
+
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=2157  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det tood_urpc     configs/detection/cycle_det/cycle_det_tood/cycle_tood_ufpn_1x_urpc2020.py           work_dirs/work_dirs/cycle_det/tood/cycle_tood_ufpn_1x_urpc2020

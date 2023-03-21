@@ -125,7 +125,11 @@ class CycleSingleStageWithEnhanceHead(SingleStageDetector):
             det_losses = dict()
 
             for i, x in enumerate([x_raw, x_enhance]):
-                temp_losses = self.bbox_head.loss(x_raw, batch_data_samples)
+                if len(x) > 5:
+                    x_input = x[1:]
+                else:
+                    x_input = x
+                temp_losses = self.bbox_head.loss(x_input, batch_data_samples)
                 for name, value in temp_losses.items():
                     if 'loss' in name:
                         if isinstance(value, Tensor):

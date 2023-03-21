@@ -181,7 +181,7 @@ class CycleTwoStageWithEnhanceHead(TwoStageDetector):
 
                     rpn_losses, rpn_results_list = \
                         self.rpn_head.loss_and_predict(
-                            x_raw, rpn_data_samples, proposal_cfg=proposal_cfg)
+                            x, rpn_data_samples, proposal_cfg=proposal_cfg)
                     # avoid get same name with roi_head loss
                     keys = rpn_losses.keys()
                     for key in keys:
@@ -197,7 +197,7 @@ class CycleTwoStageWithEnhanceHead(TwoStageDetector):
                         data_sample.proposals
                         for data_sample in batch_data_samples
                     ]
-                roi_losses = self.roi_head.loss(x_raw, rpn_results_list,
+                roi_losses = self.roi_head.loss(x, rpn_results_list,
                                                 batch_data_samples)
                 temp_losses.update(roi_losses)
 
