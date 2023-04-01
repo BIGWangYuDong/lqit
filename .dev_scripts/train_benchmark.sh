@@ -401,5 +401,14 @@ SRUN_ARGS='--quotatype=auto' MASTER_PORT=3480  GPUS=2  GPUS_PER_NODE=2  ./tools/
 
 
 source plantform/lqit
-
 cd code/lqit/lqit
+
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=17884 GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det urpc_atss    configs/detection/aenet/urpc/aenet_atss_ufpn_1x_urpc2020.py         work_dirs/work_dirs/aenet_det/urpc/atss/test_1    --cfg-options randomness.seed=None
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=3970  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det urpc_faster  configs/detection/aenet/urpc/aenet_faster_ufpn_1x_urpc2020.py       work_dirs/work_dirs/aenet_det/urpc/faster/test_1  --cfg-options randomness.seed=None
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=7531  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det urpc_retina  configs/detection/aenet/urpc/aenet_retina_ufpn_1x_urpc2020.py       work_dirs/work_dirs/aenet_det/urpc/retina/test_1  --cfg-options randomness.seed=None
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=6031  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det urpc_tood    configs/detection/aenet/urpc/aenet_tood_ufpn_1x_urpc2020.py         work_dirs/work_dirs/aenet_det/urpc/tood/test_1    --cfg-options randomness.seed=None
+
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=17884 GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det rtts_atss    configs/detection/aenet/rtts/aenet_atss_ufpn_1x_rtts.py         work_dirs/work_dirs/aenet_det/rtts/atss/test_1    --cfg-options randomness.seed=None
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=3970  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det rtts_faster  configs/detection/aenet/rtts/aenet_faster_ufpn_1x_rtts.py       work_dirs/work_dirs/aenet_det/rtts/faster/test_1  --cfg-options randomness.seed=None
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=7531  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det rtts_retina  configs/detection/aenet/rtts/aenet_retina_ufpn_1x_rtts.py       work_dirs/work_dirs/aenet_det/rtts/retina/test_1  --cfg-options randomness.seed=None
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=6031  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det rtts_tood    configs/detection/aenet/rtts/aenet_tood_ufpn_1x_rtts.py         work_dirs/work_dirs/aenet_det/rtts/tood/test_1    --cfg-options randomness.seed=None
