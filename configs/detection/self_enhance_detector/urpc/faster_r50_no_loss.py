@@ -41,3 +41,14 @@ model_wrapper_cfg = dict(
 #         show_on_enhance=True,
 #         draw_gt=False,
 #         draw_pred=True))
+
+# show_dir = 'work_dirs/a_tienet_vis_new/urpc/faster'
+#
+# default_hooks = dict(
+#     visualization=dict(
+#         type='EnhanceDetVisualizationHook',
+#         draw=True,
+#         test_out_dir=show_dir,
+#         show_on_enhance=True,
+#         draw_gt=False,
+#         draw_pred=True))

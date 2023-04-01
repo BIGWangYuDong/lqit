@@ -31,3 +31,14 @@ model_wrapper_cfg = dict(
     type='SelfEnhanceModelDDP',
     broadcast_buffers=False,
     find_unused_parameters=False)
+
+# show_dir = 'work_dirs/a_tienet_vis_new/rtts/faster'
+#
+# default_hooks = dict(
+#     visualization=dict(
+#         type='EnhanceDetVisualizationHook',
+#         draw=True,
+#         test_out_dir=show_dir,
+#         show_on_enhance=True,
+#         draw_gt=False,
+#         draw_pred=True))

@@ -3,7 +3,7 @@ _base_ = '../base_detector/retinanet_r50_fpn_1x_urpc2020.py'
 # model settings
 model = dict(
     type='CycleSingleStageWithEnhanceHead',
-    loss_weight=[0.5, 0.5],
+    loss_weight=[0.8, 0.2],
     neck=dict(
         type='UFPN',
         in_channels=[256, 512, 1024, 2048],
@@ -17,6 +17,7 @@ model = dict(
         in_channels=256,
         upscale_factor=4,
         num_convs=2,
+        output_weight=[0.5, 1.0],
         gt_preprocessor=dict(
             type='GTPixelPreprocessor',
             mean=[123.675, 116.28, 103.53],
@@ -46,3 +47,5 @@ train_pipeline = [
     dict(type='lqit.PackInputs')
 ]
 train_dataloader = dict(dataset=dict(pipeline=train_pipeline))
+
+optim_wrapper = dict(clip_grad=dict(max_norm=35, norm_type=2))

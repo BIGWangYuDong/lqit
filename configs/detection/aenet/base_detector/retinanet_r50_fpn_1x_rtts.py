@@ -1,10 +1,10 @@
 _base_ = [
     '../../_base_/models/retinanet_r50_fpn.py',
-    '../../_base_/datasets/urpc-2020_coco_detection.py',
+    '../../_base_/datasets/rtts_coco.py',
     '../../_base_/schedules/schedule_1x.py', '../../_base_/default_runtime.py'
 ]
 
-model = dict(bbox_head=dict(num_classes=4))
+model = dict(bbox_head=dict(num_classes=5))
 
 # 4bs * 4GPUs
 train_dataloader = dict(batch_size=4, num_workers=4)
@@ -26,14 +26,3 @@ param_scheduler = [
         milestones=[8, 11],
         gamma=0.1)
 ]
-
-# show_dir = 'work_dirs/a_tienet_vis_new/urpc/retina'
-#
-# default_hooks = dict(
-#     visualization=dict(
-#         type='EnhanceDetVisualizationHook',
-#         draw=True,
-#         test_out_dir=show_dir + '/baseline',
-#         show_on_enhance=False,
-#         draw_gt=False,
-#         draw_pred=True))

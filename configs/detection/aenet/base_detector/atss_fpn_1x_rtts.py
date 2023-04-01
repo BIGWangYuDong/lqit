@@ -1,11 +1,11 @@
 _base_ = [
-    '../../_base_/datasets/urpc-2020_coco_detection.py',
+    '../../_base_/datasets/rtts_coco.py',
     '../../_base_/schedules/schedule_1x.py', '../../_base_/default_runtime.py'
 ]
 
 # model settings
 model = dict(
-    type='TOOD',
+    type='ATSS',
     data_preprocessor=dict(
         type='DetDataPreprocessor',
         mean=[123.675, 116.28, 103.53],
@@ -30,12 +30,11 @@ model = dict(
         add_extra_convs='on_output',
         num_outs=5),
     bbox_head=dict(
-        type='TOODHead',
-        num_classes=4,
+        type='ATSSHead',
+        num_classes=5,
         in_channels=256,
-        stacked_convs=6,
+        stacked_convs=4,
         feat_channels=256,
-        anchor_type='anchor_free',
         anchor_generator=dict(
             type='AnchorGenerator',
             ratios=[1.0],
@@ -46,26 +45,18 @@ model = dict(
             type='DeltaXYWHBBoxCoder',
             target_means=[.0, .0, .0, .0],
             target_stds=[0.1, 0.1, 0.2, 0.2]),
-        initial_loss_cls=dict(
+        loss_cls=dict(
             type='FocalLoss',
             use_sigmoid=True,
-            activated=True,  # use probability instead of logit as input
             gamma=2.0,
             alpha=0.25,
             loss_weight=1.0),
-        loss_cls=dict(
-            type='QualityFocalLoss',
-            use_sigmoid=True,
-            activated=True,  # use probability instead of logit as input
-            beta=2.0,
-            loss_weight=1.0),
-        loss_bbox=dict(type='GIoULoss', loss_weight=2.0)),
+        loss_bbox=dict(type='GIoULoss', loss_weight=2.0),
+        loss_centerness=dict(
+            type='CrossEntropyLoss', use_sigmoid=True, loss_weight=1.0)),
+    # training and testing settings
     train_cfg=dict(
-        initial_epoch=4,
-        initial_assigner=dict(type='ATSSAssigner', topk=9),
-        assigner=dict(type='TaskAlignedAssigner', topk=13),
-        alpha=1,
-        beta=6,
+        assigner=dict(type='ATSSAssigner', topk=9),
         allowed_border=-1,
         pos_weight=-1,
         debug=False),
@@ -95,15 +86,3 @@ param_scheduler = [
         milestones=[8, 11],
         gamma=0.1)
 ]
-
-# show_dir = 'work_dirs/a_tienet_vis_new/urpc/tood'
-#
-# default_hooks = dict(
-#     visualization=dict(
-#         type='EnhanceDetVisualizationHook',
-#         draw=True,
-#         test_out_dir=show_dir + '/baseline',
-#         show_on_enhance=False,
-#         draw_gt=False,
-#         draw_pred=True))
-#

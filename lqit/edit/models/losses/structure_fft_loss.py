@@ -107,8 +107,6 @@ class StructureFFTLoss(nn.Module):
             nan_number2 = torch.where(
                 torch.isnan(norm_high_pass_target) == 1)[0]
             if len(nan_number1) > 0 or len(nan_number2) > 0:
-                print('pred is nan', len(nan_number1))
-                print('target is nan', len(nan_number2))
                 norm_high_pass_pred[torch.isnan(norm_high_pass_pred)] = 1.0
                 norm_high_pass_target[torch.isnan(norm_high_pass_target)] = 1.0
             inf_number1 = torch.where(torch.isinf(norm_high_pass_pred) == 1)[0]
@@ -116,8 +114,6 @@ class StructureFFTLoss(nn.Module):
                 torch.isinf(norm_high_pass_target) == 1)[0]
 
             if len(inf_number1) > 0 or len(inf_number2) > 0:
-                print('pred is inf', len(inf_number1))
-                print('target is inf', len(inf_number2))
                 norm_high_pass_pred[torch.isinf(norm_high_pass_pred)] = 0.0
                 norm_high_pass_target[torch.isinf(norm_high_pass_target)] = 0.0
 

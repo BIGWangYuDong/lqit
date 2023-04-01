@@ -45,6 +45,8 @@ class CycleTwoStageWithEnhanceHead(TwoStageDetector):
 
         if enhance_head is not None:
             self.enhance_head = MODELS.build(enhance_head)
+        else:
+            self.enhance_head = None
         self.vis_enhance = vis_enhance
         self.cycle_det = cycle_det
         if cycle_det:

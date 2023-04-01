@@ -86,3 +86,14 @@ param_scheduler = [
         milestones=[8, 11],
         gamma=0.1)
 ]
+
+# show_dir = 'work_dirs/a_tienet_vis_new/rtts/atss'
+#
+# default_hooks = dict(
+#     visualization=dict(
+#         type='EnhanceDetVisualizationHook',
+#         draw=True,
+#         test_out_dir=show_dir + '/baseline',
+#         show_on_enhance=False,
+#         draw_gt=False,
+#         draw_pred=True))

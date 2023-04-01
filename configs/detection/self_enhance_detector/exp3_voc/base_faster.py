@@ -34,3 +34,15 @@ optim_wrapper = dict(
 #       or not by default.
 #   - `base_batch_size` = (8 GPUs) x (2 samples per GPU).
 auto_scale_lr = dict(enable=False, base_batch_size=16)
+
+# show_dir = 'work_dirs/a_tienet_vis_new/voc/faster'
+#
+# default_hooks = dict(
+#     visualization=dict(
+#         type='EnhanceDetVisualizationHook',
+#         draw=True,
+#         test_out_dir=show_dir + '/baseline',
+#         show_on_enhance=False,
+#         draw_gt=False,
+#         draw_pred=True))
+#

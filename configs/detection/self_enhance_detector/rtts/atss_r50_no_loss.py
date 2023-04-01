@@ -33,13 +33,13 @@ model_wrapper_cfg = dict(
     find_unused_parameters=False)
 
 # For visualization
+# show_dir = 'work_dirs/a_tienet_vis_new/rtts/atss'
+#
 # default_hooks = dict(
 #     visualization=dict(
 #         type='EnhanceDetVisualizationHook',
 #         draw=True,
-#         test_out_dir='enhance_img_with_result',
+#         test_out_dir=show_dir,
 #         show_on_enhance=True,
 #         draw_gt=False,
 #         draw_pred=True))
-#
-# work_dir = 'work_dirs/vis/rtss/atss'

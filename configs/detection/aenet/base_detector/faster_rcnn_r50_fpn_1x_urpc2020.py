@@ -12,14 +12,3 @@ train_dataloader = dict(batch_size=4, num_workers=4)
 optim_wrapper = dict(
     type='OptimWrapper',
     optimizer=dict(type='SGD', lr=0.02, momentum=0.9, weight_decay=0.0001))
-
-# show_dir = 'work_dirs/a_tienet_vis_new/urpc/faster'
-#
-# default_hooks = dict(
-#     visualization=dict(
-#         type='EnhanceDetVisualizationHook',
-#         draw=True,
-#         test_out_dir=show_dir + '/baseline',
-#         show_on_enhance=False,
-#         draw_gt=False,
-#         draw_pred=True))

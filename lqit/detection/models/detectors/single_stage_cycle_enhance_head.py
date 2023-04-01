@@ -41,6 +41,8 @@ class CycleSingleStageWithEnhanceHead(SingleStageDetector):
 
         if enhance_head is not None:
             self.enhance_head = MODELS.build(enhance_head)
+        else:
+            self.enhance_head = None
         self.vis_enhance = vis_enhance
         self.cycle_det = cycle_det
         if cycle_det:
@@ -123,7 +125,6 @@ class CycleSingleStageWithEnhanceHead(SingleStageDetector):
         else:
             x_enhance = self.extract_feat(enhance_batch_inputs)
             det_losses = dict()
-
             for i, x in enumerate([x_raw, x_enhance]):
                 if len(x) > 5:
                     x_input = x[1:]
@@ -171,14 +172,19 @@ class CycleSingleStageWithEnhanceHead(SingleStageDetector):
                 - masks (Tensor): Has a shape (num_instances, H, W).
         """
         x = self.extract_feat(batch_inputs)
-        results_list = self.bbox_head.predict(
-            x, batch_data_samples, rescale=rescale)
 
         if self.vis_enhance and self.with_enhance_head:
             enhance_list = self.enhance_head.predict(
                 x, batch_data_samples, rescale=rescale)
             batch_data_samples = add_pixel_pred_to_datasample(
                 data_samples=batch_data_samples, pixel_list=enhance_list)
+
+        if len(x) > 5:
+            x_input = x[1:]
+        else:
+            x_input = x
+        results_list = self.bbox_head.predict(
+            x_input, batch_data_samples, rescale=rescale)
 
         batch_data_samples = self.add_pred_to_datasample(
             batch_data_samples, results_list)

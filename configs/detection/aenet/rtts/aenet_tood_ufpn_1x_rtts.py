@@ -1,4 +1,4 @@
-_base_ = '../base_detector/tood_fpn_1x_urpc2020.py'
+_base_ = '../base_detector/tood_fpn_1x_rtts.py'
 
 # model settings
 model = dict(
@@ -13,11 +13,10 @@ model = dict(
         num_outs=6),
     enhance_head=dict(
         _scope_='lqit',
-        type='CycleEnhanceHead',
+        type='AENetEnhanceHead',
         in_channels=256,
         upscale_factor=4,
         num_convs=2,
-        output_weight=[0.0, 1.0],
         gt_preprocessor=dict(
             type='GTPixelPreprocessor',
             mean=[123.675, 116.28, 103.53],
@@ -25,21 +24,17 @@ model = dict(
             bgr_to_rgb=True,
             pad_size_divisor=32,
             element_name='img'),
-        enhance_loss=dict(type='L1Loss', loss_weight=0.6),
         spacial_loss=dict(type='SpatialLoss', loss_weight=1.0),
-        tv_loss=dict(type='MaskedTVLoss', loss_mode='mse', loss_weight=3.0),
-        # structure_loss=dict(
-        #     type='StructureFFTLoss',
-        #     radius=4,
-        #     pass_type='high',
-        #     channel_mean=True,
-        #     loss_type='mse',
-        #     guid_filter=dict(
-        #         type='GuidedFilter2d', radius=32, eps=1e-4, fast_s=2),
-        #     loss_weight=0.1),
-        structure_loss=None,
-        # spacial_loss=None,
-        # tv_loss=None,
+        tv_loss=dict(type='MaskedTVLoss', loss_mode='mse', loss_weight=5.0),
+        structure_loss=dict(
+            type='StructureFFTLoss',
+            radius=4,
+            pass_type='high',
+            channel_mean=True,
+            loss_type='l1',
+            guid_filter=None,
+            loss_weight=1.0),
+        enhance_loss=dict(type='L1Loss', loss_weight=1.0),
     ))
 
 # dataset settings
@@ -48,7 +43,11 @@ train_pipeline = [
     dict(type='LoadAnnotations', with_bbox=True),
     dict(type='Resize', scale=(1333, 800), keep_ratio=True),
     dict(type='RandomFlip', prob=0.5),
-    dict(type='lqit.SetInputImageAsGT'),
+    dict(
+        type='FFTFilterSimple', pass_type='low', radius=[32, 256],
+        get_gt=True),
     dict(type='lqit.PackInputs')
 ]
 train_dataloader = dict(dataset=dict(pipeline=train_pipeline))
+
+optim_wrapper = dict(clip_grad=dict(max_norm=35, norm_type=2))

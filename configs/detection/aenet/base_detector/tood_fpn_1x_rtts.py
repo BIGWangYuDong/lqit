@@ -1,5 +1,5 @@
 _base_ = [
-    '../../_base_/datasets/urpc-2020_coco_detection.py',
+    '../../_base_/datasets/rtts_coco.py',
     '../../_base_/schedules/schedule_1x.py', '../../_base_/default_runtime.py'
 ]
 
@@ -31,7 +31,7 @@ model = dict(
         num_outs=5),
     bbox_head=dict(
         type='TOODHead',
-        num_classes=4,
+        num_classes=5,
         in_channels=256,
         stacked_convs=6,
         feat_channels=256,
@@ -95,15 +95,3 @@ param_scheduler = [
         milestones=[8, 11],
         gamma=0.1)
 ]
-
-# show_dir = 'work_dirs/a_tienet_vis_new/urpc/tood'
-#
-# default_hooks = dict(
-#     visualization=dict(
-#         type='EnhanceDetVisualizationHook',
-#         draw=True,
-#         test_out_dir=show_dir + '/baseline',
-#         show_on_enhance=False,
-#         draw_gt=False,
-#         draw_pred=True))
-#

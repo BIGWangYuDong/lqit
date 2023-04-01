@@ -14,7 +14,7 @@ from .base_head import BaseEnhanceHead
 
 
 @MODELS.register_module()
-class CycleEnhanceHead(BaseEnhanceHead):
+class AENetEnhanceHead(BaseEnhanceHead):
 
     def __init__(
         self,
@@ -25,19 +25,10 @@ class CycleEnhanceHead(BaseEnhanceHead):
         norm_cfg: OptConfigType = None,
         act_cfg: OptConfigType = dict(type='ReLU'),
         gt_preprocessor: OptConfigType = None,
-        output_weight: list = [1.0, 1.0],
         enhance_loss=None,
-        spacial_loss=dict(type='SpatialLoss', loss_weight=1.0),
-        tv_loss=dict(type='MaskedTVLoss', loss_mode='mse', loss_weight=10.0),
-        structure_loss=dict(
-            type='StructureFFTLoss',
-            radius=4,
-            pass_type='high',
-            channel_mean=True,
-            loss_type='mse',
-            guid_filter=dict(
-                type='GuidedFilter2d', radius=32, eps=1e-4, fast_s=2),
-            loss_weight=0.1),
+        spacial_loss=None,
+        tv_loss=None,
+        structure_loss=None,
         init_cfg: OptMultiConfig = dict(
             type='Normal', layer='Conv2d', std=0.01)
     ) -> None:
@@ -56,10 +47,6 @@ class CycleEnhanceHead(BaseEnhanceHead):
         assert hasattr(self.gt_preprocessor, 'outputs_mean')
         self.outputs_std = self.gt_preprocessor.outputs_std
         self.outputs_mean = self.gt_preprocessor.outputs_mean
-
-        assert len(output_weight) == 2
-        self.raw_weight = output_weight[0]
-        self.structure_weight = output_weight[1]
 
         if spacial_loss is not None:
             self.spacial_loss = MODELS.build(spacial_loss)
@@ -187,49 +174,39 @@ class CycleEnhanceHead(BaseEnhanceHead):
 
         return losses, predictions
 
-    def loss_by_feat(self, batch_enhance_structure, batch_gt_img,
-                     batch_img_metas):
+    def loss_by_feat(self, batch_enhance_img, batch_gt_img, batch_img_metas):
         # batch_gt = batch_input
         losses = dict()
         if self.tv_loss is not None:
-            tv_loss = self.tv_loss(batch_enhance_structure)
+            tv_loss = self.tv_loss(batch_enhance_img)
             losses['tv_loss'] = tv_loss
 
         if self.spacial_loss is not None:
-            spacial_loss = self.spacial_loss(batch_enhance_structure,
-                                             batch_gt_img)
+            spacial_loss = self.spacial_loss(batch_enhance_img, batch_gt_img)
             losses['spacial_loss'] = spacial_loss
 
         if self.enhance_loss is not None:
-            batch_enhance_image = \
-                self.raw_weight * batch_gt_img + \
-                self.structure_weight * batch_enhance_structure
-
-            enhance_loss = self.enhance_loss(batch_enhance_image, batch_gt_img)
+            enhance_loss = self.enhance_loss(batch_enhance_img, batch_gt_img)
             losses['enhance_loss'] = enhance_loss
 
         if self.structure_loss is not None:
             # De-normalization
             de_batch_gt = self.destructor_batch(batch_gt_img, batch_img_metas)
-            de_batch_outputs = self.destructor_batch(batch_enhance_structure,
+            de_batch_enhance = self.destructor_batch(batch_enhance_img,
                                                      batch_img_metas)
 
-            structure_loss = self.structure_loss(de_batch_outputs, de_batch_gt,
+            structure_loss = self.structure_loss(de_batch_enhance, de_batch_gt,
                                                  batch_img_metas)
             losses['structure_loss'] = structure_loss
         return losses
 
     def predict_by_feat(self,
-                        batch_enhance_structure,
+                        batch_enhance_img,
                         batch_gt_img,
                         batch_img_metas,
                         rescale=False):
-        # batch_gt = batch_input
-        batch_enhance_image = self.raw_weight * batch_gt_img + \
-            self.structure_weight * batch_enhance_structure  # enhance img
-        enhance_img_list = self.destructor_results(batch_enhance_image,
+        enhance_img_list = self.destructor_results(batch_enhance_img,
                                                    batch_img_metas)
-
         return enhance_img_list
 
     def destructor_results(self, batch_outputs, batch_img_metas):
