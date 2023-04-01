@@ -1,3 +1,3 @@
-from .fft_transforms import FFTFilterSimple
+from .fft_transforms import FFTFilter, FFTFilterSimple
 
-__all__ = ['FFTFilterSimple']
+__all__ = ['FFTFilterSimple', 'FFTFilter']

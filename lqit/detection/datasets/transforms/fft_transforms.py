@@ -258,6 +258,9 @@ class FFTFilter(FFTFilterBase):
     def transform(self, results: dict):
         img = results['img']
         pass_type = self.pass_type
+        if self.get_gt:
+            results['gt_img'] = img
+
         if pass_type == 'none':
             results['fft_filter_img'] = img
             return results
@@ -276,7 +279,7 @@ class FFTFilter(FFTFilterBase):
         self.fft_meta['pass_type'] = pass_type
         results['fft_meta'] = self.fft_meta
         result_img = self.fft_filter(img=img, mask=mask)
-        results['fft_filter_img'] = result_img
+        results['img'] = result_img
         return results
 
 
