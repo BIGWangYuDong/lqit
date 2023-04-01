@@ -19,7 +19,6 @@ model = dict(
             pad_size_divisor=32,
             element_name='img'),
         spacial_loss=dict(type='SpatialLoss', loss_weight=1.0),
-        tv_loss=dict(type='MaskedTVLoss', loss_mode='mse', loss_weight=5.0),
         structure_loss=dict(
             type='StructureFFTLoss',
             radius=4,
