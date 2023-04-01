@@ -3,7 +3,7 @@ _base_ = '../base_detector/atss_fpn_1x_urpc2020.py'
 # model settings
 model = dict(
     type='CycleSingleStageWithEnhanceHead',
-    loss_weight=[0.5, 0.5],
+    loss_weight=[1.5, 0.5],
     neck=dict(
         type='UFPN',
         in_channels=[256, 512, 1024, 2048],
@@ -25,7 +25,6 @@ model = dict(
             pad_size_divisor=32,
             element_name='img'),
         spacial_loss=dict(type='SpatialLoss', loss_weight=1.0),
-        tv_loss=dict(type='MaskedTVLoss', loss_mode='mse', loss_weight=5.0),
         structure_loss=dict(
             type='StructureFFTLoss',
             radius=4,
@@ -33,7 +32,7 @@ model = dict(
             channel_mean=True,
             loss_type='l1',
             guid_filter=None,
-            loss_weight=1.0),
+            loss_weight=0.1),
         enhance_loss=dict(type='L1Loss', loss_weight=1.0),
     ))
 
@@ -44,8 +43,12 @@ train_pipeline = [
     dict(type='Resize', scale=(1333, 800), keep_ratio=True),
     dict(type='RandomFlip', prob=0.5),
     dict(
-        type='FFTFilterSimple', pass_type='low', radius=[32, 256],
-        get_gt=True),
+        type='FFTFilter',
+        pass_type='soft',
+        radius=[32, 256],
+        get_gt=True,
+        w_high=[0.8, 1.2],
+        w_low=[0.8, 1.2]),
     dict(type='lqit.PackInputs')
 ]
 train_dataloader = dict(dataset=dict(pipeline=train_pipeline))
