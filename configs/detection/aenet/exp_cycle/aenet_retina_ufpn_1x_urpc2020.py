@@ -2,7 +2,7 @@ _base_ = '../base_detector/retinanet_r50_fpn_1x_urpc2020.py'
 
 # model settings
 model = dict(
-    type='SingleStageWithEnhanceHead',
+    type='CycleSingleStageWithEnhanceHead',
     cycle_det=False,
     neck=dict(
         type='UFPN',
