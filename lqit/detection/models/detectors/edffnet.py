@@ -3,11 +3,11 @@ from typing import Optional
 from mmdet.registry import MODELS
 from mmdet.utils import ConfigType, OptConfigType, OptMultiConfig
 
-from .single_stage_enhance_head import SingleStageWithEnhanceHead
+from .single_stage_enhance_head import SingleStageDetector
 
 
 @MODELS.register_module()
-class EDFFNet(SingleStageWithEnhanceHead):
+class EDFFNet(SingleStageDetector):
 
     def __init__(self,
                  backbone: ConfigType,
