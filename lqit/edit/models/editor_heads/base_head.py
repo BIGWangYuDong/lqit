@@ -9,7 +9,7 @@ from torch import Tensor
 
 from lqit.common.structures import SampleList
 from lqit.registry import MODELS
-from lqit.utils.typing import OptMultiConfig
+from lqit.utils import OptMultiConfig
 
 
 class BaseEnhanceHead(BaseModule, metaclass=ABCMeta):

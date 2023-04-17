@@ -44,7 +44,7 @@ conda install pytorch torchvision cpuonly -c pytorch
 ```shell
 pip install -U openmim
 mim install mmengine
-mim install "mmcv>=2.0.0rc1"
+mim install "mmcv>=2.0.0"
 mim install mmeval
 ```
 
@@ -58,27 +58,20 @@ pip install -v -e .
 # "-e" 表示在可编辑模式下安装项目，因此对代码所做的任何本地修改都会生效，从而无需重新安装。
 ```
 
-**Note:**
+**注意：**
 
-a. When specifying `-e` or `develop`, MMDetection is installed on dev mode, any local modifications made to the code will take effect without reinstallation.
+(1) 按照上述说明， LQIT 安装在 `dev` 模式下，因此在本地对代码做的任何修改都会生效，无需重新安装；
 
-b. If you would like to use `opencv-python-headless` instead of `opencv-python`, you can install it before installing MMCV.
+(2) 如果希望使用 `opencv-python-headless` 而不是 `opencv-python`， 可以在安装 MMEngine 之前安装；
 
-c. Some dependencies are optional. Simply running `pip install -v -e .` will only install the minimum runtime requirements.
-To use optional dependencies like `albumentations` either install them manually with `pip install -r requirements/optional.txt` or specify desired extras when calling `pip` (e.g. `pip install -v -e .[optional]`).
-Valid keys for the extras field are: `all`, `tests`, `build`, `optional`, `det`, and `det_opt`.
+(3) 一些安装依赖是可以选择的。例如只需要安装最低运行要求的版本，则可以使用 `pip install -v -e .` 命令。如果希望使用可选择的像 `albumentations` 和 `imagecorruptions` 这种依赖项，可以使用 `pip install -r requirements/optional.txt` 进行手动安装，或者在使用 `pip` 时指定所需的附加功能（例如 `pip install -v -e .[optional]`），支持附加功能的有效键值包括 `all`、`tests`、`build` 以及 `optional`。
 
-d. If you would like to use `albumentations`, we suggest using `pip install -r requirements/albu.txt` or
-`pip install -U albumentations --no-binary qudida,albumentations`. If you simply use `pip install albumentations>=0.3.2`,
-it will install `opencv-python-headless` simultaneously (even though you have already
-installed `opencv-python`). We recommended checking the environment after installing `albumentation` to
-ensure that `opencv-python` and `opencv-python-headless` are not installed at the same time, because it might cause unexpected issues if they both are installed. Please refer
-to [official documentation](https://albumentations.ai/docs/getting_started/installation/#note-on-opencv-dependencies) for more details.
+(4) 如果希望使用 `albumentations`，我们建议使用 `pip install -r requirements/albu.txt` 或者 `pip install -U albumentations --no-binary qudida,albumentations` 进行安装。 如果简单地使用 `pip install albumentations>=0.3.2` 进行安装，则会同时安装 `opencv-python-headless`（即便已经安装了 `opencv-python` 也会再次安装）。我们建议在安装 `albumentations` 后检查环境，以确保没有同时安装 `opencv-python` 和 `opencv-python-headless`，因为同时安装可能会导致一些问题。更多细节请参考[官方文档](https://albumentations.ai/docs/getting_started/installation/#note-on-opencv-dependencies) 。
 
 **步骤 1.** 选择安装必要的 [OpenMMLab](https://github.com/open-mmlab) 代码库作为依赖，并通过 [MIM](https://github.com/open-mmlab/mim) 进行安装。例如安装 [MMDetection](https://github.com/open-mmlab/mmdetection):
 
 ```shell
-mim install "mmdet>=3.0.0rc0"
+mim install "mmdet>=3.0.0"
 ```
 
 ### 验证安装
@@ -126,7 +119,7 @@ MMCV 包含 C++ 和 CUDA 扩展，因此其对 PyTorch 的依赖比较复杂。M
 例如，下述命令将会安装基于 PyTorch 1.12.x 和 CUDA 11.6 编译的 mmcv。
 
 ```shell
-pip install "mmcv>=2.0.0rc1" -f https://download.openmmlab.com/mmcv/dist/cu116/torch1.12.0/index.html
+pip install "mmcv>=2.0.0" -f https://download.openmmlab.com/mmcv/dist/cu116/torch1.12.0/index.html
 ```
 
 #### 不使用 MIM 安装 MMEval
@@ -146,7 +139,7 @@ OpenMMLab 代码库提供了详细的安装教程，你可以通过相关的安�
 例如，你可以通过 [MMDetection 安装指南](https://mmdetection.readthedocs.io/en/3.x/get_started.html)并通过涂璇命令来安装 MMDetection：
 
 ```shell
-pip install "mmdet>=3.0.0rc0"
+pip install "mmdet>=3.0.0"
 ```
 
 ## Contributing to LQIT

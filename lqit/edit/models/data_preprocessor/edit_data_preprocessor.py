@@ -5,7 +5,7 @@ import torch
 import torch.nn.functional as F
 from mmengine.model import BaseDataPreprocessor
 
-from lqit.common.data_preprocessor import stack_batch
+from lqit.common.models.data_preprocessor import stack_batch
 from lqit.registry import MODELS
 
 

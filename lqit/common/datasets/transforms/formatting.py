@@ -1,9 +1,9 @@
-import copy
-
 import numpy as np
 from mmcv.transforms import to_tensor
 from mmcv.transforms.base import BaseTransform
 from mmengine.structures import InstanceData, PixelData
+from numpy import ndarray
+from torch import Tensor
 
 from lqit.common.structures import DataSample
 from lqit.registry import TRANSFORMS
@@ -15,15 +15,15 @@ except ImportError:
     HAS_MMDET = False
 
 
-def image_to_tensor(img):
+def image_to_tensor(img: ndarray) -> Tensor:
     """Trans image to tensor.
 
     Args:
         img (np.ndarray): The original image.
+
     Returns:
         Tensor: The output tensor.
     """
-
     if len(img.shape) < 3:
         img = np.expand_dims(img, -1)
     img = np.ascontiguousarray(img.transpose(2, 0, 1))
@@ -69,9 +69,11 @@ class PackInputs(BaseTransform):
         'gt_masks': 'masks',
     }
 
-    def __init__(self,
-                 meta_keys=('img_id', 'img_path', 'ori_shape', 'img_shape',
-                            'scale_factor', 'flip', 'flip_direction')):
+    def __init__(
+        self,
+        meta_keys: dict = ('img_id', 'img_path', 'ori_shape', 'img_shape',
+                           'scale_factor', 'flip', 'flip_direction')
+    ) -> None:
         self.meta_keys = meta_keys
 
     def transform(self, results: dict) -> dict:
@@ -153,9 +155,11 @@ class PackInputs(BaseTransform):
             data_sample.ignored_instances = ignore_instance_data
 
         # process proposals
-        # TODO: Need update when PR is merged: https://github.com/open-mmlab/mmdetection/pull/8472  # noqa
         if 'proposals' in results:
-            data_sample.proposals = InstanceData(bboxes=results['proposals'])
+            proposals = InstanceData(
+                bboxes=to_tensor(results['proposals']),
+                scores=to_tensor(results['proposals_scores']))
+            data_sample.proposals = proposals
 
         # process semantic segmentation
         if 'gt_seg_map' in results:
@@ -203,63 +207,3 @@ class PackInputs(BaseTransform):
         repr_str = self.__class__.__name__
         repr_str += f'(meta_keys={self.meta_keys})'
         return repr_str
-
-
-@TRANSFORMS.register_module()
-class FFTMixUpPackInputsWrapper(BaseTransform):
-    """A transform wrapper to apply the PackInputs to process both `gt_*` and
-    `mixup_gt_*` without adding any codes."""
-
-    def __init__(self, pack_input_cfg):
-        self.pack_input = TRANSFORMS.build(pack_input_cfg)
-
-    def transform(self, results):
-        assert results.get('mixup_gt_bboxes', None) is not None, \
-            '`mixup_gt_boxes` should be in the results, please delete ' \
-            '`MixUpPackInputsWrapper` in your configs, or check whether ' \
-            'you have used FFTMixUp in your pipelines.'
-        inputs = self._process_input(results)
-        outputs = [self.pack_input(_input) for _input in inputs]
-        outputs = self._process_output(outputs)
-        return outputs
-
-    def _process_input(self, data: dict) -> list:
-        """Scatter the broadcasting targets to a list of inputs of the wrapped
-        transforms.
-
-        Args:
-            data (dict): The original input data.
-        Returns:
-            list[dict, dict]: A list of input data.
-        """
-        cp_data = copy.deepcopy(data)
-        cp_data['img'] = cp_data.pop('fft_filter_img')
-        cp_data['gt_bboxes'] = cp_data.pop('mixup_gt_bboxes')
-        cp_data['gt_bboxes_labels'] = cp_data.pop('mixup_gt_bboxes_labels')
-        cp_data['gt_ignore_flags'] = cp_data.pop('mixup_gt_ignore_flags')
-        scatters = [data, cp_data]
-
-        return scatters
-
-    def _process_output(self, output_scatters: list) -> dict:
-        """Gathering and renaming data items.
-
-        Args:
-            output_scatters (list[dict, dict]): The output of the wrapped
-                pipeline.
-        Returns:
-            dict: Updated result dict.
-        """
-        assert isinstance(output_scatters, list) and \
-               isinstance(output_scatters[0], dict) and \
-               len(output_scatters) == 2
-
-        packed_results = dict()
-        packed_results['inputs'] = [
-            output_scatters[i]['inputs'] for i in range(2)
-        ]
-        packed_results['data_samples'] = [
-            output_scatters[i]['data_samples'] for i in range(2)
-        ]
-
-        return packed_results

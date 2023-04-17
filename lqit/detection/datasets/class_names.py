@@ -51,7 +51,7 @@ dataset_aliases = {
     'voc': ['voc', 'pascal_voc', 'voc07', 'voc12'],
     'coco': ['coco', 'mscoco', 'ms_coco'],
     'cityscapes': ['cityscapes'],
-    'urpc': ['urpc', 'uwdet', 'uw_det'],
+    'urpc': ['urpc', 'urpcdet', 'urpc2020'],
     'rtts': ['rtts', 'foggydet']
 }
 

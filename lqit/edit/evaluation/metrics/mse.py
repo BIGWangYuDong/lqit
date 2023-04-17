@@ -1,12 +1,12 @@
 from typing import Optional, Sequence
 
-from mmeval.metrics import MSE as MMEVAL_MSE
+from mmeval.metrics import MeanSquaredError as MMEVAL_MSE
 
 from lqit.registry import METRICS
 
 
 @METRICS.register_module()
-class MSE(MMEVAL_MSE):
+class MeanSquaredError(MMEVAL_MSE):
     """Mean Squared Error metric for image.
 
     mean((a - b) ^ 2)

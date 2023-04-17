@@ -1,8 +1,12 @@
+import copy
+import logging
 import os.path as osp
 import warnings
 from typing import Any, List, Union
 
-from mmengine.dataset import BaseDataset
+import numpy as np
+from mmengine.dataset import BaseDataset, force_full_init
+from mmengine.logging import print_log
 
 from lqit.registry import DATASETS
 
@@ -45,12 +49,26 @@ class DatasetWithGTImageWrapper:
         Returns:
             dict: The meta information of repeated dataset.
         """
-        return self._metainfo
+        return copy.deepcopy(self._metainfo)
 
     def full_init(self):
+        """Loop to ``full_init`` each dataset."""
+        if self._fully_initialized:
+            return
         self.dataset.full_init()
+        self._fully_initialized = True
 
+    @force_full_init
     def get_data_info(self, idx: int) -> dict:
+        """Get annotation by index.
+
+        Args:
+            idx (int): Global index of ``ConcatDataset``.
+
+        Returns:
+            dict: The idx-th annotation of the dataset.
+        """
+
         return self.dataset.get_data_info(idx)
 
     def prepare_data(self, idx) -> Any:
@@ -65,35 +83,6 @@ class DatasetWithGTImageWrapper:
         data_info = self.get_data_info(idx)
         data_info = self.parse_gt_img_info(data_info)
         return self.dataset.pipeline(data_info)
-
-    def __getitem__(self, idx):
-        if not self.dataset._fully_initialized:
-            warnings.warn(
-                'Please call `full_init()` method manually to accelerate '
-                'the speed.')
-            self.dataset.full_init()
-
-        if self.dataset.test_mode:
-            data = self.prepare_data(idx)
-            if data is None:
-                raise Exception('Test time pipline should not get `None` '
-                                'data_sample')
-            return data
-
-        for _ in range(self.dataset.max_refetch + 1):
-            data = self.prepare_data(idx)
-            # Broken images or random augmentations may cause the returned data
-            # to be None
-            if data is None:
-                idx = self.dataset._rand_another()
-                continue
-            return data
-
-        raise Exception(f'Cannot find valid image after {self.max_refetch}! '
-                        'Please check your image path and pipeline')
-
-    def __len__(self):
-        return len(self.dataset)
 
     def parse_gt_img_info(self, data_info: dict) -> Union[dict, List[dict]]:
         """Parse raw annotation to target format.
@@ -118,3 +107,59 @@ class DatasetWithGTImageWrapper:
                 f'.{self.suffix}'
             data_info['gt_img_path'] = osp.join(gt_img_root, img_name)
         return data_info
+
+    def __getitem__(self, idx: int) -> dict:
+        """Get the idx-th image and data information of dataset after
+        ``self.pipeline``, and ``full_init`` will be called if the dataset has
+        not been fully initialized.
+
+        During training phase, if ``self.pipeline`` get ``None``,
+        ``self._rand_another`` will be called until a valid image is fetched or
+         the maximum limit of refetech is reached.
+
+        Args:
+            idx (int): The index of self.data_list.
+
+        Returns:
+            dict: The idx-th image and data information of dataset after
+            ``self.pipeline``.
+        """
+        if not self._fully_initialized:
+            print_log(
+                'Please call `full_init` method manually to accelerate '
+                'the speed.',
+                logger='current',
+                level=logging.WARNING)
+            self.full_init()
+
+        if self.dataset.test_mode:
+            data = self.prepare_data(idx)
+            if data is None:
+                raise Exception('Test time pipline should not get `None` '
+                                'data_sample')
+            return data
+
+        for _ in range(self.dataset.max_refetch + 1):
+            data = self.prepare_data(idx)
+            # Broken images or random augmentations may cause the returned data
+            # to be None
+            if data is None:
+                idx = self._rand_another()
+                continue
+            return data
+
+        raise Exception('Cannot find valid image after '
+                        f'{self.dataset.max_refetch}! '
+                        'Please check your image path and pipeline')
+
+    @force_full_init
+    def __len__(self):
+        return len(self.dataset)
+
+    def _rand_another(self) -> int:
+        """Get random index.
+
+        Returns:
+            int: Random index from 0 to ``len(self)-1``
+        """
+        return np.random.randint(0, len(self))

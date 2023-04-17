@@ -5,7 +5,7 @@ from mmengine.model import BaseModule
 
 from lqit.edit.structures import BatchPixelData
 from lqit.registry import MODELS
-from lqit.utils.typing import ConfigType, OptConfigType, OptMultiConfig
+from lqit.utils import ConfigType, OptConfigType, OptMultiConfig
 
 
 class BaseGenerator(BaseModule, metaclass=ABCMeta):

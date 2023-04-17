@@ -44,7 +44,7 @@ We recommend that users follow our best practices to install LQIT. However, the 
 ```shell
 pip install -U openmim
 mim install mmengine
-mim install "mmcv>=2.0.0rc1"
+mim install "mmcv>=2.0.0"
 mim install mmeval
 ```
 
@@ -61,9 +61,9 @@ pip install -v -e .
 
 **Note:**
 
-a. When specifying `-e` or `develop`, MMDetection is installed on dev mode, any local modifications made to the code will take effect without reinstallation.
+a. When specifying `-e` or `develop`, LQIT is installed on dev mode, any local modifications made to the code will take effect without reinstallation.
 
-b. If you would like to use `opencv-python-headless` instead of `opencv-python`, you can install it before installing MMCV.
+b. If you would like to use `opencv-python-headless` instead of `opencv-python`, you can install it before installing MMEngine.
 
 c. Some dependencies are optional. Simply running `pip install -v -e .` will only install the minimum runtime requirements.
 To use optional dependencies like `albumentations` either install them manually with `pip install -r requirements/optional.txt` or specify desired extras when calling `pip` (e.g. `pip install -v -e .[optional]`).
@@ -81,7 +81,7 @@ to [official documentation](https://albumentations.ai/docs/getting_started/insta
 Installing [MMDetection](https://github.com/open-mmlab/mmdetection).
 
 ```shell
-mim install "mmdet>=3.0.0rc0"
+mim install "mmdet>=3.0.0"
 ```
 
 ### Verify the installation
@@ -126,7 +126,7 @@ To install MMCV with pip instead of MIM, please follow [MMCV installation guides
 For example, the following command installs MMCV built for PyTorch 1.12.x and CUDA 11.6.
 
 ```shell
-pip install "mmcv>=2.0.0rc1" -f https://download.openmmlab.com/mmcv/dist/cu116/torch1.12.0/index.html
+pip install "mmcv>=2.0.0" -f https://download.openmmlab.com/mmcv/dist/cu116/torch1.12.0/index.html
 ```
 
 #### Install MMEval without MIM
@@ -146,7 +146,7 @@ OpenMMLab Codebases provide a detailed installation tutorial, please follow rela
 For example, you can find [MMDetection installation guides](https://mmdetection.readthedocs.io/en/3.x/get_started.html), and install MMDetection by the following command.
 
 ```shell
-pip install "mmdet>=3.0.0rc0"
+pip install "mmdet>=3.0.0"
 ```
 
 ## Contributing to LQIT
