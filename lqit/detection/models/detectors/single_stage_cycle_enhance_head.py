@@ -121,7 +121,11 @@ class CycleSingleStageWithEnhanceHead(SingleStageDetector):
             losses.update(enhance_loss)
 
         if enhance_results is None:
-            det_losses = self.bbox_head.loss(x_raw, batch_data_samples)
+            if len(x_raw) > 5:
+                x_input = x_raw[1:]
+            else:
+                x_input = x_raw
+            det_losses = self.bbox_head.loss(x_input, batch_data_samples)
         else:
             x_enhance = self.extract_feat(enhance_batch_inputs)
             det_losses = dict()
@@ -173,11 +177,11 @@ class CycleSingleStageWithEnhanceHead(SingleStageDetector):
         """
         x = self.extract_feat(batch_inputs)
 
-        if self.vis_enhance and self.with_enhance_head:
-            enhance_list = self.enhance_head.predict(
-                x, batch_data_samples, rescale=rescale)
-            batch_data_samples = add_pixel_pred_to_datasample(
-                data_samples=batch_data_samples, pixel_list=enhance_list)
+        # if self.vis_enhance and self.with_enhance_head:
+        enhance_list = self.enhance_head.predict(
+            x, batch_data_samples, rescale=rescale)
+        batch_data_samples = add_pixel_pred_to_datasample(
+            data_samples=batch_data_samples, pixel_list=enhance_list)
 
         if len(x) > 5:
             x_input = x[1:]

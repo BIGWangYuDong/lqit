@@ -128,8 +128,15 @@ class SelfEnhanceDetector(BaseModel):
             tuple: A tuple of features from ``rpn_head`` and ``roi_head``
             forward.
         """
+
+        import mmengine
+
+        batch_data_samples = mmengine.load('work_dirs/batch_data_samples.pkl')
+
+        det_data_raw = {'inputs': [data[0]]}
         results = ()
-        det_data = self.detector.data_preprocessor(data, True)
+        det_data = self.detector.data_preprocessor(det_data_raw, True)
+        det_data['data_samples'] = batch_data_samples
         if isinstance(det_data, dict):
             det_tensor = self.detector(**det_data, mode='tensor')
         elif isinstance(det_data, (list, tuple)):
@@ -148,27 +155,30 @@ class SelfEnhanceDetector(BaseModel):
             raise TypeError('The output of detector should be Tensor or '
                             f'Tuple, but got {type(det_tensor)}')
 
-        if self.vis_enhance:
-            enhance_data = self.enhance_model.data_preprocessor(data, True)
-
-            if isinstance(enhance_data, dict):
-                enhance_tensor = self.enhance_model(
-                    **enhance_data, mode='loss_and_predict')
-            elif isinstance(enhance_data, (list, tuple)):
-                enhance_tensor = self.enhance_model(
-                    *enhance_data, mode='loss_and_predict')
-            else:
-                raise TypeError('Output of `data_preprocessor` should be '
-                                'list, tuple or dict, but got '
-                                f'{type(enhance_data)}')
-            if not isinstance(enhance_tensor, tuple):
-                assert isinstance(enhance_tensor, Tensor)
-                results = results + (enhance_tensor, )
-            elif isinstance(enhance_tensor, tuple):
-                results = results + enhance_tensor
-            else:
-                raise TypeError('The output of detector should be Tensor or '
-                                f'Tuple, but got {type(det_tensor)}')
+        enhance_data_raw = {
+            'inputs': [data[0]],
+            'data_samples': batch_data_samples
+        }
+        enhance_data = self.enhance_model.data_preprocessor(
+            enhance_data_raw, True)
+        enhance_data['data_samples'] = batch_data_samples
+        if isinstance(enhance_data, dict):
+            enhance_tensor = self.enhance_model(**enhance_data, mode='predict')
+        elif isinstance(enhance_data, (list, tuple)):
+            enhance_tensor = self.enhance_model(*enhance_data, mode='predict')
+        else:
+            raise TypeError('Output of `data_preprocessor` should be '
+                            'list, tuple or dict, but got '
+                            f'{type(enhance_data)}')
+        enhance_tensor = enhance_tensor[0].pred_pixel.pred_img
+        if not isinstance(enhance_tensor, tuple):
+            assert isinstance(enhance_tensor, Tensor)
+            results = results + (enhance_tensor, )
+        elif isinstance(enhance_tensor, tuple):
+            results = results + enhance_tensor
+        else:
+            raise TypeError('The output of detector should be Tensor or '
+                            f'Tuple, but got {type(det_tensor)}')
 
         return results
 
@@ -288,7 +298,12 @@ class SelfEnhanceDetector(BaseModel):
                 - masks (Tensor): Has a shape (num_instances, H, W).
         """
         # get batch_inputs and batch_data_samples of detector
+        import time
+        print('-' * 20)
+        t1 = time.time()
         raw_det_data = self.detector.data_preprocessor(data, True)
+        t2 = time.time()
+        print(t2 - t1)
         if isinstance(raw_det_data, dict):
             raw_batch_inputs = raw_det_data['inputs']
             batch_data_samples = raw_det_data['data_samples']
@@ -299,12 +314,14 @@ class SelfEnhanceDetector(BaseModel):
             raise TypeError('Output of `data_preprocessor` should be '
                             'list, tuple or dict, but got '
                             f'{type(raw_det_data)}')
-
+        t3 = time.time()
+        print(t3 - t2)
         if self.vis_enhance:
             assert self.with_enhance_model
 
             enhance_raw_data = self.enhance_model.data_preprocessor(data, True)
-
+            t4 = time.time()
+            print(t4 - t3)
             # get enhance image
             if isinstance(enhance_raw_data, dict):
                 results = self.enhance_model(
@@ -315,13 +332,17 @@ class SelfEnhanceDetector(BaseModel):
                 raise TypeError('Output of `data_preprocessor` should be '
                                 'list, tuple or dict, but got '
                                 f'{type(enhance_raw_data)}')
+            t5 = time.time()
+            print(t5 - t4)
+
             enhance_img_list = [
                 result.pred_pixel.pred_img for result in results
             ]
             # add into batch_data_samples
             batch_data_samples = add_pixel_pred_to_datasample(
                 data_samples=batch_data_samples, pixel_list=enhance_img_list)
-
+            t6 = time.time()
+            print(t6 - t5)
         if self.pred_mode in ['enhance', 'both']:
             # get enhance_batch_inputs of detector
             enhance_data = {'inputs': enhance_img_list}
@@ -343,6 +364,9 @@ class SelfEnhanceDetector(BaseModel):
         elif self.pred_mode == 'enhance':
             batch_data_samples = self.detector(
                 enhance_batch_inputs, batch_data_samples, mode='predict')
+            t7 = time.time()
+            print(t7 - t6)
+            print('-' * 20)
             return batch_data_samples
         else:
             # TODO: support aug_test

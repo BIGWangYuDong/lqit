@@ -145,25 +145,46 @@ class EnhanceDetVisualizationHook(DetVisualizationHook):
                 out_file = osp.basename(img_path)
                 out_file = osp.join(self.test_out_dir, out_file)
 
-            if self.show_on_enhance:
-                img = data_sample.pred_pixel.pred_img
-                # convert to rgb
-                img = img[[2, 1, 0], ...]
-                img = img.cpu().numpy().astype(np.uint8).transpose(1, 2, 0)
-                h, w = data_sample.ori_shape
-                img = mmcv.imresize(img, size=(w, h))
-            else:
-                img_bytes = self.file_client.get(img_path)
-                img = mmcv.imfrombytes(img_bytes, channel_order='rgb')
+            # if self.show_on_enhance:
+            img = data_sample.pred_pixel.pred_img
+            # convert to rgb
+            img = img[[2, 1, 0], ...]
+            img = img.cpu().numpy().astype(np.uint8).transpose(1, 2, 0)
+            h, w = data_sample.ori_shape
+            img = mmcv.imresize(img, size=(w, h))
+            # aug_img = data_sample.img
+            # aug_img = aug_img[..., ::-1]
+            # aug_img = mmcv.imresize(aug_img, size=(w, h))
+            # else:
+            #     img_bytes = self.file_client.get(img_path)
+            #     img = mmcv.imfrombytes(img_bytes, channel_order='rgb')
+
+            out_file1 = osp.basename(img_path)
+            out_file1 = osp.join(self.test_out_dir, 'gt', out_file1)
+
+            out_file2 = osp.basename(img_path)
+            out_file2 = osp.join(self.test_out_dir, 'det_result', out_file2)
 
             self._visualizer.add_datasample(
                 osp.basename(img_path) if self.show else 'test_img',
                 img,
                 data_sample=data_sample,
-                draw_gt=self.draw_gt,
-                draw_pred=self.draw_pred,
+                draw_gt=True,
+                draw_pred=False,
                 show=self.show,
                 wait_time=self.wait_time,
                 pred_score_thr=self.score_thr,
-                out_file=out_file,
+                out_file=out_file1,
+                step=self._test_index)
+
+            self._visualizer.add_datasample(
+                osp.basename(img_path) if self.show else 'test_img',
+                img,
+                data_sample=data_sample,
+                draw_gt=False,
+                draw_pred=True,
+                show=self.show,
+                wait_time=self.wait_time,
+                pred_score_thr=self.score_thr,
+                out_file=out_file2,
                 step=self._test_index)

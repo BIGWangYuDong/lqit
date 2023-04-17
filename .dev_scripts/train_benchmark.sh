@@ -435,3 +435,38 @@ SRUN_ARGS='--quotatype=auto' MASTER_PORT=17884 GPUS=4  GPUS_PER_NODE=4  ./tools/
 SRUN_ARGS='--quotatype=auto' MASTER_PORT=3970  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det urpc_faster  configs/detection/aenet/urpc_exp3/aenet_faster_ufpn_1x_urpc2020.py       work_dirs/work_dirs/aenet_det/urpc/faster/test_5  --cfg-options randomness.seed=0 model.enhance_head.structure_loss.loss_weight=0.1
 SRUN_ARGS='--quotatype=auto' MASTER_PORT=7531  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det urpc_retina  configs/detection/aenet/urpc_exp3/aenet_retina_ufpn_1x_urpc2020.py       work_dirs/work_dirs/aenet_det/urpc/retina/test_5  --cfg-options randomness.seed=0 model.enhance_head.structure_loss.loss_weight=0.1
 SRUN_ARGS='--quotatype=auto' MASTER_PORT=6031  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det urpc_tood    configs/detection/aenet/urpc_exp3/aenet_tood_ufpn_1x_urpc2020.py         work_dirs/work_dirs/aenet_det/urpc/tood/test_5    --cfg-options randomness.seed=0 model.enhance_head.structure_loss.loss_weight=0.1
+
+
+
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=17884 GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det urpc_atss    configs/detection/aenet/urpc/aenet_atss_ufpn_1x_urpc2020.py         work_dirs/work_dirs/aenet_det/urpc/atss/randomseed    --cfg-options randomness.seed=None
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=3970  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det urpc_faster  configs/detection/aenet/urpc/aenet_faster_ufpn_1x_urpc2020.py       work_dirs/work_dirs/aenet_det/urpc/faster/randomseed  --cfg-options randomness.seed=None
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=7531  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det urpc_retina  configs/detection/aenet/urpc/aenet_retina_ufpn_1x_urpc2020.py       work_dirs/work_dirs/aenet_det/urpc/retina/randomseed  --cfg-options randomness.seed=None
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=6031  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det urpc_tood    configs/detection/aenet/urpc/aenet_tood_ufpn_1x_urpc2020.py         work_dirs/work_dirs/aenet_det/urpc/tood/randomseed    --cfg-options randomness.seed=None
+
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=17884 GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det rtts_atss    configs/detection/aenet/rtts/aenet_atss_ufpn_1x_rtts.py         work_dirs/work_dirs/aenet_det/rtts/atss/randomseed    --cfg-options randomness.seed=None
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=3970  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det rtts_faster  configs/detection/aenet/rtts/aenet_faster_ufpn_1x_rtts.py       work_dirs/work_dirs/aenet_det/rtts/faster/randomseed  --cfg-options randomness.seed=None
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=7531  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det rtts_retina  configs/detection/aenet/rtts/aenet_retina_ufpn_1x_rtts.py       work_dirs/work_dirs/aenet_det/rtts/retina/randomseed  --cfg-options randomness.seed=None
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=6031  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det rtts_tood    configs/detection/aenet/rtts/aenet_tood_ufpn_1x_rtts.py         work_dirs/work_dirs/aenet_det/rtts/tood/randomseed    --cfg-options randomness.seed=None
+
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=1325  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det voc_faster  configs/detection/aenet/voc/aenet_faster_ufpn_1x_voc.py       work_dirs/work_dirs/aenet_det/voc/faster/randomseed  --cfg-options randomness.seed=None
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=8254  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det voc_retina  configs/detection/aenet/voc/aenet_retina_ufpn_1x_voc.py       work_dirs/work_dirs/aenet_det/voc/retina/randomseed  --cfg-options randomness.seed=None
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=8254  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det voc_retina  configs/detection/aenet/voc/aenet_retina_ufpn_1x_voc.py       work_dirs/work_dirs/aenet_det/voc/retina/randomseed_2  --cfg-options randomness.seed=None
+
+
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=17884 GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det faster_fpn    configs/detection/aenet/exp_fpn/aenet_faster_fpn_1x_urpc2020.py        work_dirs/work_dirs/aenet_det/study_fpn/faster_fpn/randomseed    --cfg-options randomness.seed=None
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=3970  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det faster_pafpn  configs/detection/aenet/exp_fpn/aenet_faster_pafpn_1x_urpc2020.py      work_dirs/work_dirs/aenet_det/study_fpn/faster_pafpn/randomseed  --cfg-options randomness.seed=None
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=7531  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det retina_fpn    configs/detection/aenet/exp_fpn/aenet_retina_fpn_1x_urpc2020.py        work_dirs/work_dirs/aenet_det/study_fpn/retina_fpn/randomseed  --cfg-options randomness.seed=None
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=6031  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det retina_ufpn   configs/detection/aenet/exp_fpn/aenet_retina_pafpn_1x_urpc2020.py      work_dirs/work_dirs/aenet_det/study_fpn/retina_pafpn/randomseed    --cfg-options randomness.seed=None
+
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=7531  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det faster_aug    configs/detection/aenet/exp_cycle/aenet_faster_ufpn_1x_urpc2020.py      work_dirs/work_dirs/aenet_det/study_cycle/faster/randomseed  --cfg-options randomness.seed=None
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=6031  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det retina_aug    configs/detection/aenet/exp_cycle/aenet_retina_ufpn_1x_urpc2020.py      work_dirs/work_dirs/aenet_det/study_cycle/retina/randomseed    --cfg-options randomness.seed=None
+
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=7531  GPUS=4  GPUS_PER_NODE=4   ./tools/slurm_train.sh mm_det faster_aug    configs/detection/aenet/exp_dataaug/aenet_faster_ufpn_1x_urpc2020.py               work_dirs/work_dirs/aenet_det/study_aug/faster/randomseed  --cfg-options randomness.seed=None
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=6031  GPUS=4  GPUS_PER_NODE=4   ./tools/slurm_train.sh mm_det faster_aug    configs/detection/aenet/exp_dataaug/aenet_retina_ufpn_1x_urpc2020.py               work_dirs/work_dirs/aenet_det/study_aug/retina/randomseed  --cfg-options randomness.seed=None
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=7531  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det faster_aug    configs/detection/aenet/exp_dataaug/dataaug_faster_rcnn_r50_ufpn_1x_urpc2020.py        work_dirs/work_dirs/aenet_det/study_aug/faster_base/randomseed  --cfg-options randomness.seed=None
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=6031  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det retina_aug    configs/detection/aenet/exp_dataaug/dataaug_retinanet_r50_ufpn_1x_urpc2020.py      work_dirs/work_dirs/aenet_det/study_aug/retina_base/randomseed    --cfg-options randomness.seed=None
+
+
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=17884 GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det urpc_atss    configs/detection/aenet/urpc/aenet_atss_ufpn_1x_urpc2020.py         work_dirs/work_dirs/aenet_det/urpc/atss/randomseed_4    --cfg-options randomness.seed=None
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=3970  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det urpc_faster  configs/detection/aenet/urpc/aenet_faster_ufpn_1x_urpc2020.py       work_dirs/work_dirs/aenet_det/urpc/faster/randomseed_4  --cfg-options randomness.seed=None
+SRUN_ARGS='--quotatype=auto' MASTER_PORT=6031  GPUS=4  GPUS_PER_NODE=4  ./tools/slurm_train.sh mm_det urpc_tood    configs/detection/aenet/urpc/aenet_tood_ufpn_1x_urpc2020.py         work_dirs/work_dirs/aenet_det/urpc/tood/randomseed_4    --cfg-options randomness.seed=None

@@ -202,9 +202,9 @@ class AENetEnhanceHead(BaseEnhanceHead):
 
     def predict_by_feat(self,
                         batch_enhance_img,
-                        batch_gt_img,
                         batch_img_metas,
                         rescale=False):
+        self.gt_preprocessor.norm_input_flag = False
         enhance_img_list = self.destructor_results(batch_enhance_img,
                                                    batch_img_metas)
         return enhance_img_list

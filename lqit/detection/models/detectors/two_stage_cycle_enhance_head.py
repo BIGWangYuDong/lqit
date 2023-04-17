@@ -142,7 +142,6 @@ class CycleTwoStageWithEnhanceHead(TwoStageDetector):
             if self.with_rpn:
                 proposal_cfg = self.train_cfg.get('rpn_proposal',
                                                   self.test_cfg.rpn)
-                batch_data_samples[0].pop('gt_pixel')
                 rpn_data_samples = copy.deepcopy(batch_data_samples)
                 # set cat_id of gt_labels to 0 in RPN
                 for data_sample in rpn_data_samples:
@@ -255,11 +254,11 @@ class CycleTwoStageWithEnhanceHead(TwoStageDetector):
         results_list = self.roi_head.predict(
             x, rpn_results_list, batch_data_samples, rescale=rescale)
 
-        if self.vis_enhance and self.with_enhance_head:
-            enhance_list = self.enhance_head.predict(
-                x, batch_data_samples, rescale=rescale)
-            batch_data_samples = add_pixel_pred_to_datasample(
-                data_samples=batch_data_samples, pixel_list=enhance_list)
+        # if self.vis_enhance and self.with_enhance_head:
+        enhance_list = self.enhance_head.predict(
+            x, batch_data_samples, rescale=rescale)
+        batch_data_samples = add_pixel_pred_to_datasample(
+            data_samples=batch_data_samples, pixel_list=enhance_list)
 
         batch_data_samples = self.add_pred_to_datasample(
             batch_data_samples, results_list)
