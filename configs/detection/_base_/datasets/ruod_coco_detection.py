@@ -1,6 +1,6 @@
 # dataset settings
-dataset_type = 'URPCXMLDataset'
-data_root = 'data/URPC/'
+dataset_type = 'RUODDataset'
+data_root = 'data/RUOD/'
 
 backend_args = None
 
@@ -30,12 +30,9 @@ train_dataloader = dict(
     dataset=dict(
         type=dataset_type,
         data_root=data_root,
-        ann_file='ImageSets/train.txt',
-        meta_file='ImageMetas/train-image-metas.pkl',
-        img_subdir='JPEGImages',
-        ann_subdir='annotations_xml',
-        data_prefix=dict(sub_data_root=''),
-        filter_cfg=dict(filter_empty_gt=True, min_size=32, bbox_min_size=32),
+        ann_file='annotations/instances_train.json',
+        data_prefix=dict(img='train/'),
+        filter_cfg=dict(filter_empty_gt=True, min_size=32),
         pipeline=train_pipeline,
         backend_args=backend_args))
 val_dataloader = dict(
@@ -47,15 +44,17 @@ val_dataloader = dict(
     dataset=dict(
         type=dataset_type,
         data_root=data_root,
-        ann_file='ImageSets/val.txt',
-        meta_file='ImageMetas/val-image-metas.pkl',
-        img_subdir='JPEGImages',
-        ann_subdir='annotations_xml',
-        data_prefix=dict(sub_data_root=''),
+        ann_file='annotations/instances_test.json',
+        data_prefix=dict(img='test/'),
         test_mode=True,
         pipeline=test_pipeline,
         backend_args=backend_args))
 test_dataloader = val_dataloader
 
-val_evaluator = dict(type='VOCMetric', metric='mAP', eval_mode='area')
+val_evaluator = dict(
+    type='CocoMetric',
+    ann_file=data_root + 'annotations/instances_test.json',
+    metric='bbox',
+    format_only=False,
+    backend_args=backend_args)
 test_evaluator = val_evaluator

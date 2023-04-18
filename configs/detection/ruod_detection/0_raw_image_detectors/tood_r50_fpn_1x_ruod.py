@@ -1,11 +1,11 @@
 _base_ = [
-    '../_base_/datasets/rtts_coco.py', '../_base_/schedules/schedule_1x.py',
-    '../_base_/default_runtime.py'
+    '../../_base_/datasets/ruod_coco_detection.py',
+    '../../_base_/schedules/schedule_1x.py', '../../_base_/default_runtime.py'
 ]
 
 # model settings
 model = dict(
-    type='ATSS',
+    type='TOOD',
     data_preprocessor=dict(
         type='DetDataPreprocessor',
         mean=[123.675, 116.28, 103.53],
@@ -30,11 +30,12 @@ model = dict(
         add_extra_convs='on_output',
         num_outs=5),
     bbox_head=dict(
-        type='ATSSHead',
-        num_classes=5,
+        type='TOODHead',
+        num_classes=10,
         in_channels=256,
-        stacked_convs=4,
+        stacked_convs=6,
         feat_channels=256,
+        anchor_type='anchor_free',
         anchor_generator=dict(
             type='AnchorGenerator',
             ratios=[1.0],
@@ -45,18 +46,26 @@ model = dict(
             type='DeltaXYWHBBoxCoder',
             target_means=[.0, .0, .0, .0],
             target_stds=[0.1, 0.1, 0.2, 0.2]),
-        loss_cls=dict(
+        initial_loss_cls=dict(
             type='FocalLoss',
             use_sigmoid=True,
+            activated=True,  # use probability instead of logit as input
             gamma=2.0,
             alpha=0.25,
             loss_weight=1.0),
-        loss_bbox=dict(type='GIoULoss', loss_weight=2.0),
-        loss_centerness=dict(
-            type='CrossEntropyLoss', use_sigmoid=True, loss_weight=1.0)),
-    # training and testing settings
+        loss_cls=dict(
+            type='QualityFocalLoss',
+            use_sigmoid=True,
+            activated=True,  # use probability instead of logit as input
+            beta=2.0,
+            loss_weight=1.0),
+        loss_bbox=dict(type='GIoULoss', loss_weight=2.0)),
     train_cfg=dict(
-        assigner=dict(type='ATSSAssigner', topk=9),
+        initial_epoch=4,
+        initial_assigner=dict(type='ATSSAssigner', topk=9),
+        assigner=dict(type='TaskAlignedAssigner', topk=13),
+        alpha=1,
+        beta=6,
         allowed_border=-1,
         pos_weight=-1,
         debug=False),
@@ -67,5 +76,6 @@ model = dict(
         nms=dict(type='nms', iou_threshold=0.6),
         max_per_img=100))
 
+# optimizer
 optim_wrapper = dict(
     optimizer=dict(type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0001))

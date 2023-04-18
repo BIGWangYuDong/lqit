@@ -1,5 +1,4 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import copy
 import os.path as osp
 import xml.etree.ElementTree as ET
 from typing import List, Optional, Union
@@ -51,33 +50,7 @@ class XMLDatasetWithMetaFile(XMLDataset):
                 self.meta_file,
                 file_format='pkl',
                 backend_args=self.backend_args)
-        # TODO: check whether can use super().load_data_list()
         data_list = super().load_data_list()
-        # assert self._metainfo.get('CLASSES', None) is not None, \
-        #     'CLASSES in `XMLDataset` can not be None.'
-        # self.cat2label = {
-        #     cat: i
-        #     for i, cat in enumerate(self._metainfo['CLASSES'])
-        # }
-
-        # data_list = []
-        # img_ids = list_from_file(
-        #     self.ann_file, file_client_args=self.file_client_args)
-        # for img_id in img_ids:
-        #     img_path = osp.normpath(
-        #         osp.join(self.sub_data_root, self.img_subdir,
-        #                  f'{img_id}.{self.img_suffix}'))
-        #     xml_path = osp.normpath(
-        #         osp.join(self.sub_data_root,
-        #                  self.ann_subdir, f'{img_id}.xml'))
-
-        #     raw_img_info = {}
-        #     raw_img_info['img_id'] = img_id
-        #     raw_img_info['img_path'] = img_path
-        #     raw_img_info['xml_path'] = xml_path
-
-        #     parsed_data_info = self.parse_data_info(raw_img_info)
-        #     data_list.append(parsed_data_info)
         return data_list
 
     def parse_data_info(self, img_info: dict) -> Union[dict, List[dict]]:
@@ -90,8 +63,12 @@ class XMLDatasetWithMetaFile(XMLDataset):
         Returns:
             Union[dict, List[dict]]: Parsed annotation.
         """
-        data_info = copy.deepcopy(img_info)
-        img_path = data_info['img_path']
+        data_info = {}
+        img_path = osp.join(self.sub_data_root, img_info['file_name'])
+        data_info['img_path'] = img_path
+        data_info['img_id'] = img_info['img_id']
+        data_info['xml_path'] = img_info['xml_path']
+
         # deal with xml file
         with get_local_path(
                 img_info['xml_path'],
@@ -117,5 +94,6 @@ class XMLDatasetWithMetaFile(XMLDataset):
         data_info['height'] = height
         data_info['width'] = width
 
-        data_info['instances'] = self._parse_instance_info(raw_ann_info)
+        data_info['instances'] = self._parse_instance_info(
+            raw_ann_info, minus_one=True)
         return data_info

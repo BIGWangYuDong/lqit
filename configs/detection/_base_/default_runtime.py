@@ -9,7 +9,7 @@ default_hooks = dict(
     visualization=dict(type='DetVisualizationHook'))
 
 # set seed = 0 as default
-randomness = dict(seed=0, deterministic=False)
+randomness = dict(seed=None, deterministic=False)
 
 env_cfg = dict(
     cudnn_benchmark=False,

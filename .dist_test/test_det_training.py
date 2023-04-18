@@ -1,22 +1,29 @@
-# Modified from https://github.com/open-mmlab/mmdetection
-import argparse
+# Copyright (c) OpenMMLab. All rights reserved.
 import logging
 import os
 import os.path as osp
+from argparse import ArgumentParser
 
+from mmdet.testing import replace_to_ceph
+from mmdet.utils import register_all_modules as register_all_mmdet_models
+from mmdet.utils import replace_cfg_vals
 from mmengine.config import Config, DictAction
-from mmengine.logging import print_log
+from mmengine.logging import MMLogger, print_log
 from mmengine.registry import RUNNERS
 from mmengine.runner import Runner
 
-from lqit.utils import (print_colored_log, register_all_modules,
-                        setup_cache_size_limit_of_dynamo)
+from lqit.utils import register_all_modules
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='Train a detector')
-    parser.add_argument('config', help='train config file path')
-    parser.add_argument('--work-dir', help='the dir to save logs and models')
+    parser = ArgumentParser()
+    parser.add_argument('config_root', help='test config file path')
+    parser.add_argument(
+        '--work-dir',
+        default='work_dirs/test_det_training',
+        help='the dir to save logs and models')
+    parser.add_argument('--ceph', action='store_true')
+    parser.add_argument('--save-ckpt', action='store_true')
     parser.add_argument(
         '--amp',
         action='store_true',
@@ -28,12 +35,8 @@ def parse_args():
         help='enable automatically scaling LR.')
     parser.add_argument(
         '--resume',
-        nargs='?',
-        type=str,
-        const='auto',
-        help='If specify checkpoint path, resume from it, while if not '
-        'specify, try to auto resume from the latest checkpoint '
-        'in the work directory.')
+        action='store_true',
+        help='resume from the latest checkpoint in the work_dir automatically')
     parser.add_argument(
         '--cfg-options',
         nargs='+',
@@ -49,30 +52,18 @@ def parse_args():
         choices=['none', 'pytorch', 'slurm', 'mpi'],
         default='none',
         help='job launcher')
-    # When using PyTorch version >= 2.0.0, the `torch.distributed.launch`
-    # will pass the `--local-rank` parameter to `tools/train.py` instead
-    # of `--local_rank`.
-    parser.add_argument('--local_rank', '--local-rank', type=int, default=0)
+    parser.add_argument('--local_rank', type=int, default=0)
     args = parser.parse_args()
     if 'LOCAL_RANK' not in os.environ:
         os.environ['LOCAL_RANK'] = str(args.local_rank)
-
+    args = parser.parse_args()
     return args
 
 
-def main():
-    args = parse_args()
-
-    # register all modules in mmdet into the registries
-    # do not init the default scope here because it will be init in the runner
-    register_all_modules(init_default_scope=False)
-
-    # Reduce the number of repeated compilations and improve
-    # training speed.
-    setup_cache_size_limit_of_dynamo()
-
-    # load config
-    cfg = Config.fromfile(args.config)
+# TODO: Need to refactor train.py so that it can be reused.
+def fast_train_model(config_name, args, logger=None):
+    cfg = Config.fromfile(config_name)
+    cfg = replace_cfg_vals(cfg)
     cfg.launcher = args.launcher
     if args.cfg_options is not None:
         cfg.merge_from_dict(args.cfg_options)
@@ -80,11 +71,38 @@ def main():
     # work_dir is determined in this priority: CLI > segment in file > filename
     if args.work_dir is not None:
         # update configs according to CLI args if args.work_dir is not None
-        cfg.work_dir = args.work_dir
+        cfg.work_dir = osp.join(args.work_dir,
+                                osp.splitext(osp.basename(config_name))[0])
     elif cfg.get('work_dir', None) is None:
         # use config filename as default work_dir if cfg.work_dir is None
         cfg.work_dir = osp.join('./work_dirs',
-                                osp.splitext(osp.basename(args.config))[0])
+                                osp.splitext(osp.basename(config_name))[0])
+
+    ckpt_hook = cfg.default_hooks.checkpoint
+    by_epoch = ckpt_hook.get('by_epoch', True)
+    fast_stop_hook = dict(type='FastStopTrainingHook')
+    fast_stop_hook['by_epoch'] = by_epoch
+    if args.save_ckpt:
+        if by_epoch:
+            interval = 1
+            stop_iter_or_epoch = 2
+        else:
+            interval = 4
+            stop_iter_or_epoch = 10
+        fast_stop_hook['stop_iter_or_epoch'] = stop_iter_or_epoch
+        fast_stop_hook['save_ckpt'] = True
+        ckpt_hook.interval = interval
+
+    if 'custom_hooks' in cfg:
+        cfg.custom_hooks.append(fast_stop_hook)
+    else:
+        custom_hooks = [fast_stop_hook]
+        cfg.custom_hooks = custom_hooks
+
+    # TODO: temporary plan
+    if 'visualizer' in cfg:
+        if 'name' in cfg.visualizer:
+            del cfg.visualizer.name
 
     # enable automatic-mixed-precision training
     if args.amp is True:
@@ -113,13 +131,10 @@ def main():
                                '"auto_scale_lr.base_batch_size" in your'
                                ' configuration file.')
 
-    # resume is determined in this priority: resume from > auto_resume
-    if args.resume == 'auto':
-        cfg.resume = True
-        cfg.load_from = None
-    elif args.resume is not None:
-        cfg.resume = True
-        cfg.load_from = args.resume
+    if args.ceph:
+        replace_to_ceph(cfg)
+
+    cfg.resume = args.resume
 
     # build the runner from config
     if 'runner_type' not in cfg:
@@ -130,15 +145,37 @@ def main():
         # if 'runner_type' is set in the cfg
         runner = RUNNERS.build(cfg)
 
-    print_colored_log(f'Working directory: {cfg.work_dir}')
-    print_colored_log(f'Log directiry: {runner._log_dir}')
-
-    # start training
     runner.train()
 
-    print_colored_log(f'Log saved under {runner._log_dir}')
-    print_colored_log(f'Checkpoint saved under {cfg.work_dir}')
+
+# Sample test whether the train code is correct
+def main(args):
+    # register all modules
+    register_all_mmdet_models(init_default_scope=False)
+    register_all_modules(init_default_scope=False)
+
+    # test all model
+    logger = MMLogger.get_instance(
+        name='MMLogger',
+        log_file='benchmark_train.log',
+        log_level=logging.ERROR)
+
+    config_root = args.config_root
+    filenames = os.listdir(config_root)
+    filenames.sort()  # sort the list
+    for name in filenames:
+        config_name = osp.join(config_root, name)
+        print('processing: ', config_name, flush=True)
+        try:
+            fast_train_model(config_name, args, logger)
+        except RuntimeError as e:
+            # quick exit is the normal exit message
+            if 'quick exit' not in repr(e):
+                logger.error(f'{config_name} " : {repr(e)}')
+        except Exception as e:
+            logger.error(f'{config_name} " : {repr(e)}')
 
 
 if __name__ == '__main__':
-    main()
+    args = parse_args()
+    main(args)

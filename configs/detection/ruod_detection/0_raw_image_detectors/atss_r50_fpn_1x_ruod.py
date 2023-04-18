@@ -1,6 +1,6 @@
 _base_ = [
-    '../_base_/datasets/rtts_coco.py', '../_base_/schedules/schedule_1x.py',
-    '../_base_/default_runtime.py'
+    '../../_base_/datasets/ruod_coco_detection.py',
+    '../../_base_/schedules/schedule_1x.py', '../../_base_/default_runtime.py'
 ]
 
 # model settings
@@ -31,7 +31,7 @@ model = dict(
         num_outs=5),
     bbox_head=dict(
         type='ATSSHead',
-        num_classes=5,
+        num_classes=10,
         in_channels=256,
         stacked_convs=4,
         feat_channels=256,
@@ -67,5 +67,6 @@ model = dict(
         nms=dict(type='nms', iou_threshold=0.6),
         max_per_img=100))
 
+# optimizer
 optim_wrapper = dict(
     optimizer=dict(type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0001))
