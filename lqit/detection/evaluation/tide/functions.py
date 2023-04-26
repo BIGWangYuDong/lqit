@@ -2,6 +2,7 @@
 # This work is licensed under MIT license.
 import os
 import sys
+from typing import Union
 
 import numpy as np
 
@@ -12,7 +13,7 @@ def mean(arr: list):
     return sum(arr) / len(arr)
 
 
-def find_first(arr: np.array) -> int:
+def find_first(arr: np.array) -> Union[int, None]:
     """Finds the index of the first instance of true in a vector or None if not
     found."""
     if len(arr) == 0:
@@ -26,7 +27,7 @@ def find_first(arr: np.array) -> int:
     return idx
 
 
-def isiterable(x):
+def isiterable(x) -> bool:
     try:
         iter(x)
         return True

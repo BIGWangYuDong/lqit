@@ -461,10 +461,9 @@ class TIDERun:
 
 
 class TIDE:
-    """████████╗██╗██████╗ ███████╗
+    """A General Toolbox for Identifying Object Detection Errors.
 
-    ╚══██╔══╝██║██╔══██╗██╔════╝    ██║   ██║██║  ██║█████╗    ██║   ██║██║
-    ██║██╔══╝    ██║   ██║██████╔╝███████╗    ╚═╝   ╚═╝╚═════╝ ╚══════╝
+    `TIDE <https://arxiv.org/abs/2008.08115>`_
     """
 
     # This is just here to define a consistent order of the error types
@@ -713,6 +712,31 @@ class TIDE:
                 }
 
         return errors
+
+    @property
+    def all_errors(self):
+        main_errors = self.main_errors
+        special_errors = self.special_errors
+        assert len(main_errors) == 1, \
+            'only support single evaluation, if you want to get multi ' \
+            'results, please use `get_all_errors`'
+        errors = OrderedDict()
+        for run_name, value in main_errors.items():
+            errors.update(value)
+            special_errors_value = special_errors.get(run_name)
+            if special_errors_value is not None:
+                errors.update(special_errors_value)
+        return errors
+
+    @property
+    def main_errors(self):
+        main_errors = self.get_main_errors()
+        return main_errors
+
+    @property
+    def special_errors(self):
+        special_errors = self.get_special_errors()
+        return special_errors
 
     def get_all_errors(self):
         """

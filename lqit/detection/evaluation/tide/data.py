@@ -3,7 +3,7 @@
 from collections import defaultdict
 
 
-class Data():
+class Data:
     """A class to hold ground truth or predictions data in an easy to work with
     format.
 
@@ -17,7 +17,7 @@ class Data():
     allowed to output for a given image.
     """
 
-    def __init__(self, name: str, max_dets: int = 100):
+    def __init__(self, name: str, max_dets: int = 100) -> None:
         self.name = name
         self.max_dets = max_dets
 
@@ -44,19 +44,19 @@ class Data():
 
         return ignored_classes.difference(classes_in_image)
 
-    def _make_default_class(self, id: int):
+    def _make_default_class(self, index: int) -> None:
         """(For internal use) Initializes a class id with a generated name."""
-        if id not in self.classes:
-            self.classes[id] = 'Class ' + str(id)
+        if index not in self.classes:
+            self.classes[index] = 'Class ' + str(index)
 
-    def _make_default_image(self, id: int):
-        if self.images[id]['name'] is None:
-            self.images[id]['name'] = 'Image ' + str(id)
+    def _make_default_image(self, index: int) -> None:
+        if self.images[index]['name'] is None:
+            self.images[index]['name'] = 'Image ' + str(index)
 
-    def _prepare_box(self, box: object):
+    def _prepare_box(self, box: object) -> object:
         return box
 
-    def _prepare_mask(self, mask: object):
+    def _prepare_mask(self, mask: object) -> object:
         return mask
 
     def _add(self,
@@ -65,7 +65,7 @@ class Data():
              box: object = None,
              mask: object = None,
              score: float = 1,
-             ignore: bool = False):
+             ignore: bool = False) -> None:
         """Add a data object to this collection.
 
         You should use one of the below functions instead.
@@ -90,7 +90,7 @@ class Data():
                          image_id: int,
                          class_id: int,
                          box: object = None,
-                         mask: object = None):
+                         mask: object = None) -> None:
         """Add a ground truth.
 
         If box or mask is None, this GT will be ignored for that mode.
@@ -102,7 +102,7 @@ class Data():
                       class_id: int,
                       score: int,
                       box: object = None,
-                      mask: object = None):
+                      mask: object = None) -> None:
         """Add a predicted detection.
 
         If box or mask is None, this prediction will be ignored for that mode.
@@ -113,7 +113,7 @@ class Data():
                           image_id: int,
                           class_id: int = None,
                           box: object = None,
-                          mask: object = None):
+                          mask: object = None) -> None:
         """Add a region inside of which background detections should be
         ignored.
 
@@ -126,13 +126,13 @@ class Data():
         """
         self._add(image_id, class_id, box, mask, ignore=True)
 
-    def add_class(self, id: int, name: str):
+    def add_class(self, index: int, name: str):
         """Register a class name to that class ID."""
-        self.classes[id] = name
+        self.classes[index] = name
 
-    def add_image(self, id: int, name: str):
+    def add_image(self, index: int, name: str):
         """Register an image name/path with an image ID."""
-        self.images[id]['name'] = name
+        self.images[index]['name'] = name
 
     def get(self, image_id: int):
         """Collects all the annotations / detections for that particular

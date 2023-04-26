@@ -1,14 +1,14 @@
 # Modified from https://github.com/dbolya/tide
 # This work is licensed under MIT license.
-from typing import Optional
+from typing import Union
 
 from .error import BestGTMatch, Error
 
 
 class ClassError(Error):
 
-    description = 'Error caused when a prediction would have ' \
-           + '	been marked positive if it had the correct class.'
+    description = 'Error caused when a prediction would have' \
+           + ' been marked positive if it had the correct class.'
     short_name = 'Cls'
 
     def __init__(self, pred: dict, gt: dict) -> None:
@@ -17,7 +17,7 @@ class ClassError(Error):
 
         self.match = BestGTMatch(pred, gt) if not self.gt['used'] else None
 
-    def fix(self) -> Optional[tuple]:
+    def fix(self) -> Union[tuple, None]:
         if self.match is None:
             return None
         return self.gt['class'], self.match.fix()
@@ -35,7 +35,7 @@ class BoxError(Error):
 
         self.match = BestGTMatch(pred, gt) if not self.gt['used'] else None
 
-    def fix(self) -> Optional[tuple]:
+    def fix(self) -> Union[tuple, None]:
         if self.match is None:
             return None
         return self.pred['class'], self.match.fix()

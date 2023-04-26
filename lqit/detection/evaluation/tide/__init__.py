@@ -1,8 +1,11 @@
 # Modified from https://github.com/dbolya/tide
 # This work is licensed under MIT license.
 
-# Note: We improved TIDE's output image and optimized the code format.
-# TODO: Add it in the Metric and fully test all datasets.
+# Note:
+# 1. We removed several unused codes, improved TIDE's output images,
+# and optimized the code format.
+# 2. Right now, only COCO dataset is available, others
+# (LVIS, PASCAL VOC, and CityScapes) are not fully tested.
 
 from .datasets import COCO, LVIS, Cityscapes, COCOResult, LVISResult, Pascal
 from .errors import *  # noqa: F401,F403

@@ -18,7 +18,7 @@ def default_name(path: str) -> str:
     return os.path.splitext(os.path.basename(path))[0]
 
 
-def get_tide_path():
+def get_tide_path() -> str:
     if 'TIDE_PATH' in os.environ:
         tide_path = os.environ['TIDE_PATH']
     else:
@@ -111,8 +111,11 @@ def COCO(path: str = None,
         image = ann['image_id']
         _class = ann['category_id']
         box = ann['bbox']
-        mask = toRLE(ann['segmentation'], image_lookup[image]['width'],
-                     image_lookup[image]['height'])
+        if 'segmentation' in ann:
+            mask = toRLE(ann['segmentation'], image_lookup[image]['width'],
+                         image_lookup[image]['height'])
+        else:
+            mask = None
 
         if ann['iscrowd']:
             data.add_ignore_region(image, _class, box, mask)
