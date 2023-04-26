@@ -43,9 +43,7 @@ def parse_args():
     return args
 
 
-def main():
-    args = parse_args()
-
+def get_tide_errors(args):
     tide = TIDE(
         pos_threshold=args.pos_thr,
         background_threshold=args.bkg_thr,
@@ -60,14 +58,20 @@ def main():
     tide.evaluate(gt=gt, preds=preds, name=args.name)
     tide.summarize()
     all_errors = tide.all_errors
+    if args.out is not None:
+        tide.plot(out_dir=args.out)
+        print(f'Save TIDE Image in {args.out}')
+    return all_errors
+
+
+def main():
+    args = parse_args()
+    all_errors = get_tide_errors(args)
     error_str = 'TIDE Errors: \n'
     for k, v in all_errors.items():
         error_name = f'{k}_Error'.ljust(11)
         error_str += f'{error_name}: {v:6.2f}  \n'
     print(error_str)
-    if args.out is not None:
-        tide.plot(out_dir=args.out)
-        print(f'Save TIDE Image in {args.out}')
 
 
 if __name__ == '__main__':
