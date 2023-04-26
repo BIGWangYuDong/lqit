@@ -101,6 +101,7 @@ def register_all_modules(init_default_scope: bool = True) -> None:
     # register all modules in lqit.detection
     import lqit.detection.datasets  # noqa: F401,F403
     import lqit.detection.engine  # noqa: F401,F403
+    import lqit.detection.evaluation  # noqa: F401,F403
     import lqit.detection.models  # noqa: F401,F403
     # register all modules in lqit.edit
     import lqit.edit.datasets  # noqa: F401,F403
