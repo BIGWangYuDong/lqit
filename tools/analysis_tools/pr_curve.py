@@ -2,7 +2,13 @@
 
 Examples:
     python tools/analysis_tools/pr_curve.py \
-    ${RESULT JSON FILE} \
+    ${ANN_FILE} \
+    ${RESULT_JSON_FILE_1} ${RESULT_JSON_FILE_2} ${RESULT_JSON_FILE_3} \
+    --iou_thrs 0.5 0.55\
+    --plot_single
+    --classwise
+    --legend ${NAME_1} ${NAME_2} ${NAME_3}
+    --title_base ${RUN_NAME}
     --out ${OUT PATH}
 """
 import argparse
