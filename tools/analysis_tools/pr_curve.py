@@ -364,6 +364,8 @@ def main():
             'set `CocoMetric.format_only=True` and ' \
             '`CocoMetric.outfile_prefix=xxx` ' \
             'to get json result first.'
+        assert os.path.exists(json_result), f'{json_result} does not exist'
+
     if args.plot_single:
         assert args.legend is not None and \
                len(json_results) == len(args.legend)

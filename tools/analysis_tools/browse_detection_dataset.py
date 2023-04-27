@@ -156,19 +156,32 @@ def main():
         det_results = load_json_results(pred_file)
     else:
         det_results = load_pkl_results(args.prediction_path)
-    assert len(det_results) == len(dataset)
+    if len(det_results) != len(dataset):
+        assert det_results[0].get('image_id') is not None
+        match = True
+    else:
+        match = False
     progress_bar = ProgressBar(len(dataset))
-
+    match_i = 0
     for i, item in enumerate(dataset):
         data_sample = item['data_samples']
-        data_sample.pred_instances = det_results[i]
         img_path = data_sample.img_path
-        img_bytes = get(img_path)
-        img = mmcv.imfrombytes(img_bytes, channel_order='rgb')
         image_name = osp.basename(img_path)
         if args.select_img is not None and image_name not in args.select_img:
             progress_bar.update()
             continue
+
+        data_sample.pred_instances = det_results[i - match_i]
+        img_bytes = get(img_path)
+        img = mmcv.imfrombytes(img_bytes, channel_order='rgb')
+        if match:
+            result_id = det_results[i - match_i]['image_id']
+            if result_id is not None:
+                if result_id != data_sample.img_id:
+                    match_i += 1
+                    print('image index is not match')
+                    continue
+
         if output_dir is not None:
             out_file = osp.join(output_dir, image_name)
         else:
