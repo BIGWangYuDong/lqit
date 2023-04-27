@@ -86,6 +86,7 @@ def load_json_results(result_path):
             pred_instances.bboxes = bbox_tensor
             pred_instances.scores = score_tensor
             pred_instances.labels = label_tensor
+            pred_instances.set_metainfo({'image_id': tmp_img_id})
             outputs.append(pred_instances)
             bbox_list = []
             score_list = []
@@ -109,6 +110,9 @@ def load_json_results(result_path):
     pred_instances.bboxes = bbox_tensor
     pred_instances.scores = score_tensor
     pred_instances.labels = label_tensor
+    pred_instances.set_metainfo({'image_id': tmp_img_id})
+    outputs.append(pred_instances)
+
     return outputs
 
 
@@ -152,13 +156,12 @@ def main():
         det_results = load_json_results(pred_file)
     else:
         det_results = load_pkl_results(args.prediction_path)
-
+    assert len(det_results) == len(dataset)
     progress_bar = ProgressBar(len(dataset))
 
     for i, item in enumerate(dataset):
         data_sample = item['data_samples']
         data_sample.pred_instances = det_results[i]
-
         img_path = data_sample.img_path
         img_bytes = get(img_path)
         img = mmcv.imfrombytes(img_bytes, channel_order='rgb')
