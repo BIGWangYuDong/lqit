@@ -78,7 +78,7 @@ def main():
     args = parse_args()
 
     # TODO: Find a more elegant way to register all modules in lqit
-    register_all_modules()
+    register_all_modules(init_default_scope=False)
 
     # Reduce the number of repeated compilations and improve
     # testing speed.
