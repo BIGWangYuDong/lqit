@@ -13,6 +13,7 @@ from lqit.utils import (print_colored_log, register_all_modules,
                         setup_cache_size_limit_of_dynamo)
 
 
+# TODO: Check if scripts for detection and other tasks can be unified
 def parse_args():
     parser = argparse.ArgumentParser(description='Train a detector')
     parser.add_argument('config', help='train config file path')

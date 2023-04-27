@@ -90,18 +90,21 @@ def get_precisions(coco_gt, json_results, labels, args):
     iou_thrs = [round(0.5 + 0.05 * x, 2) for x in range(10)]
     legend = []
     legend50 = []
+    legend75 = []
     single_title = []
     if args.legend is None:
         for json_result in json_results:
             name = os.path.split(json_result)[-1].split('.json')[0]
             legend.append(f'{name}' + '(AP={})')
             legend50.append(f'{name}' + '(AP50={})')
+            legend75.append(f'{name}' + '(AP75={})')
             single_title.append(f'{name}')
     else:
         for _legend in args.legend:
             legend.append(f'{_legend}' + '(AP={})')
             single_title.append(f'{_legend}')
             legend50.append(f'{_legend}' + '(AP50={})')
+            legend75.append(f'{_legend}' + '(AP75={})')
     assert len(legend) == len(json_results)
 
     # prepare for the loop
@@ -125,12 +128,15 @@ def get_precisions(coco_gt, json_results, labels, args):
     ap_list = []
     # `ap50_list` is used to store coco ap50 results
     ap50_list = []
+    # `ap75_list` is used to store coco ap75 results
+    ap75_list = []
     # `label_ap_list` is used to store label ap results
     label_ap_list = []
 
     results_dict = dict()
     results_dict['legend'] = legend
     results_dict['legend50'] = legend50
+    results_dict['legend75'] = legend75
     results_dict['single_title'] = single_title
     results_dict['iou_thrs'] = iou_thrs
     results_dict['json_results'] = json_results
@@ -180,11 +186,13 @@ def get_precisions(coco_gt, json_results, labels, args):
         label_ap_list.append(temp_ap)
         ap_list.append(coco_eval.stats[0])
         ap50_list.append(coco_eval.stats[1])
+        ap75_list.append(coco_eval.stats[2])
     results_dict['pr'] = pr_arrays
     results_dict['mpr'] = mean_arrays
     results_dict['ap'] = label_ap_list
     results_dict['map'] = ap_list
     results_dict['map50'] = ap50_list
+    results_dict['map75'] = ap75_list
     return results_dict
 
 
@@ -211,9 +219,10 @@ def plot_curve(results_dict, args):
     ap = results_dict['ap']
     map = results_dict['map']
     map50 = results_dict['map50']
-
+    map75 = results_dict['map75']
     legend = results_dict['legend']
     legend50 = results_dict['legend50']
+    legend75 = results_dict['legend75']
     single_title = results_dict['single_title']
     json_results = results_dict['json_results']
     labels = results_dict['labels']
@@ -221,7 +230,7 @@ def plot_curve(results_dict, args):
     # x-axis coordinate: [0.00, 0.01, 0.02, ..., 1.00]
     x = np.arange(0.0, 1.01, 0.01)
     # plot curve in same results with different iou threshold
-    if args.plot_single:
+    if args.plot_single or len(json_results) == 1:
         for i, mpr_single in enumerate(mpr):
             for iou_thr in results_dict['iou_thrs']:
                 label_name = f'IoU thr={iou_thr}'
@@ -251,6 +260,8 @@ def plot_curve(results_dict, args):
             for i, mpr_single in enumerate(mpr):
                 if iou_thr == 0.5:
                     label_name = legend50[i].format(round(map50[i] * 100, 2))
+                elif iou_thr == 0.75:
+                    label_name = legend75[i].format(round(map75[i] * 100, 2))
                 else:
                     label_name = legend[i].format(round(map[i] * 100, 2))
                 plt.plot(
@@ -273,7 +284,7 @@ def plot_curve(results_dict, args):
 
     if args.classwise:
         # plot curve in same results with different iou threshold
-        if args.plot_single:
+        if args.plot_single or len(json_results) == 1:
             for c, single_label in enumerate(labels):
                 for i, pr_single in enumerate(pr):
                     for iou_thr in results_dict['iou_thrs']:
@@ -310,6 +321,9 @@ def plot_curve(results_dict, args):
                     for i, pr_single in enumerate(pr):
                         if iou_thr == 0.5:
                             label_name = legend50[i].format(
+                                round(ap[i][c][thr_id] * 100, 2))
+                        elif iou_thr == 0.75:
+                            label_name = legend75[i].format(
                                 round(ap[i][c][thr_id] * 100, 2))
                         else:
                             # get mean AP of the current category
