@@ -1,6 +1,3 @@
-from .data_preprocessor import *  # noqa: F401,F403
-from .dataset_wrappers import DatasetWithGTImageWrapper
+from .datasets import *  # noqa: F401,F403
+from .models import *  # noqa: F401,F403
 from .structures import *  # noqa: F401,F403
-from .transforms import *  # noqa: F401,F403
-
-__all__ = ['DatasetWithGTImageWrapper']

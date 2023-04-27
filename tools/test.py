@@ -1,4 +1,4 @@
-# Modified from https://github.com/open-mmlab/mmdetection/tree/3.x/
+# Modified from https://github.com/open-mmlab/mmdetection
 import argparse
 import os
 import os.path as osp
@@ -7,13 +7,14 @@ from mmengine.config import Config, DictAction
 from mmengine.runner import Runner
 
 from lqit.registry import RUNNERS
-from lqit.utils import register_all_modules
+from lqit.utils import register_all_modules, setup_cache_size_limit_of_dynamo
 
 
 # TODO: support fuse_conv_bn and format_only
+# TODO: Check if scripts for detection and other tasks can be unified
 def parse_args():
     parser = argparse.ArgumentParser(
-        description='MMDet test (and eval) a model')
+        description='LQIT test (and eval) a detection model')
     parser.add_argument('config', help='test config file path')
     parser.add_argument('checkpoint', help='checkpoint file')
     parser.add_argument(
@@ -43,7 +44,10 @@ def parse_args():
         choices=['none', 'pytorch', 'slurm', 'mpi'],
         default='none',
         help='job launcher')
-    parser.add_argument('--local_rank', type=int, default=0)
+    # When using PyTorch version >= 2.0.0, the `torch.distributed.launch`
+    # will pass the `--local-rank` parameter to `tools/train.py` instead
+    # of `--local_rank`.
+    parser.add_argument('--local_rank', '--local-rank', type=int, default=0)
     args = parser.parse_args()
     if 'LOCAL_RANK' not in os.environ:
         os.environ['LOCAL_RANK'] = str(args.local_rank)
@@ -73,9 +77,12 @@ def trigger_visualization_hook(cfg, args):
 def main():
     args = parse_args()
 
-    # register all modules in mmdet into the registries
-    # do not init the default scope here because it will be init in the runner
+    # TODO: Find a more elegant way to register all modules in lqit
     register_all_modules(init_default_scope=False)
+
+    # Reduce the number of repeated compilations and improve
+    # testing speed.
+    setup_cache_size_limit_of_dynamo()
 
     # load config
     cfg = Config.fromfile(args.config)

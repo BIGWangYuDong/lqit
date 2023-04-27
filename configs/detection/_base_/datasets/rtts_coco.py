@@ -1,17 +1,18 @@
 # dataset settings
 dataset_type = 'RTTSCocoDataset'
 data_root = 'data/RESIDE/'
-file_client_args = dict(backend='disk')
+
+backend_args = None
 
 train_pipeline = [
-    dict(type='LoadImageFromFile', file_client_args=file_client_args),
+    dict(type='LoadImageFromFile', backend_args=backend_args),
     dict(type='LoadAnnotations', with_bbox=True),
     dict(type='Resize', scale=(1333, 800), keep_ratio=True),
     dict(type='RandomFlip', prob=0.5),
     dict(type='PackDetInputs', )
 ]
 test_pipeline = [
-    dict(type='LoadImageFromFile', file_client_args=file_client_args),
+    dict(type='LoadImageFromFile', backend_args=backend_args),
     dict(type='Resize', scale=(1333, 800), keep_ratio=True),
     # avoid bboxes being resized
     dict(type='LoadAnnotations', with_bbox=True),
@@ -33,7 +34,8 @@ train_dataloader = dict(
         ann_file='RTTS/annotations_json/rtts_train.json',
         data_prefix=dict(img='RTTS/'),
         filter_cfg=dict(filter_empty_gt=True, min_size=32),
-        pipeline=train_pipeline))
+        pipeline=train_pipeline,
+        backend_args=backend_args))
 val_dataloader = dict(
     batch_size=1,
     num_workers=2,
@@ -46,12 +48,14 @@ val_dataloader = dict(
         ann_file='RTTS/annotations_json/rtts_val.json',
         data_prefix=dict(img='RTTS/'),
         test_mode=True,
-        pipeline=test_pipeline))
+        pipeline=test_pipeline,
+        backend_args=backend_args))
 test_dataloader = val_dataloader
 
 val_evaluator = dict(
     type='CocoMetric',
     ann_file=data_root + 'RTTS/annotations_json/rtts_val.json',
     metric='bbox',
-    format_only=False)
+    format_only=False,
+    backend_args=backend_args)
 test_evaluator = val_evaluator

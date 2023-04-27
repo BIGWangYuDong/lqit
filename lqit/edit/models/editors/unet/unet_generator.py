@@ -3,7 +3,7 @@ from typing import List
 from lqit.edit.models.base_models import BaseGenerator
 from lqit.edit.structures import BatchPixelData
 from lqit.registry import MODELS
-from lqit.utils.typing import ConfigType, OptConfigType, OptMultiConfig
+from lqit.utils import ConfigType, OptConfigType, OptMultiConfig
 
 
 @MODELS.register_module()

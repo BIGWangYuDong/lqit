@@ -1,12 +1,12 @@
 from typing import Optional, Sequence
 
-from mmeval.metrics import MAE as MMEVAL_MAE
+from mmeval.metrics import MeanAbsoluteError as MMEVAL_MAE
 
 from lqit.registry import METRICS
 
 
 @METRICS.register_module()
-class MAE(MMEVAL_MAE):
+class MeanAbsoluteError(MMEVAL_MAE):
     """Mean Absolute Error metric for image.
 
     mean(abs(a - b))

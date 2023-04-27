@@ -1,12 +1,12 @@
 from typing import Optional, Sequence
 
-from mmeval.metrics import SSIM as MMEVAL_SSIM
+from mmeval.metrics import StructuralSimilarity as MMEVAL_SSIM
 
 from lqit.registry import METRICS
 
 
 @METRICS.register_module()
-class SSIM(MMEVAL_SSIM):
+class StructuralSimilarity(MMEVAL_SSIM):
     """Calculate SSIM (structural similarity). A wrapper of :
     class:`mmeval.SSIM`.
 

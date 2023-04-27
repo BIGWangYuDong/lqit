@@ -4,7 +4,7 @@ import torch.nn.functional as F
 from mmcv.cnn import ConvModule
 
 from lqit.registry import MODELS
-from lqit.utils.typing import OptConfigType, OptMultiConfig
+from lqit.utils import OptConfigType, OptMultiConfig
 from .base_head import BaseEnhanceHead
 
 

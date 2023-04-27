@@ -8,7 +8,7 @@ from torch import Tensor
 from lqit.common.structures import DataSample, OptSampleList, SampleList
 from lqit.edit.structures import BatchPixelData
 from lqit.registry import MODELS
-from lqit.utils.typing import OptMultiConfig
+from lqit.utils import OptMultiConfig
 from ..post_processor import add_pixel_pred_to_datasample
 
 ForwardResults = Union[Dict[str, torch.Tensor], List[DataSample],

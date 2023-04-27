@@ -1,12 +1,12 @@
 from typing import Optional, Sequence
 
-from mmeval.metrics import PSNR as MMEVAL_PSNR
+from mmeval.metrics import PeakSignalNoiseRatio as MMEVAL_PSNR
 
 from lqit.registry import METRICS
 
 
 @METRICS.register_module()
-class PSNR(MMEVAL_PSNR):
+class PeakSignalNoiseRatio(MMEVAL_PSNR):
     """Peak Signal-to-Noise Ratio.
 
     Ref: https://en.wikipedia.org/wiki/Peak_signal-to-noise_ratio

@@ -1,5 +1,6 @@
-# Modified from https://github.com/open-mmlab/mmdetection/tree/3.x/
+# Modified from https://github.com/open-mmlab/mmdetection/blob/main/mmdet/utils/setup_env.py  # noqa: E501
 import datetime
+import logging
 import os
 import platform
 import warnings
@@ -7,6 +8,33 @@ import warnings
 import cv2
 import torch.multiprocessing as mp
 from mmengine import DefaultScope
+from mmengine.logging import print_log
+from mmengine.utils import digit_version
+
+
+def setup_cache_size_limit_of_dynamo() -> None:
+    """Setup cache size limit of dynamo.
+
+    Note: Due to the dynamic shape of the loss calculation and
+    post-processing parts in the object detection algorithm, these
+    functions must be compiled every time they are run.
+    Setting a large value for torch._dynamo.config.cache_size_limit
+    may result in repeated compilation, which can slow down training
+    and testing speed. Therefore, we need to set the default value of
+    cache_size_limit smaller. An empirical value is 4.
+    """
+
+    import torch
+    if digit_version(torch.__version__) >= digit_version('2.0.0'):
+        if 'DYNAMO_CACHE_SIZE_LIMIT' in os.environ:
+            import torch._dynamo
+            cache_size_limit = int(os.environ['DYNAMO_CACHE_SIZE_LIMIT'])
+            torch._dynamo.config.cache_size_limit = cache_size_limit
+            print_log(
+                f'torch._dynamo.config.cache_size_limit is force '
+                f'set to {cache_size_limit}.',
+                logger='current',
+                level=logging.WARNING)
 
 
 def setup_multi_processes(cfg):
@@ -66,9 +94,20 @@ def register_all_modules(init_default_scope: bool = True) -> None:
             to https://github.com/open-mmlab/mmengine/blob/main/docs/en/tutorials/registry.md
             Defaults to True.
     """  # noqa
-    import lqit.common  # noqa: F401,F403
-    import lqit.detection  # noqa: F401,F403
-    import lqit.edit  # noqa: F401,F403
+    # register all modules in lqit.common
+    import lqit.common.datasets  # noqa: F401,F403
+    import lqit.common.models  # noqa: F401,F403
+    import lqit.common.structures  # noqa: F401,F403
+    # register all modules in lqit.detection
+    import lqit.detection.datasets  # noqa: F401,F403
+    import lqit.detection.engine  # noqa: F401,F403
+    import lqit.detection.evaluation  # noqa: F401,F403
+    import lqit.detection.models  # noqa: F401,F403
+    # register all modules in lqit.edit
+    import lqit.edit.datasets  # noqa: F401,F403
+    import lqit.edit.evaluation  # noqa: F401,F403
+    import lqit.edit.models  # noqa: F401,F403
+    import lqit.edit.structures  # noqa: F401,F403
 
     if init_default_scope:
         never_created = DefaultScope.get_current_instance() is None \
