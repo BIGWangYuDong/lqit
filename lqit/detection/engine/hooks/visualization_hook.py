@@ -7,7 +7,7 @@ import numpy as np
 from mmdet.engine.hooks import DetVisualizationHook
 from mmdet.registry import HOOKS
 from mmdet.structures import DetDataSample
-from mmengine.fileio import FileClient
+from mmengine.fileio import get
 from mmengine.runner import Runner
 from mmengine.utils import mkdir_or_exist
 
@@ -42,9 +42,8 @@ class EnhanceDetVisualizationHook(DetVisualizationHook):
         wait_time (float): The interval of show (s). Defaults to 0.
         test_out_dir (str, optional): directory where painted images
             will be saved in testing process.
-        file_client_args (dict): Arguments to instantiate a FileClient.
-            See :class:`mmengine.fileio.FileClient` for details.
-            Defaults to ``dict(backend='disk')``.
+        backend_args (dict, optional): Arguments to instantiate the
+            corresponding backend. Defaults to None.
         show_on_enhance (bool): Whether show the detection results on the
             enhanced image. Defaults to False
         draw_gt (bool): Whether to draw GT DetDataSample. Default to False.
@@ -59,7 +58,7 @@ class EnhanceDetVisualizationHook(DetVisualizationHook):
                  show: bool = False,
                  wait_time: float = 0.,
                  test_out_dir: Optional[str] = None,
-                 file_client_args: dict = dict(backend='disk'),
+                 backend_args: dict = None,
                  show_on_enhance: bool = False,
                  draw_gt: bool = False,
                  draw_pred: bool = True) -> None:
@@ -70,7 +69,7 @@ class EnhanceDetVisualizationHook(DetVisualizationHook):
             show=show,
             wait_time=wait_time,
             test_out_dir=test_out_dir,
-            file_client_args=file_client_args)
+            backend_args=backend_args)
 
         self.draw_gt = draw_gt
         self.draw_pred = draw_pred
@@ -90,9 +89,6 @@ class EnhanceDetVisualizationHook(DetVisualizationHook):
         if self.draw is False:
             return
 
-        if self.file_client is None:
-            self.file_client = FileClient(**self.file_client_args)
-
         # There is no guarantee that the same batch of images
         # is visualized for each evaluation.
         total_curr_iter = runner.iter + batch_idx
@@ -102,12 +98,13 @@ class EnhanceDetVisualizationHook(DetVisualizationHook):
         if self.show_on_enhance:
             img = outputs[0].pred_pixel.pred_img
             # convert to rgb
+            # TODO: Support check whether image is RGB or BGR
             img = img[[2, 1, 0], ...]
             img = img.cpu().numpy().astype(np.uint8).transpose(1, 2, 0)
             h, w = outputs[0].ori_shape
             img = mmcv.imresize(img, size=(w, h))
         else:
-            img_bytes = self.file_client.get(img_path)
+            img_bytes = get(img_path, backend_args=self.backend_args)
             img = mmcv.imfrombytes(img_bytes, channel_order='rgb')
 
         if total_curr_iter % self.interval == 0:
@@ -133,9 +130,6 @@ class EnhanceDetVisualizationHook(DetVisualizationHook):
                                          self.test_out_dir)
             mkdir_or_exist(self.test_out_dir)
 
-        if self.file_client is None:
-            self.file_client = FileClient(**self.file_client_args)
-
         for data_sample in outputs:
             self._test_index += 1
 
@@ -148,12 +142,13 @@ class EnhanceDetVisualizationHook(DetVisualizationHook):
             if self.show_on_enhance:
                 img = data_sample.pred_pixel.pred_img
                 # convert to rgb
+                # TODO: Support check whether image is RGB or BGR
                 img = img[[2, 1, 0], ...]
                 img = img.cpu().numpy().astype(np.uint8).transpose(1, 2, 0)
                 h, w = data_sample.ori_shape
                 img = mmcv.imresize(img, size=(w, h))
             else:
-                img_bytes = self.file_client.get(img_path)
+                img_bytes = get(img_path, backend_args=self.backend_args)
                 img = mmcv.imfrombytes(img_bytes, channel_order='rgb')
 
             self._visualizer.add_datasample(

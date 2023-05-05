@@ -7,6 +7,7 @@ Examples:
     --out ${OUT PATH}
 """
 import argparse
+import os.path as osp
 
 from lqit.detection.evaluation.tide import COCO, TIDE, COCOResult
 
@@ -52,7 +53,7 @@ def get_tide_errors(args):
         'TIDE analyze only support json format, please set ' \
         '`CocoMetric.format_only=True` and `CocoMetric.outfile_prefix=xxx` ' \
         'to get json result first.'
-
+    assert osp.exists(args.pred_file), f'{args.pred_file} does not exist'
     gt = COCO(path=args.ann_file, name=args.name)
     preds = COCOResult(path=args.pred_file, name=args.name)
     tide.evaluate(gt=gt, preds=preds, name=args.name)
