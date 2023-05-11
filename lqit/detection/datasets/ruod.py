@@ -1,5 +1,6 @@
 from mmdet.datasets import CocoDataset
-from mmdet.registry import DATASETS
+
+from lqit.registry import DATASETS
 
 RUOD_METAINFO = {
     'classes': ('holothurian', 'echinus', 'scallop', 'starfish', 'fish',

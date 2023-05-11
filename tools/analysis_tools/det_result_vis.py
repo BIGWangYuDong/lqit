@@ -4,11 +4,9 @@ import os
 import mmcv
 from mmdet.apis import inference_detector, init_detector
 from mmengine import Config, DictAction
-from mmengine.registry import init_default_scope
 from mmengine.utils import ProgressBar
 
 from lqit.registry import VISUALIZERS
-from lqit.utils import register_all_modules
 from lqit.utils.misc import get_file_list
 
 
@@ -55,9 +53,6 @@ def main():
     cfg = Config.fromfile(args.config)
     if args.cfg_options is not None:
         cfg.merge_from_dict(args.cfg_options)
-
-    init_default_scope(cfg.get('default_scope', 'mmdet'))
-    register_all_modules()
 
     model = init_detector(args.config, args.checkpoint, device=args.device)
 

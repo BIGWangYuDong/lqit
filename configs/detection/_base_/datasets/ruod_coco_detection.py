@@ -1,5 +1,5 @@
 # dataset settings
-dataset_type = 'RUODDataset'
+dataset_type = 'lqit.RUODDataset'  # `lqit` means the scope
 data_root = 'data/RUOD/'
 
 backend_args = None

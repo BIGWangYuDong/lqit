@@ -1,8 +1,8 @@
 from typing import Optional
 
-from mmdet.registry import MODELS
 from mmdet.utils import ConfigType, OptConfigType, OptMultiConfig
 
+from lqit.registry import MODELS
 from .single_stage_enhance_head import SingleStageWithEnhanceHead
 
 

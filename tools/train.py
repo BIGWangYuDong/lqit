@@ -1,4 +1,3 @@
-# Modified from https://github.com/open-mmlab/mmdetection
 import argparse
 import logging
 import os
@@ -9,11 +8,9 @@ from mmengine.logging import print_log
 from mmengine.registry import RUNNERS
 from mmengine.runner import Runner
 
-from lqit.utils import (print_colored_log, register_all_modules,
-                        setup_cache_size_limit_of_dynamo)
+from lqit.utils import print_colored_log, setup_cache_size_limit_of_dynamo
 
 
-# TODO: Check if scripts for detection and other tasks can be unified
 def parse_args():
     parser = argparse.ArgumentParser(description='Train a detector')
     parser.add_argument('config', help='train config file path')
@@ -63,10 +60,6 @@ def parse_args():
 
 def main():
     args = parse_args()
-
-    # register all modules in mmdet into the registries
-    # do not init the default scope here because it will be init in the runner
-    register_all_modules(init_default_scope=False)
 
     # Reduce the number of repeated compilations and improve
     # training speed.

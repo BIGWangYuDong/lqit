@@ -44,105 +44,148 @@ from mmengine.registry import Registry
 RUNNERS = Registry(
     'runner',
     parent=MMENGINE_RUNNERS,
-    locations=['lqit.common.engine', 'lqit.edit.engine'])
+    locations=[
+        'lqit.common.engine', 'lqit.detection.engine', 'lqit.edit.engine'
+    ])
 # manage runner constructors that define how to initialize runners
 RUNNER_CONSTRUCTORS = Registry(
     'runner constructor',
     parent=MMENGINE_RUNNER_CONSTRUCTORS,
-    locations=['lqit.common.engine', 'lqit.edit.engine'])
+    locations=[
+        'lqit.common.engine', 'lqit.detection.engine', 'lqit.edit.engine'
+    ])
 # manage all kinds of loops like `EpochBasedTrainLoop`
 LOOPS = Registry(
     'loop',
     parent=MMENGINE_LOOPS,
-    locations=['lqit.common.engine', 'lqit.edit.engine'])
+    locations=[
+        'lqit.common.engine', 'lqit.detection.engine', 'lqit.edit.engine'
+    ])
 # manage all kinds of hooks like `CheckpointHook`
 HOOKS = Registry(
     'hook',
     parent=MMENGINE_HOOKS,
-    locations=['lqit.common.engine', 'lqit.edit.engine'])
+    locations=[
+        'lqit.common.engine', 'lqit.detection.engine', 'lqit.edit.engine'
+    ])
 
 # manage data-related modules
 DATASETS = Registry(
     'dataset',
     parent=MMENGINE_DATASETS,
-    locations=['lqit.common.datasets', 'lqit.edit.datasets'])
+    locations=[
+        'lqit.common.datasets', 'lqit.detection.datasets', 'lqit.edit.datasets'
+    ])
 DATA_SAMPLERS = Registry(
     'data sampler',
     parent=MMENGINE_DATA_SAMPLERS,
-    locations=['lqit.common.datasets', 'lqit.edit.datasets'])
+    locations=[
+        'lqit.common.datasets', 'lqit.detection.datasets', 'lqit.edit.datasets'
+    ])
 TRANSFORMS = Registry(
     'transform',
     parent=MMENGINE_TRANSFORMS,
     locations=[
-        'lqit.common.datasets.transforms', 'lqit.edit.datasets.transforms'
+        'lqit.common.datasets.transforms',
+        'lqit.detection.datasets.transforms', 'lqit.edit.datasets.transforms'
     ])
 
 # manage all kinds of modules inheriting `nn.Module`
 MODELS = Registry(
     'model',
     parent=MMENGINE_MODELS,
-    locations=['lqit.common.models', 'lqit.edit.models'])
+    locations=[
+        'lqit.common.models', 'lqit.detection.models', 'lqit.edit.models'
+    ])
 # manage all kinds of model wrappers like 'MMDistributedDataParallel'
 MODEL_WRAPPERS = Registry(
     'model_wrapper',
     parent=MMENGINE_MODEL_WRAPPERS,
-    locations=['lqit.common.models', 'lqit.edit.models'])
+    locations=[
+        'lqit.common.models', 'lqit.detection.models', 'lqit.edit.models'
+    ])
 # manage all kinds of weight initialization modules like `Uniform`
 WEIGHT_INITIALIZERS = Registry(
     'weight initializer',
     parent=MMENGINE_WEIGHT_INITIALIZERS,
-    locations=['lqit.common.models', 'lqit.edit.models'])
+    locations=[
+        'lqit.common.models', 'lqit.detection.models', 'lqit.edit.models'
+    ])
 
 # manage all kinds of optimizers like `SGD` and `Adam`
 OPTIMIZERS = Registry(
     'optimizer',
     parent=MMENGINE_OPTIMIZERS,
-    locations=['lqit.common.engine', 'lqit.edit.engine'])
+    locations=[
+        'lqit.common.engine', 'lqit.detection.engine', 'lqit.edit.engine'
+    ])
 # manage optimizer wrapper
 OPTIM_WRAPPERS = Registry(
     'optim_wrapper',
     parent=MMENGINE_OPTIM_WRAPPERS,
-    locations=['lqit.common.engine', 'lqit.edit.engine'])
+    locations=[
+        'lqit.common.engine', 'lqit.detection.engine', 'lqit.edit.engine'
+    ])
 # manage constructors that customize the optimization hyperparameters.
 OPTIM_WRAPPER_CONSTRUCTORS = Registry(
     'optimizer constructor',
     parent=MMENGINE_OPTIM_WRAPPER_CONSTRUCTORS,
-    locations=['lqit.common.engine', 'lqit.edit.engine'])
+    locations=[
+        'lqit.common.engine', 'lqit.detection.engine', 'lqit.edit.engine'
+    ])
 # manage all kinds of parameter schedulers like `MultiStepLR`
 PARAM_SCHEDULERS = Registry(
     'parameter scheduler',
     parent=MMENGINE_PARAM_SCHEDULERS,
-    locations=['lqit.common.engine', 'lqit.edit.engine'])
+    locations=[
+        'lqit.common.engine', 'lqit.detection.engine', 'lqit.edit.engine'
+    ])
 # manage all kinds of metrics
 METRICS = Registry(
     'metric',
     parent=MMENGINE_METRICS,
-    locations=['lqit.common.evaluation', 'lqit.edit.evaluation'])
+    locations=[
+        'lqit.common.evaluation', 'lqit.detection.evaluation',
+        'lqit.edit.evaluation'
+    ])
 # manage evaluator
 EVALUATOR = Registry(
     'evaluator',
     parent=MMENGINE_EVALUATOR,
-    locations=['lqit.common.evaluation', 'lqit.edit.evaluation'])
+    locations=[
+        'lqit.common.evaluation', 'lqit.detection.evaluation',
+        'lqit.edit.evaluation'
+    ])
 
 # manage task-specific modules like anchor generators and box coders
 TASK_UTILS = Registry(
     'task util',
     parent=MMENGINE_TASK_UTILS,
-    locations=['lqit.common.models', 'lqit.edit.models'])
+    locations=[
+        'lqit.common.models', 'lqit.detection.models', 'lqit.edit.models'
+    ])
 
 # manage visualizer
 VISUALIZERS = Registry(
     'visualizer',
     parent=MMENGINE_VISUALIZERS,
-    locations=['lqit.common.visualization', 'lqit.edit.visualization'])
+    locations=[
+        'lqit.common.visualization', 'lqit.detection.visualization',
+        'lqit.edit.visualization'
+    ])
 # manage visualizer backend
 VISBACKENDS = Registry(
     'vis_backend',
     parent=MMENGINE_VISBACKENDS,
-    locations=['lqit.common.visualization', 'lqit.edit.visualization'])
+    locations=[
+        'lqit.common.visualization', 'lqit.detection.visualization',
+        'lqit.edit.visualization'
+    ])
 
 # manage logprocessor
 LOG_PROCESSORS = Registry(
     'log_processor',
     parent=MMENGINE_LOG_PROCESSORS,
-    locations=['lqit.common.engine', 'lqit.edit.engine'])
+    locations=[
+        'lqit.common.engine', 'lqit.detection.engine', 'lqit.edit.engine'
+    ])

@@ -1,10 +1,10 @@
-_base_ = '../edffnet/atss_r50_fpn_1x.py'
+_base_ = '../edffnet/atss_r50_fpn_1x_2xb8_rtts.py'
 
 model = dict(
-    type='EDFFNet',
+    type='lqit.EDFFNet',
     backbone=dict(norm_eval=True),
     neck=dict(
-        type='DFFPN',
+        type='lqit.DFFPN',
         in_channels=[256, 512, 1024, 2048],
         out_channels=256,
         start_level=1,
@@ -12,13 +12,14 @@ model = dict(
         shape_level=2,
         num_outs=5),
     enhance_head=dict(
-        type='lqit.EdgeHead',
+        _scope_='lqit',
+        type='EdgeHead',
         in_channels=256,
         feat_channels=256,
         num_convs=5,
-        loss_enhance=dict(type='mmdet.L1Loss', loss_weight=0.7),
+        loss_enhance=dict(type='L1Loss', loss_weight=0.7),
         gt_preprocessor=dict(
-            type='lqit.GTPixelPreprocessor',
+            type='GTPixelPreprocessor',
             mean=[128],
             std=[57.12],
             pad_size_divisor=32,
@@ -40,6 +41,9 @@ train_pipeline = [
     dict(type='lqit.PackInputs', )
 ]
 train_dataloader = dict(dataset=dict(pipeline=train_pipeline))
+
+optim_wrapper = dict(
+    optimizer=dict(type='SGD', lr=0.02, momentum=0.9, weight_decay=0.0001))
 
 param_scheduler = [
     dict(

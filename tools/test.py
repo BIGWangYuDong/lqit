@@ -7,11 +7,10 @@ from mmengine.config import Config, DictAction
 from mmengine.runner import Runner
 
 from lqit.registry import RUNNERS
-from lqit.utils import register_all_modules, setup_cache_size_limit_of_dynamo
+from lqit.utils import setup_cache_size_limit_of_dynamo
 
 
 # TODO: support fuse_conv_bn and format_only
-# TODO: Check if scripts for detection and other tasks can be unified
 def parse_args():
     parser = argparse.ArgumentParser(
         description='LQIT test (and eval) a detection model')
@@ -76,9 +75,6 @@ def trigger_visualization_hook(cfg, args):
 
 def main():
     args = parse_args()
-
-    # TODO: Find a more elegant way to register all modules in lqit
-    register_all_modules(init_default_scope=False)
 
     # Reduce the number of repeated compilations and improve
     # testing speed.

@@ -3,12 +3,12 @@ from typing import Optional
 
 import torch
 from mmdet.models import TwoStageDetector
-from mmdet.registry import MODELS
 from mmdet.utils import ConfigType, OptConfigType, OptMultiConfig
 from torch import Tensor
 
 from lqit.common.structures import SampleList
 from lqit.edit.models import add_pixel_pred_to_datasample
+from lqit.registry import MODELS
 
 
 @MODELS.register_module()

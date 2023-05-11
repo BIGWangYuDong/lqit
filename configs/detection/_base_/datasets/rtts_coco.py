@@ -1,5 +1,5 @@
 # dataset settings
-dataset_type = 'RTTSCocoDataset'
+dataset_type = 'lqit.RTTSCocoDataset'  # `lqit` means the scope
 data_root = 'data/RESIDE/'
 
 backend_args = None

@@ -5,9 +5,10 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from mmcv.cnn import ConvModule
-from mmdet.registry import MODELS
 from mmdet.utils import OptConfigType
 from mmengine.model import BaseModule
+
+from lqit.registry import MODELS
 
 
 @MODELS.register_module()
@@ -64,7 +65,6 @@ class DFFPN(BaseModule):
             self.add_extra_convs = 'on_input'
 
         self.la1_convs = nn.ModuleList()
-        self.d_p = nn.ModuleList()
         self.fpn_convs = nn.ModuleList()
         self.fpl_convs = nn.ModuleList()
         self.dff = nn.Sequential(
@@ -101,17 +101,7 @@ class DFFPN(BaseModule):
                 norm_cfg=norm_cfg,
                 act_cfg=act_cfg,
                 inplace=False)
-            dp_conv = ConvModule(
-                out_channels,
-                out_channels,
-                3,
-                padding=1,
-                conv_cfg=conv_cfg,
-                norm_cfg=norm_cfg,
-                act_cfg=act_cfg,
-                inplace=False)
             self.fpl_convs.append(fl_conv)
-            self.d_p.append(dp_conv)
         self.pooling = F.adaptive_avg_pool2d
 
         # add extra conv layers (e.g., RetinaNet)
