@@ -18,7 +18,7 @@ def parse_args():
     parser.add_argument('config', help='train config file path')
     parser.add_argument('pred_file', help='Prediction json file path')
     parser.add_argument(
-        '--output-dir',
+        '--out-dir',
         default=None,
         type=str,
         help='If there is no display interface, you can save it')
@@ -152,6 +152,9 @@ def main():
     visualizer = VISUALIZERS.build(cfg.visualizer)
     visualizer.dataset_meta = dataset.metainfo
 
+    visualizer.line_width = args.line_width
+    visualizer.alpha = args.alpha
+
     if pred_file.endswith('.json'):
         det_results = load_json_results(pred_file)
     else:
@@ -186,8 +189,7 @@ def main():
             out_file = osp.join(output_dir, image_name)
         else:
             out_file = None
-        visualizer.line_width = args.line_width
-        visualizer.alpha = args.alpha
+
         visualizer.add_datasample(
             osp.basename(img_path),
             img,

@@ -1,22 +1,17 @@
 # Modified from https://github.com/open-mmlab/mmyolo
 import argparse
 import os
-import urllib
 from typing import Sequence
 
 import mmcv
-import numpy as np
-import torch
 from mmdet.apis import inference_detector, init_detector
 from mmengine import Config, DictAction
 from mmengine.registry import init_default_scope
-from mmengine.utils import ProgressBar, scandir
+from mmengine.utils import ProgressBar
 
 from lqit.registry import VISUALIZERS
 from lqit.utils import register_all_modules
-
-IMG_EXTENSIONS = ('.jpg', '.jpeg', '.png', '.ppm', '.bmp', '.pgm', '.tif',
-                  '.tiff', '.webp')
+from lqit.utils.misc import auto_arrange_images, get_file_list
 
 
 def parse_args():
@@ -97,77 +92,6 @@ class ActivationsWrapper:
     def release(self):
         for handle in self.handles:
             handle.remove()
-
-
-def auto_arrange_images(image_list: list, image_column: int = 2) -> np.ndarray:
-    """Auto arrange image to image_column x N row.
-
-    Args:
-        image_list (list): cv2 image list.
-        image_column (int): Arrange to N column. Default: 2.
-    Return:
-        (np.ndarray): image_column x N row merge image
-    """
-    img_count = len(image_list)
-    if img_count <= image_column:
-        # no need to arrange
-        image_show = np.concatenate(image_list, axis=1)
-    else:
-        # arrange image according to image_column
-        image_row = round(img_count / image_column)
-        fill_img_list = [np.ones(image_list[0].shape, dtype=np.uint8) * 255
-                         ] * (
-                             image_row * image_column - img_count)
-        image_list.extend(fill_img_list)
-        merge_imgs_col = []
-        for i in range(image_row):
-            start_col = image_column * i
-            end_col = image_column * (i + 1)
-            merge_col = np.hstack(image_list[start_col:end_col])
-            merge_imgs_col.append(merge_col)
-
-        # merge to one image
-        image_show = np.vstack(merge_imgs_col)
-
-    return image_show
-
-
-def get_file_list(source_root: str) -> [list, dict]:
-    """Get file list.
-
-    Args:
-        source_root (str): image or video source path
-
-    Return:
-        source_file_path_list (list): A list for all source file.
-        source_type (dict): Source type: file or url or dir.
-    """
-    is_dir = os.path.isdir(source_root)
-    is_url = source_root.startswith(('http:/', 'https:/'))
-    is_file = os.path.splitext(source_root)[-1].lower() in IMG_EXTENSIONS
-
-    source_file_path_list = []
-    if is_dir:
-        # when input source is dir
-        for file in scandir(source_root, IMG_EXTENSIONS, recursive=True):
-            source_file_path_list.append(os.path.join(source_root, file))
-    elif is_url:
-        # when input source is url
-        filename = os.path.basename(
-            urllib.parse.unquote(source_root).split('?')[0])
-        file_save_path = os.path.join(os.getcwd(), filename)
-        print(f'Downloading source file to {file_save_path}')
-        torch.hub.download_url_to_file(source_root, file_save_path)
-        source_file_path_list = [file_save_path]
-    elif is_file:
-        # when input source is single image
-        source_file_path_list = [source_root]
-    else:
-        print('Cannot find image file.')
-
-    source_type = dict(is_dir=is_dir, is_url=is_url, is_file=is_file)
-
-    return source_file_path_list, source_type
 
 
 def main():

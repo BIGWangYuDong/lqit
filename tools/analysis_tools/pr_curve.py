@@ -272,6 +272,7 @@ def plot_curve(results_dict, args):
             plt.ylim(0, 1.01)
             plt.grid(True)
             plt.legend(loc='lower left', fontsize='small')
+            # plt.legend(loc='best', fontsize='small')
             plt.title(f'{title_base} IoU Threshold = {iou_thr} ')
             if args.out is None:
                 plt.show()
@@ -339,6 +340,7 @@ def plot_curve(results_dict, args):
                     plt.xlim(0, 1.0)
                     plt.ylim(0, 1.01)
                     plt.grid(True)
+                    # plt.legend(loc='best', fontsize='small')
                     plt.legend(loc='lower left', fontsize='small')
                     plt.title(f'{title_base} IoU Threshold = {iou_thr} '
                               f'(category: {single_label})')
