@@ -1,5 +1,6 @@
 from mmdet.datasets import CocoDataset
-from mmdet.registry import DATASETS
+
+from lqit.registry import DATASETS
 
 RTTS_METAINFO = {
     'classes': ('bicycle', 'bus', 'car', 'motorbike', 'person'),

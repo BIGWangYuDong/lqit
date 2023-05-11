@@ -1,6 +1,6 @@
 from mmdet.datasets import CocoDataset
-from mmdet.registry import DATASETS
 
+from lqit.registry import DATASETS
 from .xml_dataset import XMLDatasetWithMetaFile
 
 URPC_METAINFO = {

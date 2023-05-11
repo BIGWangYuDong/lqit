@@ -3,14 +3,13 @@ import os.path as osp
 
 import mmcv
 import torch
-from mmdet.utils import register_all_modules as register_all_mmdet_modules
 from mmengine.config import Config, DictAction
 from mmengine.fileio import get, load
+from mmengine.registry import init_default_scope
 from mmengine.structures import InstanceData
 from mmengine.utils import ProgressBar
 
 from lqit.registry import DATASETS, VISUALIZERS
-from lqit.utils import register_all_modules
 
 
 def parse_args():
@@ -132,7 +131,7 @@ def main():
     args = parse_args()
 
     show = args.show
-    output_dir = args.output_dir
+    output_dir = args.out_dir
     assert not (show is False and output_dir is None), \
         'Please set `--show` or `--out-dir`'
 
@@ -144,9 +143,7 @@ def main():
     if args.cfg_options is not None:
         cfg.merge_from_dict(args.cfg_options)
 
-    # register all modules, default scope is mmdet
-    register_all_mmdet_modules(init_default_scope=True)
-    register_all_modules(init_default_scope=False)
+    init_default_scope(cfg.get('default_scope', 'lqit'))
 
     dataset = DATASETS.build(cfg.test_dataloader.dataset)
     visualizer = VISUALIZERS.build(cfg.visualizer)

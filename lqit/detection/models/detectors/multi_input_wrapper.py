@@ -2,11 +2,12 @@ import copy
 from typing import List, Tuple, Union
 
 from mmdet.models.detectors import BaseDetector
-from mmdet.registry import MODELS
 from mmdet.structures import SampleList
 from mmdet.utils import ConfigType, OptConfigType, OptMultiConfig
 from mmengine.utils import is_list_of
 from torch import Tensor
+
+from lqit.registry import MODELS
 
 
 @MODELS.register_module()

@@ -5,9 +5,10 @@ from typing import List, Optional, Union
 
 import mmcv
 from mmdet.datasets import XMLDataset
-from mmdet.registry import DATASETS
 from mmengine.fileio import get, get_local_path, load
 from mmengine.utils import is_abs
+
+from lqit.registry import DATASETS
 
 
 @DATASETS.register_module()

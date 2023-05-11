@@ -9,7 +9,7 @@ from lqit.registry import TRANSFORMS
 
 
 @TRANSFORMS.register_module()
-class GetEdgeFromImage(BaseTransform):
+class GetEdgeGTFromImage(BaseTransform):
     """Get the edge from image, and set it into results dict.
 
     Required Keys:

@@ -1,5 +1,5 @@
 # dataset settings
-dataset_type = 'URPCXMLDataset'
+dataset_type = 'lqit.URPCXMLDataset'  # `lqit` means the scope
 data_root = 'data/URPC/'
 
 backend_args = None

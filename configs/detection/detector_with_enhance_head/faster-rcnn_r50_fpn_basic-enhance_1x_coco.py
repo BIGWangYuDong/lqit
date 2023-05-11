@@ -1,7 +1,7 @@
 _base_ = 'mmdet::faster_rcnn/faster-rcnn_r50_fpn_1x_coco.py'
 
 model = dict(
-    type='TwoStageWithEnhanceHead',
+    type='lqit.TwoStageWithEnhanceHead',
     backbone=dict(norm_eval=False),
     enhance_head=dict(
         _scope_='lqit',

@@ -5,11 +5,12 @@ from typing import Optional, Sequence
 import mmcv
 import numpy as np
 from mmdet.engine.hooks import DetVisualizationHook
-from mmdet.registry import HOOKS
 from mmdet.structures import DetDataSample
 from mmengine.fileio import get
 from mmengine.runner import Runner
 from mmengine.utils import mkdir_or_exist
+
+from lqit.registry import HOOKS
 
 
 @HOOKS.register_module()
