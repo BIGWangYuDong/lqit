@@ -1,4 +1,3 @@
-# Modified from https://github.com/open-mmlab/mmdetection
 import argparse
 import os
 import os.path as osp
