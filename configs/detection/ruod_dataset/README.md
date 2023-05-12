@@ -19,7 +19,7 @@ In this paper, we conduct a comprehensive study of Underwater Object Detection (
 | Architecture  | Backbone |  Style  | Lr schd | box AP |                      Config                       |         Download         |
 | :-----------: | :------: | :-----: | :-----: | :----: | :-----------------------------------------------: | :----------------------: |
 | Faster R-CNN  |   R-50   | pytorch |   1x    |  52.4  |    [config](./faster-rcnn_r50_fpn_1x_ruod.py)     | [model](<>) \| [log](<>) |
-| Cascade R-CNN |   R-50   | pytorch |   1x    |  55.6  |    [config](./cascade-rcnn_r50_fpn_1x_ruod.py)    | [model](<>) \| [log](<>) |
+| Cascade R-CNN |   R-50   | pytorch |   1x    |  55.3  |    [config](./cascade-rcnn_r50_fpn_1x_ruod.py)    | [model](<>) \| [log](<>) |
 |   RetinaNet   |   R-50   | pytorch |   1x    |  50.2  |     [config](./retinanet_r50_fpn_1x_ruod.py)      | [model](<>) \| [log](<>) |
 |     FCOS      |   R-50   | cafffe  |   1x    |  51.0  | [config](./fcos_r50-caffe_fpn_gn-head_1x_ruod.py) | [model](<>) \| [log](<>) |
 |     ATSS      |   R-50   | pytorch |   1x    |  55.7  |        [config](./atss_r50_fpn_1x_ruod.py)        | [model](<>) \| [log](<>) |
