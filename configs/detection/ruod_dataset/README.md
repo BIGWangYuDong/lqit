@@ -16,15 +16,15 @@ In this paper, we conduct a comprehensive study of Underwater Object Detection (
 
 ## Results and Models
 
-| Architecture  | Backbone |  Style  | Lr schd | box AP |                      Config                       |         Download         |
-| :-----------: | :------: | :-----: | :-----: | :----: | :-----------------------------------------------: | :----------------------: |
-| Faster R-CNN  |   R-50   | pytorch |   1x    |  52.4  |    [config](./faster-rcnn_r50_fpn_1x_ruod.py)     | [model](<>) \| [log](<>) |
-| Cascade R-CNN |   R-50   | pytorch |   1x    |  55.6  |    [config](./cascade-rcnn_r50_fpn_1x_ruod.py)    | [model](<>) \| [log](<>) |
-|   RetinaNet   |   R-50   | pytorch |   1x    |  50.2  |     [config](./retinanet_r50_fpn_1x_ruod.py)      | [model](<>) \| [log](<>) |
-|     FCOS      |   R-50   | cafffe  |   1x    |  51.0  | [config](./fcos_r50-caffe_fpn_gn-head_1x_ruod.py) | [model](<>) \| [log](<>) |
-|     ATSS      |   R-50   | pytorch |   1x    |  55.7  |        [config](./atss_r50_fpn_1x_ruod.py)        | [model](<>) \| [log](<>) |
-|     TOOD      |   R-50   | pytorch |   1x    |  57.4  |        [config](./tood_r50_fpn_1x_ruod.py)        | [model](<>) \| [log](<>) |
-|    SSD300     |  VGG16   |    -    |  120e   |  46.6  |          [config](./ssd300_120e_ruod.py)          | [model](<>) \| [log](<>) |
+| Architecture  | Backbone |  Style  | Lr schd | box AP |                      Config                       |                                                                                                                                      Download                                                                                                                                      |
+| :-----------: | :------: | :-----: | :-----: | :----: | :-----------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| Faster R-CNN  |   R-50   | pytorch |   1x    |  52.4  |    [config](./faster-rcnn_r50_fpn_1x_ruod.py)     |        [model](https://github.com/BIGWangYuDong/lqit/releases/download/v0.0.1rc1/faster-rcnn_r50_fpn_1x_ruod_20230420_022848-1c4a07b0.pth) \| [log](https://github.com/BIGWangYuDong/lqit/releases/download/v0.0.1rc1/faster-rcnn_r50_fpn_1x_ruod_20230420_022848.log.json)        |
+| Cascade R-CNN |   R-50   | pytorch |   1x    |  55.3  |    [config](./cascade-rcnn_r50_fpn_1x_ruod.py)    |       [model](https://github.com/BIGWangYuDong/lqit/releases/download/v0.0.1rc1/cascade-rcnn_r50_fpn_1x_ruod_20230420_020450-016a540a.pth) \| [log](https://github.com/BIGWangYuDong/lqit/releases/download/v0.0.1rc1/cascade-rcnn_r50_fpn_1x_ruod_20230420_020450.log.json)       |
+|   RetinaNet   |   R-50   | pytorch |   1x    |  50.2  |     [config](./retinanet_r50_fpn_1x_ruod.py)      |          [model](https://github.com/BIGWangYuDong/lqit/releases/download/v0.0.1rc1/retinanet_r50_fpn_1x_ruod_20230422_151955-557d30bb.pth) \| [log](https://github.com/BIGWangYuDong/lqit/releases/download/v0.0.1rc1/retinanet_r50_fpn_1x_ruod_20230422_151955.log.json)          |
+|     FCOS      |   R-50   |  caffe  |   1x    |  51.0  | [config](./fcos_r50-caffe_fpn_gn-head_1x_ruod.py) | [model](https://github.com/BIGWangYuDong/lqit/releases/download/v0.0.1rc1/fcos_r50-caffe_fpn_gn-head_1x_ruod_20230420_024835-7bd04607.pth) \| [log](https://github.com/BIGWangYuDong/lqit/releases/download/v0.0.1rc1/fcos_r50-caffe_fpn_gn-head_1x_ruod_20230420_024835.log.json) |
+|     ATSS      |   R-50   | pytorch |   1x    |  55.7  |        [config](./atss_r50_fpn_1x_ruod.py)        |               [model](https://github.com/BIGWangYuDong/lqit/releases/download/v0.0.1rc1/atss_r50_fpn_1x_ruod_20230420_014032-75749292.pth) \| [log](https://github.com/BIGWangYuDong/lqit/releases/download/v0.0.1rc1/atss_r50_fpn_1x_ruod_20230420_014032.log.json)               |
+|     TOOD      |   R-50   | pytorch |   1x    |  57.4  |        [config](./tood_r50_fpn_1x_ruod.py)        |               [model](https://github.com/BIGWangYuDong/lqit/releases/download/v0.0.1rc1/tood_r50_fpn_1x_ruod_20230420_060246-0a6df011.pth) \| [log](https://github.com/BIGWangYuDong/lqit/releases/download/v0.0.1rc1/tood_r50_fpn_1x_ruod_20230420_060246.log.json)               |
+|    SSD300     |  VGG16   |    -    |  120e   |  46.6  |          [config](./ssd300_120e_ruod.py)          |                   [model](https://github.com/BIGWangYuDong/lqit/releases/download/v0.0.1rc1/ssd300_120e_ruod_20230420_033351-076256c9.pth) \| [log](https://github.com/BIGWangYuDong/lqit/releases/download/v0.0.1rc1/ssd300_120e_ruod_20230420_033351.log.json)                   |
 
 ## Is Underwater Image Enhancement All Object Detectors Need?
 

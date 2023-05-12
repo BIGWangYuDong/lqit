@@ -17,6 +17,16 @@ LQIT 基于 [PyTorch](https://pytorch.org/) 和 [OpenMMLab 2.0 系列](https://g
 
 主分支代码目前支持 PyTorch 1.6 以上的版本。早期 PyTorch 版本的兼容性尚未经过全面的测试。
 
+## 更新
+
+**v0.0.1rc1** 版本已经在 2023.5.12 发布：
+
+- 发布了 `LQIT` v0.0.1rc1 版本并进行了开源
+- 支持了检测相关代码
+- 发布了水下目标检测 `URPC2020` 和 `RUOD` 数据集的模型权重
+
+可通过查阅[更新日志](docs/en/notes/changelog.md)了解更多细节以及发布历史。
+
 ## 安装与准备数据集
 
 LQIT 依赖于 [PyTorch](https://pytorch.org/), [MMEngine](https://github.com/open-mmlab/mmengine), [MMCV](https://github.com/open-mmlab/mmcv) 和 [MMEval](https://github.com/open-mmlab/mmeval) 。

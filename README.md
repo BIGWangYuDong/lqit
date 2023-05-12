@@ -18,6 +18,16 @@ and related high-level computer vision tasks (such as object detection). LQIT de
 The main branch works with **PyTorch 1.6+**.
 The compatibility to earlier versions of PyTorch is not fully tested.
 
+## What's New
+
+**v0.0.1rc1** was released in 12/5/2023:
+
+- Release `LQIT` v0.0.1rc1 and make `LQIT` open source
+- Support detection related code
+- Release `URPC2020` and `RUOD` underwater object detection pretrained models
+
+Please refer to [changelog](docs/en/notes/changelog.md) for details and release history.
+
 ## Installation & Dataset Preparation
 
 LQIT depends on [PyTorch](https://pytorch.org/), [MMEngine](https://github.com/open-mmlab/mmengine), [MMCV](https://github.com/open-mmlab/mmcv), and [MMEval](https://github.com/open-mmlab/mmeval).

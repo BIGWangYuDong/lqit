@@ -17,7 +17,7 @@ The dataset contains 4,322 foggy images, covering five categories: bicycle, bus,
 
 ## Download RTTS Dataset
 
-The Real-word Task-driven Testing Set (RTTS) dataset is a part of RESIDE dataset, which can be downloaded from [here](<>).
+The Real-word Task-driven Testing Set (RTTS) dataset is a part of RESIDE dataset, which can be downloaded from [here](https://drive.google.com/file/d/15Ei1cHGVqR1mXFep43BO7nkHq1IEGh1e/view?usp=sharing).
 
 We randomly divides the RTTS dataset into training and testing groups with 3,457 and 865 images, respectively.
 If users want to divide by their own, `tools/misc/write_txt.py` should be used to split the train and val set first.

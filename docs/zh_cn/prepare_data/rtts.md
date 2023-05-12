@@ -17,9 +17,7 @@
 
 ## 下载 RTTS 数据
 
-数据集
-
-真实任务驱动数据集 (Real-word Task-driven Testing Set, RTTS) 是 RESIDE 数据集的一部分，可以从 [这里](<>) 下载。
+真实任务驱动数据集 (Real-word Task-driven Testing Set, RTTS) 是 RESIDE 数据集的一部分，可以从[这里](https://drive.google.com/file/d/15Ei1cHGVqR1mXFep43BO7nkHq1IEGh1e/view?usp=sharing)下载。
 
 我们将 RTTS 数据集随机分为训练组和测试组，分别有 3,457 和 865 张图像。
 如果用户想自己划分，应该先使用`tools/misc/write_txt.py`来划分train和val集合。
