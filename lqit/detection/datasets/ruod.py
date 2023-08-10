@@ -18,3 +18,15 @@ class RUODDataset(CocoDataset):
     <https://www.sciencedirect.com/science/article/abs/pii/S0925231222013169>`_
     """
     METAINFO = RUOD_METAINFO
+
+
+from mmyolo.datasets.yolov5_coco import BatchShapePolicyDataset
+
+@DATASETS.register_module()
+class YOLOv5URUODDataset(BatchShapePolicyDataset, RUODDataset):
+    """Dataset for YOLOv5 COCO Dataset.
+
+    We only add `BatchShapePolicy` function compared with CocoDataset. See
+    `mmyolo/datasets/utils.py#BatchShapePolicy` for details
+    """
+    pass

@@ -1,6 +1,6 @@
 # dataset settings
 dataset_type = 'lqit.URPCCocoDataset'  # `lqit` means the scope
-data_root = 'data/URPC/'
+data_root = 'data/UWDetData/'
 
 backend_args = None
 

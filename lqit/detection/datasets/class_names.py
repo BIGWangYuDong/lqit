@@ -46,13 +46,17 @@ def rtts_classes() -> list:
     """Foggy Object Detection Dataset Classes."""
     return ['bicycle', 'bus', 'car', 'motorbike', 'person']
 
+def urpcaaai_classes() -> list:
+    """Underwater Robot Professional Contest Dataset Classes."""
+    return ['holothurian', 'echinus', 'starfish', 'scallop', 'waterweeds']
 
 dataset_aliases = {
     'voc': ['voc', 'pascal_voc', 'voc07', 'voc12'],
     'coco': ['coco', 'mscoco', 'ms_coco'],
     'cityscapes': ['cityscapes'],
     'urpc': ['urpc', 'urpcdet', 'urpc2020'],
-    'rtts': ['rtts', 'foggydet']
+    'rtts': ['rtts', 'foggydet'],
+    'urpcaaai': ['urpcaaai']
 }
 
 
