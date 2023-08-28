@@ -13,13 +13,14 @@ Examples:
 """
 import argparse
 import os.path as osp
+import sys
 import xml.etree.ElementTree as ET
 from typing import List
 
 import numpy as np
 from mmcv import imread
 from mmengine.fileio import dump, isdir, isfile, list_from_file
-from mmengine.utils import mkdir_or_exist, track_progress
+from mmengine.utils import ProgressBar, mkdir_or_exist
 
 from lqit.detection.datasets import get_classes
 
@@ -60,12 +61,19 @@ def cvt_annotations(xml_path: str, img_path: str, ann_file: str,
     img_paths = [
         f'{img_path}/{img_name}.{img_suffix}' for img_name in img_names
     ]
-    part_annotations = track_progress(
-        parse_xml,
-        list(
-            zip(xml_paths, img_paths,
-                [dataset_name for _ in range(len(xml_paths))])))
-    annotations.extend(part_annotations)
+    dataset_names = [dataset_name for _ in range(len(xml_paths))]
+
+    assert len(xml_paths) == len(img_paths) == len(dataset_names)
+
+    prog_bar = ProgressBar(len(xml_paths), 50, sys.stdout)
+
+    for xml_path, img_path, dataset_name in zip(xml_paths, img_paths,
+                                                dataset_names):
+        annotation = parse_xml(xml_path, img_path, dataset_name)
+        if annotation is not None:
+            annotations.append(annotation)
+        prog_bar.update()
+    prog_bar.file.write('\n')
 
     annotations = cvt_to_coco_json(
         annotations=annotations, dataset_name=dataset_name)
