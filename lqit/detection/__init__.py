@@ -9,7 +9,7 @@ except ImportWarning:
     HAS_MMDET = False
 
 mmdet_minimum_version = '3.0.0'
-mmdet_maximum_version = '3.1.0'
+mmdet_maximum_version = '3.2.0'
 if HAS_MMDET:
     mmdet_version = digit_version(mmdet.__version__)
     assert (mmdet_version >= digit_version(mmdet_minimum_version)
