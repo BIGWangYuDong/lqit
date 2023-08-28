@@ -1,6 +1,6 @@
 _base_ = [
     '../_base_/models/ssd300.py',
-    '../_base_/datasets/urpc-2020_coco_detection.py',
+    '../_base_/datasets/urpc2020/urpc2020-validation_coco_detection.py',
     '../_base_/schedules/schedule_2x.py', '../_base_/default_runtime.py'
 ]
 # model settings
@@ -50,8 +50,8 @@ train_dataloader = dict(
         dataset=dict(
             type={{_base_.dataset_type}},
             data_root={{_base_.data_root}},
-            ann_file='annotations_json/train.json',
-            data_prefix=dict(img='JPEGImages/'),
+            ann_file='annotations/train.json',
+            data_prefix=dict(img='train-image/'),
             filter_cfg=dict(filter_empty_gt=True, min_size=32),
             pipeline=train_pipeline)))
 val_dataloader = dict(batch_size=8, dataset=dict(pipeline=test_pipeline))

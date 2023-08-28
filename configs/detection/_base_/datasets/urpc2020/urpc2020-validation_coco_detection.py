@@ -1,6 +1,6 @@
 # dataset settings
 dataset_type = 'lqit.URPCCocoDataset'  # `lqit` means the scope
-data_root = 'data/URPC/'
+data_root = 'data/URPC2020/'
 
 backend_args = None
 
@@ -30,8 +30,8 @@ train_dataloader = dict(
     dataset=dict(
         type=dataset_type,
         data_root=data_root,
-        ann_file='annotations_json/train.json',
-        data_prefix=dict(img='JPEGImages/'),
+        ann_file='annotations/train.json',
+        data_prefix=dict(img='train-image/'),
         filter_cfg=dict(filter_empty_gt=True, min_size=32),
         pipeline=train_pipeline,
         backend_args=backend_args))
@@ -44,8 +44,8 @@ val_dataloader = dict(
     dataset=dict(
         type=dataset_type,
         data_root=data_root,
-        ann_file='annotations_json/val.json',
-        data_prefix=dict(img='JPEGImages/'),
+        ann_file='annotations/val.json',
+        data_prefix=dict(img='train-image/'),
         test_mode=True,
         pipeline=test_pipeline,
         backend_args=backend_args))
@@ -53,7 +53,7 @@ test_dataloader = val_dataloader
 
 val_evaluator = dict(
     type='CocoMetric',
-    ann_file=data_root + 'annotations_json/val.json',
+    ann_file=data_root + 'annotations/val.json',
     metric='bbox',
     format_only=False,
     backend_args=backend_args)
