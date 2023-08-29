@@ -1,5 +1,5 @@
 _base_ = [
-    '../_base_/datasets/urpc2020/urpc2020-validation_coco_detection.py',
+    '../_base_/datasets/duo_coco_detection.py',
     '../_base_/schedules/schedule_1x.py', '../_base_/default_runtime.py'
 ]
 

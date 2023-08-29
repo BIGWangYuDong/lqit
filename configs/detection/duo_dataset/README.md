@@ -1,7 +1,6 @@
 # Detecting Underwater Objects
 
 > [Detecting Underwater Objects](https://arxiv.org/abs/2106.05681)
-> [Underwater Robot Professional Contest 2020](https://www.heywhale.com/home/competition/5e535a612537a0002ca864ac/content/0)
 
 <!-- [DATASET] -->
 
