@@ -1,4 +1,4 @@
-_base_ = 'ssd300_120e_urpc-coco.py'
+_base_ = 'ssd300_120e_duo-coco.py'
 
 # model settings
 input_size = 512

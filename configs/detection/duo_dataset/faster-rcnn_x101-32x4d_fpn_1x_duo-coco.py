@@ -1,10 +1,10 @@
-_base_ = 'faster-rcnn_r50_fpn_1x_urpc-coco.py'
+_base_ = 'faster-rcnn_r50_fpn_1x_duo-coco.py'
 
 model = dict(
     backbone=dict(
         type='ResNeXt',
         depth=101,
-        groups=64,
+        groups=32,
         base_width=4,
         num_stages=4,
         out_indices=(0, 1, 2, 3),
@@ -12,4 +12,4 @@ model = dict(
         norm_cfg=dict(type='BN', requires_grad=True),
         style='pytorch',
         init_cfg=dict(
-            type='Pretrained', checkpoint='open-mmlab://resnext101_64x4d')))
+            type='Pretrained', checkpoint='open-mmlab://resnext101_32x4d')))

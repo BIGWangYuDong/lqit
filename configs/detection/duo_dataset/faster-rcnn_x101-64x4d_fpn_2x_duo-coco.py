@@ -1,4 +1,4 @@
-_base_ = 'faster-rcnn_r50_fpn_2x_urpc-coco.py'
+_base_ = 'faster-rcnn_r50_fpn_2x_duo-coco.py'
 
 model = dict(
     backbone=dict(
