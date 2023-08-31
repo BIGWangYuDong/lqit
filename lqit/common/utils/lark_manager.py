@@ -22,6 +22,13 @@ def get_user_name():
     return None
 
 
+def get_rank():
+    rank = os.getenv('RANK')
+    if rank is None:
+        rank = os.getenv('SLURM_PROCID')
+    return rank
+
+
 @master_only
 def send_alert_message(url: str,
                        content: Union[str, List[List[Dict]]],
@@ -263,7 +270,9 @@ class MonitorManager(metaclass=SingletonMeta):
                   f'Config file: {self.cfg_file}\n'
         if ckpt_path is not None:
             content += f'Checkpoint file: {ckpt_path}'
-        send_alert_message(url=url, content=content, title=title)
+        rank = get_rank()
+        if rank == '0' or rank == 0 or rank is None:
+            send_alert_message(url=url, content=content, title=title)
 
     def stop_monitor(self) -> None:
         """Stop the monitor and alert thread."""
