@@ -1,10 +1,14 @@
 import argparse
 import os
 import os.path as osp
+import warnings
 
 from mmengine.config import Config, DictAction
 from mmengine.runner import Runner
 
+from lqit.common.utils.lark_manager import (context_monitor_manager,
+                                            initialize_monitor_manager)
+from lqit.common.utils.process_lark_hook import process_lark_hook
 from lqit.registry import RUNNERS
 from lqit.utils import setup_cache_size_limit_of_dynamo
 
@@ -42,6 +46,17 @@ def parse_args():
         choices=['none', 'pytorch', 'slurm', 'mpi'],
         default='none',
         help='job launcher')
+    parser.add_argument(
+        '-l',
+        '--lark',
+        help='Report the running status to lark bot',
+        action='store_true',
+        default=False)
+    parser.add_argument(
+        '--lark-file',
+        default='configs/lark/lark.py',
+        type=str,
+        help='lark bot config file path')
     # When using PyTorch version >= 2.0.0, the `torch.distributed.launch`
     # will pass the `--local-rank` parameter to `tools/train.py` instead
     # of `--local_rank`.
@@ -72,9 +87,7 @@ def trigger_visualization_hook(cfg, args):
     return cfg
 
 
-def main():
-    args = parse_args()
-
+def main(args):
     # Reduce the number of repeated compilations and improve
     # testing speed.
     setup_cache_size_limit_of_dynamo()
@@ -99,6 +112,10 @@ def main():
     if args.show or args.show_dir:
         cfg = trigger_visualization_hook(cfg, args)
 
+    if args.lark:
+        custom_hooks = process_lark_hook(cfg=cfg, lark_file=args.lark_file)
+        cfg.custom_hooks = custom_hooks
+
     # build the runner from config
     if 'runner_type' not in cfg:
         # build the default runner
@@ -113,4 +130,37 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    args = parse_args()
+
+    monitor_manager = None
+
+    if args.lark:
+        lark_file = args.lark_file
+        if not osp.exists(lark_file):
+            warnings.warn(f'{lark_file} not exists, skip.')
+            lark_url = None
+        else:
+            lark = Config.fromfile(lark_file)
+            lark_url = lark.get('lark', None)
+            if lark_url is None:
+                warnings.warn(f'{lark_file} does not have `lark`, skip.')
+
+            monitor_interval_seconds = lark.get('monitor_interval_seconds',
+                                                None)
+            if monitor_interval_seconds is None:
+                monitor_interval_seconds = 300
+
+            user_name = lark.get('user_name', None)
+
+        monitor_manager = initialize_monitor_manager(
+            cfg_file=args.config,
+            url=lark_url,
+            task_type='test',
+            user_name=user_name,
+            monitor_interval_seconds=monitor_interval_seconds,
+            ckpt_path=args.checkpoint)
+    with context_monitor_manager(monitor_manager):
+        try:
+            main(args)
+        except Exception:
+            monitor_manager.monitor_exception()
