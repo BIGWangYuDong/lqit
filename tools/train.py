@@ -184,4 +184,5 @@ if __name__ == '__main__':
         try:
             main(args)
         except Exception:
-            monitor_manager.monitor_exception()
+            if monitor_manager is not None:
+                monitor_manager.monitor_exception()

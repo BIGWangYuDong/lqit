@@ -288,7 +288,10 @@ class MonitorManager(metaclass=SingletonMeta):
         if os.getenv('LAST_METRIC_RESULTS') is not None:
             metric_content = os.getenv('LAST_METRIC_RESULTS')
             content += metric_content
-        send_alert_message(url=self.url, content=content, title=title)
+
+        rank = get_rank()
+        if rank == '0' or rank == 0 or rank is None:
+            send_alert_message(url=self.url, content=content, title=title)
 
 
 def initialize_monitor_manager(cfg_file: str,
