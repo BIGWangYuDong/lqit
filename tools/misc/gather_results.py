@@ -4,6 +4,7 @@ import json
 import os
 import os.path as osp
 from collections import defaultdict
+from datetime import datetime
 
 import pandas as pd
 from rich.console import Console
@@ -87,10 +88,12 @@ def main():
                     result = round(result * 100, 2)
                 else:
                     raise TypeError
-            results_dict[key].append(str(result))
+            results_dict[key].append(result)
 
     df = pd.DataFrame(results_dict)
-    saving_path = osp.join(root, 'gather_results.xlsx')
+    now = datetime.now().strftime('%Y%m%d_%H%M%S')
+    save_name = f'gather_results_{now}.xlsx'
+    saving_path = osp.join(root, save_name)
     df.to_excel(saving_path, index=False)
 
     print(f'Results are saved to {saving_path}')
@@ -103,7 +106,12 @@ def main():
         table.add_column(header)
     results_list = df.values.tolist()
     for result in results_list:
-        table.add_row(*result)
+        new_result = []
+        for _res in result:
+            if isinstance(_res, float):
+                _res = str(_res)
+            new_result.append(_res)
+        table.add_row(*new_result)
     console = Console()
     console.print(table, end='')
 
