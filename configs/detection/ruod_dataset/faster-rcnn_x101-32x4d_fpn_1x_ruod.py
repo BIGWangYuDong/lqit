@@ -13,3 +13,17 @@ model = dict(
         style='pytorch',
         init_cfg=dict(
             type='Pretrained', checkpoint='open-mmlab://resnext101_32x4d')))
+
+# add WandbVisBackend
+# vis_backends = [
+#     dict(type='LocalVisBackend'),
+#     dict(type='WandbVisBackend',
+#          init_kwargs=dict(
+#             project='RUOD_detection',
+#             name='faster-rcnn_x101-32x4d_fpn_1x_ruod',
+#             entity='lqit',
+#             )
+#         )
+# ]
+# visualizer = dict(
+#     type='DetLocalVisualizer', vis_backends=vis_backends, name='visualizer')

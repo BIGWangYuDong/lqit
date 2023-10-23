@@ -75,3 +75,17 @@ optim_wrapper = dict(
     optimizer=dict(lr=0.01),
     paramwise_cfg=dict(bias_lr_mult=2., bias_decay_mult=0.),
     clip_grad=dict(max_norm=35, norm_type=2))  # loss may NaN without clip_grad
+
+# add WandbVisBackend
+# vis_backends = [
+#     dict(type='LocalVisBackend'),
+#     dict(type='WandbVisBackend',
+#          init_kwargs=dict(
+#             project='RUOD_detection',
+#             name='fcos_r50-caffe_fpn_gn_head_1x_ruod',
+#             entity='lqit',
+#             )
+#         )
+# ]
+# visualizer = dict(
+#     type='DetLocalVisualizer', vis_backends=vis_backends, name='visualizer')

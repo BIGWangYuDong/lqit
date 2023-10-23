@@ -13,7 +13,7 @@ URPC_METAINFO = {
 class URPCCocoDataset(CocoDataset):
     """Underwater Robot Professional Contest dataset `URPC.
 
-    <https://arxiv.org/abs/2106.05681>`_
+    <https://openi.pcl.ac.cn/OpenOrcinus_orca/URPC_opticalimage_dataset/datasets>`_
     """
     METAINFO = URPC_METAINFO
 

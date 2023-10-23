@@ -95,18 +95,20 @@ def main():
     total_size = len(filenames)
     assert total_size > 0, 'Total size must larger than 0'
 
-    shuffle_index = np.random.permutation(total_size)
-    filenames = [filenames[i] for i in shuffle_index]
     if args.split:
+        shuffle_index = np.random.permutation(total_size)
+        filenames = [filenames[i] for i in shuffle_index]
         assert 0 < args.proportion < 1, \
             'Proportion of the validation to the total need ' \
             f'between 0 and 1, but get {args.proportion}'
         proportion = args.proportion
         val_size = round(proportion * total_size)
         val_filename = filenames[:val_size]
+        val_filename.sort()
 
         train_size = int(total_size - val_size)
         train_filename = filenames[val_size:]
+        train_filename.sort()
         print('-' * 10)
         print(f'Collect {total_size} files, proportion is {proportion}, '
               f'split {train_size} for training and {val_size} for validation')

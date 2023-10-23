@@ -1,3 +1,4 @@
+func_timeout
 matplotlib
 numpy
 scipy
