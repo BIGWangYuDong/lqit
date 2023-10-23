@@ -202,10 +202,12 @@ class MonitorManager(metaclass=SingletonMeta):
         assert self.url is not None, \
             'Please run `MonitorManager.start_monitor` first.'
 
-        filtered_trace = traceback.format_exc().split('\n')[-10:]
+        filtered_trace = traceback.format_exc().split('\n')[-15:]
         format_trace = ''
         for line in filtered_trace:
             format_trace += '\n' + line
+        print(format_trace)
+
         title = 'Task Error Report'
         content = f"{self.user_name}'s {self.task_type} task\n" \
                   f'Config file: {self.cfg_file}\n' \
