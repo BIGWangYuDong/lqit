@@ -12,6 +12,7 @@ from typing import Dict, List, Optional, Union
 import requests
 from func_timeout import FunctionTimedOut, func_set_timeout
 from mmengine.dist import master_only
+from mmengine.logging import print_log
 
 
 def get_user_name():
@@ -206,8 +207,12 @@ class MonitorManager(metaclass=SingletonMeta):
         format_trace = ''
         for line in filtered_trace:
             format_trace += '\n' + line
-        print(format_trace)
 
+        # try to add error message into logger else directly print message
+        try:
+            print_log(format_trace, logger='current')
+        except Exception:
+            print(format_trace)
         title = 'Task Error Report'
         content = f"{self.user_name}'s {self.task_type} task\n" \
                   f'Config file: {self.cfg_file}\n' \
