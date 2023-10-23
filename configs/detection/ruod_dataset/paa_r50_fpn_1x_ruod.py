@@ -34,7 +34,7 @@ model = dict(
         reg_decoded_bbox=True,
         score_voting=True,
         topk=9,
-        num_classes=5,
+        num_classes=10,
         in_channels=256,
         stacked_convs=4,
         feat_channels=256,
@@ -91,3 +91,17 @@ param_scheduler = [
         milestones=[8, 11],
         gamma=0.1)
 ]
+
+# add WandbVisBackend
+# vis_backends = [
+#     dict(type='LocalVisBackend'),
+#     dict(type='WandbVisBackend',
+#          init_kwargs=dict(
+#             project='RUOD_detection',
+#             name='paa_r50_fpn_1x_ruod',
+#             entity='lqit',
+#             )
+#         )
+# ]
+# visualizer = dict(
+#     type='DetLocalVisualizer', vis_backends=vis_backends, name='visualizer')

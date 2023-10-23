@@ -1,5 +1,5 @@
 _base_ = [
-    '../_base_/datasets/ruod_coco_detection.py',
+    '../_base_/datasets/urpc2020/urpc2020-validation_coco_detection.py',
     '../_base_/schedules/schedule_1x.py', '../_base_/default_runtime.py'
 ]
 
@@ -55,7 +55,7 @@ model = dict(
             in_channels=256,
             fc_out_channels=1024,
             roi_feat_size=7,
-            num_classes=10,
+            num_classes=4,
             bbox_coder=dict(
                 type='DeltaXYWHBBoxCoder',
                 target_means=[0., 0., 0., 0.],
@@ -117,17 +117,3 @@ model = dict(
         # soft-nms is also supported for rcnn testing
         # e.g., nms=dict(type='soft_nms', iou_threshold=0.5, min_score=0.05)
     ))
-
-# add WandbVisBackend
-# vis_backends = [
-#     dict(type='LocalVisBackend'),
-#     dict(type='WandbVisBackend',
-#          init_kwargs=dict(
-#             project='RUOD_detection',
-#             name='faster-rcnn_r50_fpn_2x_ruod',
-#             entity='lqit',
-#             )
-#         )
-# ]
-# visualizer = dict(
-#     type='DetLocalVisualizer', vis_backends=vis_backends, name='visualizer')

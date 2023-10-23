@@ -85,3 +85,17 @@ param_scheduler = [
 # USER SHOULD NOT CHANGE ITS VALUES.
 # base_batch_size = (8 GPUs) x (8 samples per GPU)
 auto_scale_lr = dict(base_batch_size=64)
+
+# add WandbVisBackend
+# vis_backends = [
+#     dict(type='LocalVisBackend'),
+#     dict(type='WandbVisBackend',
+#          init_kwargs=dict(
+#             project='DUO_detection',
+#             name='ssd300_120e__duo',
+#             entity='lqit',
+#             )
+#         )
+# ]
+# visualizer = dict(
+#     type='DetLocalVisualizer', vis_backends=vis_backends, name='visualizer')

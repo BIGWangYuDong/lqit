@@ -11,6 +11,12 @@ from .batch_process import stack_batch
 
 @MODELS.register_module()
 class GTPixelPreprocessor(ImgDataPreprocessor):
+    """Preprocess the gt pixel data. This usually used in the detector with
+    enhance head.
+
+    Note: The setting should be same as the setting in
+    `detector.data_processor`.
+    """
 
     def __init__(self,
                  mean: Sequence[Number] = None,
@@ -37,7 +43,9 @@ class GTPixelPreprocessor(ImgDataPreprocessor):
         self.register_buffer('outputs_std',
                              torch.tensor(std).view(batched_output_view),
                              False)
-        self.norm_input_flag = None  # If input is normalized to [0, 1]
+        # If input is not normalized to [0, 1],
+        # the input will divide by 255
+        self.norm_input_flag = None
 
     def forward(self, batch_data_samples, training=True):
         data = {}

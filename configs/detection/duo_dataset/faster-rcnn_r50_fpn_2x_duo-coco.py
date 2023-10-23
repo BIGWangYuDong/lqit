@@ -1,6 +1,6 @@
 _base_ = [
     '../_base_/datasets/duo_coco_detection.py',
-    '../_base_/schedules/schedule_1x.py', '../_base_/default_runtime.py'
+    '../_base_/schedules/schedule_2x.py', '../_base_/default_runtime.py'
 ]
 
 # model settings
@@ -117,3 +117,17 @@ model = dict(
         # soft-nms is also supported for rcnn testing
         # e.g., nms=dict(type='soft_nms', iou_threshold=0.5, min_score=0.05)
     ))
+
+# add WandbVisBackend
+# vis_backends = [
+#     dict(type='LocalVisBackend'),
+#     dict(type='WandbVisBackend',
+#          init_kwargs=dict(
+#             project='DUO_detection',
+#             name='faster-rcnn_r50_fpn_2x_duo',
+#             entity='lqit',
+#             )
+#         )
+# ]
+# visualizer = dict(
+#     type='DetLocalVisualizer', vis_backends=vis_backends, name='visualizer')

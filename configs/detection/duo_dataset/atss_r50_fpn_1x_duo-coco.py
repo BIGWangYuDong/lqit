@@ -70,3 +70,17 @@ model = dict(
 # optimizer
 optim_wrapper = dict(
     optimizer=dict(type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0001))
+
+# add WandbVisBackend
+# vis_backends = [
+#     dict(type='LocalVisBackend'),
+#     dict(type='WandbVisBackend',
+#          init_kwargs=dict(
+#             project='DUO_detection',
+#             name='atss_r50_fpn_1x_duo',
+#             entity='lqit',
+#             )
+#         )
+# ]
+# visualizer = dict(
+#     type='DetLocalVisualizer', vis_backends=vis_backends, name='visualizer')

@@ -35,7 +35,7 @@ def parse_args():
         'img_path', help='The path of directory that saving images.')
     parser.add_argument('ann_file', help='Annotation file path')
     parser.add_argument('-o', '--out-dir', help='output path')
-    parser.add_argument('--img-suffix', default='jpg', help='The image suffix')
+    parser.add_argument('--img-suffix', default='png', help='The image suffix')
     args = parser.parse_args()
     return args
 

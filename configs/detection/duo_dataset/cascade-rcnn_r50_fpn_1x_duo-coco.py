@@ -188,3 +188,17 @@ model = dict(
             score_thr=0.05,
             nms=dict(type='nms', iou_threshold=0.5),
             max_per_img=100)))
+
+# add WandbVisBackend
+# vis_backends = [
+#     dict(type='LocalVisBackend'),
+#     dict(type='WandbVisBackend',
+#          init_kwargs=dict(
+#             project='DUO_detection',
+#             name='cascade-rcnn_r50_fpn_1x_duo',
+#             entity='lqit',
+#             )
+#         )
+# ]
+# visualizer = dict(
+#     type='DetLocalVisualizer', vis_backends=vis_backends, name='visualizer')

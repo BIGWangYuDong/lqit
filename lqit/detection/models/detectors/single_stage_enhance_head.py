@@ -1,5 +1,3 @@
-from typing import Optional
-
 from mmdet.models import SingleStageDetector
 from mmdet.utils import ConfigType, OptConfigType, OptMultiConfig
 from torch import Tensor
@@ -11,7 +9,7 @@ from lqit.registry import MODELS
 
 @MODELS.register_module()
 class SingleStageWithEnhanceHead(SingleStageDetector):
-    """Base class for two-stage detectors with enhance head.
+    """Base class for single-stage detectors with enhance head.
 
     Two-stage detectors typically consisting of a region proposal network and a
     task-specific regression head.
@@ -22,7 +20,7 @@ class SingleStageWithEnhanceHead(SingleStageDetector):
                  neck: OptConfigType = None,
                  bbox_head: OptConfigType = None,
                  enhance_head: OptConfigType = None,
-                 vis_enhance: Optional[bool] = False,
+                 vis_enhance: bool = False,
                  train_cfg: OptConfigType = None,
                  test_cfg: OptConfigType = None,
                  data_preprocessor: OptConfigType = None,

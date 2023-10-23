@@ -91,3 +91,17 @@ param_scheduler = [
         milestones=[8, 11],
         gamma=0.1)
 ]
+
+# add WandbVisBackend
+# vis_backends = [
+#     dict(type='LocalVisBackend'),
+#     dict(type='WandbVisBackend',
+#          init_kwargs=dict(
+#             project='DUO_detection',
+#             name='paa_r50_fpn_1x_duo',
+#             entity='lqit',
+#             )
+#         )
+# ]
+# visualizer = dict(
+#     type='DetLocalVisualizer', vis_backends=vis_backends, name='visualizer')
