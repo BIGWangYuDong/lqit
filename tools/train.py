@@ -10,6 +10,7 @@ from mmengine.registry import RUNNERS
 from mmengine.runner import Runner
 
 from lqit.common.utils.lark_manager import (context_monitor_manager,
+                                            get_error_message,
                                             initialize_monitor_manager)
 from lqit.common.utils.process_lark_hook import process_lark_hook
 from lqit.utils import print_colored_log, setup_cache_size_limit_of_dynamo
@@ -156,7 +157,9 @@ if __name__ == '__main__':
 
     monitor_manager = None
 
-    if args.lark:
+    if not args.lark:
+        main(args)
+    else:
         lark_file = args.lark_file
         if not osp.exists(lark_file):
             warnings.warn(f'{lark_file} not exists, skip.')
@@ -186,3 +189,5 @@ if __name__ == '__main__':
         except Exception:
             if monitor_manager is not None:
                 monitor_manager.monitor_exception()
+            else:
+                get_error_message()

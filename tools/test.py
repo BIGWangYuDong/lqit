@@ -7,6 +7,7 @@ from mmengine.config import Config, DictAction
 from mmengine.runner import Runner
 
 from lqit.common.utils.lark_manager import (context_monitor_manager,
+                                            get_error_message,
                                             initialize_monitor_manager)
 from lqit.common.utils.process_lark_hook import process_lark_hook
 from lqit.registry import RUNNERS
@@ -165,3 +166,5 @@ if __name__ == '__main__':
         except Exception:
             if monitor_manager is not None:
                 monitor_manager.monitor_exception()
+            else:
+                get_error_message()
