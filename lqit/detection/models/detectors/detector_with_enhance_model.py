@@ -1,7 +1,6 @@
 import copy
 from typing import Any, Dict, Optional, Tuple, Union
 
-from mmdet.utils import ConfigType, OptConfigType, OptMultiConfig
 from mmengine.model import BaseModel
 from mmengine.model.wrappers import MMDistributedDataParallel as MMDDP
 from mmengine.utils import is_list_of
@@ -11,6 +10,7 @@ from lqit.common.structures import SampleList
 from lqit.detection.utils import merge_det_results
 from lqit.edit.models.post_processor import add_pixel_pred_to_datasample
 from lqit.registry import MODEL_WRAPPERS, MODELS
+from lqit.utils import ConfigType, OptConfigType, OptMultiConfig
 
 ForwardResults = Union[Dict[str, Tensor], SampleList, Tuple[Tensor], Tensor]
 
@@ -30,7 +30,7 @@ class DetectorWithEnhanceModel(BaseModel):
         enhance_model (dict or ConfigDict, optional): Config for enhance model.
         loss_weight (list): Detection loss weight for raw and enhanced image.
             Only used when `train_mode` is `both`.
-        vis_enhance (bool): Whether visualize enhance image during inference.
+        vis_enhance (bool): Whether visualize enhanced image during inference.
             Defaults to False.
         train_mode (str): Train mode of detector, support `raw`, `enhance` and
             `both`. Defaults to `enhance`.
@@ -99,7 +99,7 @@ class DetectorWithEnhanceModel(BaseModel):
 
     @property
     def with_enhance_model(self) -> bool:
-        """bool: whether the detector has a Enhance Model"""
+        """Whether has a enhance model."""
         return (hasattr(self, 'enhance_model')
                 and self.enhance_model is not None)
 

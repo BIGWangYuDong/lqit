@@ -1,3 +1,4 @@
+from .detector_with_enhance_head import DetectorWithEnhanceHead
 from .detector_with_enhance_model import DetectorWithEnhanceModel
 from .edffnet import EDFFNet
 from .multi_input_wrapper import MultiInputDetectorWrapper
@@ -6,5 +7,6 @@ from .two_stage_enhance_head import TwoStageWithEnhanceHead
 
 __all__ = [
     'TwoStageWithEnhanceHead', 'MultiInputDetectorWrapper',
-    'SingleStageDetector', 'EDFFNet', 'DetectorWithEnhanceModel'
+    'SingleStageDetector', 'EDFFNet', 'DetectorWithEnhanceModel',
+    'DetectorWithEnhanceHead'
 ]

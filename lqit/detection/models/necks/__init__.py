@@ -1,3 +1,4 @@
 from .dffpn import DFFPN
+from .ufpn import UFPN
 
-__all__ = ['DFFPN']
+__all__ = ['DFFPN', 'UFPN']
