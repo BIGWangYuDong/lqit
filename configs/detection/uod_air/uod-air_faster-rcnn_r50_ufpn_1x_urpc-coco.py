@@ -1,5 +1,5 @@
 _base_ = [
-    './base_detector/faster-rcnn_r50_fpn_1x_urpc-coco.py',
+    './base_detector/faster-rcnn_r50_ufpn_1x_urpc-coco.py',
     './base_ehance_head/enhance_head.py'
 ]
 

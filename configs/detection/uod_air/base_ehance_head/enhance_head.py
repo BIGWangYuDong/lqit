@@ -3,8 +3,8 @@ enhance_head = dict(
     type='BasicEnhanceHead',
     in_channels=256,
     feat_channels=256,
-    num_convs=2,
-    loss_enhance=dict(type='L1Loss', loss_weight=1.0),
+    num_convs=5,
+    loss_enhance=dict(type='L1Loss', loss_weight=0.5),
     gt_preprocessor=dict(
         type='GTPixelPreprocessor',
         mean=[123.675, 116.28, 103.53],

@@ -232,7 +232,10 @@ class UpSingleEnhanceHead(SingleEnhanceHead):
 
 @MODELS.register_module()
 class BasicEnhanceHead(BaseEnhanceHead):
-    """[(convs)+ShufflePixes] * 2"""
+    """Basic enhance head.
+
+    [Conv-BN-ReLU] * (num_convs - 1) + Conv
+    """
 
     def __init__(self,
                  in_channels=256,

@@ -23,9 +23,11 @@ model = dict(
         style='pytorch',
         init_cfg=dict(type='Pretrained', checkpoint='torchvision://resnet50')),
     neck=dict(
-        type='FPN',
+        type='lqit.UFPN',
         in_channels=[256, 512, 1024, 2048],
         out_channels=256,
+        start_level=0,
+        add_extra_convs='on_output',
         num_outs=5),
     rpn_head=dict(
         type='RPNHead',

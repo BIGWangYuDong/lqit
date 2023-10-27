@@ -22,6 +22,8 @@ class DetectorWithEnhanceHead(BaseModel):
     Args:
         detector (dict or ConfigDict): Config for detector.
         enhance_head (dict or ConfigDict, optional): Config for enhance head.
+        process_gt_preprocessor (bool): Whether process `gt_preprocessor` same
+            as the `data_preprocessor` in detector. Defaults to True.
         vis_enhance (bool): Whether to visualize the enhanced image during
             inference. Defaults to False.
         init_cfg (dict or ConfigDict, optional): The config to control the
@@ -31,12 +33,13 @@ class DetectorWithEnhanceHead(BaseModel):
     def __init__(self,
                  detector: ConfigType,
                  enhance_head: OptConfigType = None,
+                 process_gt_preprocessor: bool = True,
                  vis_enhance: Optional[bool] = False,
                  init_cfg: OptMultiConfig = None) -> None:
         super().__init__(init_cfg=init_cfg)
 
         # process gt_preprocessor
-        if enhance_head is not None:
+        if enhance_head is not None and process_gt_preprocessor:
             enhance_head = self.process_gt_preprocessor(detector, enhance_head)
 
         # build data_preprocessor
@@ -326,7 +329,6 @@ class DetectorWithEnhanceHead(BaseModel):
 
         losses = dict()
         if self.with_enhance_head:
-
             enhance_loss = self.enhance_head.loss(x, batch_data_samples)
             # avoid loss override
             assert not set(enhance_loss.keys()) & set(losses.keys())

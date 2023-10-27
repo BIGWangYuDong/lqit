@@ -16,4 +16,13 @@ Coming soon
 
 ## Citation
 
-Coming soon
+```latex
+@article{wang2023tienet,
+  title={{TIENet}: task-oriented image enhancement network for degraded object detection},
+  author={Wang, Yudong and Guo, Jichang and Wang, Ruining and He, Wanru and Li, Chongyi},
+  journal={Signal, Image and Video Processing},
+  pages={1--8},
+  year={2023},
+  publisher={Springer}
+}
+```

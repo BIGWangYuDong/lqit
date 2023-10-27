@@ -157,9 +157,8 @@ if __name__ == '__main__':
 
     monitor_manager = None
 
-    if not args.lark:
-        main(args)
-    else:
+    if args.lark:
+        # report the running status to lark bot
         lark_file = args.lark_file
         if not osp.exists(lark_file):
             warnings.warn(f'{lark_file} not exists, skip.')
@@ -169,20 +168,17 @@ if __name__ == '__main__':
             lark_url = lark.get('lark', None)
             if lark_url is None:
                 warnings.warn(f'{lark_file} does not have `lark`, skip.')
+            else:
+                monitor_interval_seconds = lark.get('monitor_interval_seconds',
+                                                    300)
+                user_name = lark.get('user_name', None)
+                monitor_manager = initialize_monitor_manager(
+                    cfg_file=args.config,
+                    url=lark_url,
+                    task_type='train',
+                    user_name=user_name,
+                    monitor_interval_seconds=monitor_interval_seconds)
 
-            monitor_interval_seconds = lark.get('monitor_interval_seconds',
-                                                None)
-            if monitor_interval_seconds is None:
-                monitor_interval_seconds = 300
-
-            user_name = lark.get('user_name', None)
-
-        monitor_manager = initialize_monitor_manager(
-            cfg_file=args.config,
-            url=lark_url,
-            task_type='train',
-            user_name=user_name,
-            monitor_interval_seconds=monitor_interval_seconds)
     with context_monitor_manager(monitor_manager):
         try:
             main(args)
