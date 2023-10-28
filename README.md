@@ -20,11 +20,11 @@ The compatibility to earlier versions of PyTorch is not fully tested.
 
 ## What's New
 
-**v0.0.1rc1** was released in 12/5/2023:
+**v0.0.1rc2** was released in 28/10/2023:
 
-- Release `LQIT` v0.0.1rc1 and make `LQIT` open source
-- Support detection related code
-- Release `URPC2020` and `RUOD` underwater object detection pretrained models
+- Support [FeiShu (Lark) robot](configs/lark/README.md)
+- Support [TIENet](https://link.springer.com/article/10.1007/s11760-023-02695-9), [UOD-AIR](https://ieeexplore.ieee.org/abstract/document/9949063), and [RDFFNet](https://link.springer.com/article/10.1007/s11760-022-02410-0)
+- Release `RTTS` foggy object detection models
 
 Please refer to [changelog](docs/en/notes/changelog.md) for details and release history.
 
