@@ -19,11 +19,11 @@ LQIT 基于 [PyTorch](https://pytorch.org/) 和 [OpenMMLab 2.0 系列](https://g
 
 ## 更新
 
-**v0.0.1rc1** 版本已经在 2023.5.12 发布：
+**v0.0.1rc2** 版本已经在 2023.10.28 发布：
 
-- 发布了 `LQIT` v0.0.1rc1 版本并进行了开源
-- 支持了检测相关代码
-- 发布了水下目标检测 `URPC2020` 和 `RUOD` 数据集的模型权重
+- 支持了[飞书机器人](configs/lark/README.md)
+- 支持了 [TIENet](https://link.springer.com/article/10.1007/s11760-023-02695-9)、[UOD-AIR](https://ieeexplore.ieee.org/abstract/document/9949063) 和 [RDFFNet](https://link.springer.com/article/10.1007/s11760-022-02410-0)
+- 发布了雾天目标检测 `RTTS` 数据集的模型权重
 
 可通过查阅[更新日志](docs/en/notes/changelog.md)了解更多细节以及发布历史。
 
