@@ -203,16 +203,7 @@ class MonitorManager(metaclass=SingletonMeta):
         assert self.url is not None, \
             'Please run `MonitorManager.start_monitor` first.'
 
-        filtered_trace = traceback.format_exc().split('\n')[-15:]
-        format_trace = ''
-        for line in filtered_trace:
-            format_trace += '\n' + line
-
-        # try to add error message into logger else directly print message
-        try:
-            print_log(format_trace, logger='current')
-        except Exception:
-            print(format_trace)
+        format_trace = get_error_message()
         title = 'Task Error Report'
         content = f"{self.user_name}'s {self.task_type} task\n" \
                   f'Config file: {self.cfg_file}\n' \
@@ -346,3 +337,19 @@ def context_monitor_manager(monitor_manager: Optional[MonitorManager] = None):
             monitor_manager.stop_monitor()
     else:
         yield
+
+
+def get_error_message() -> None:
+    """Catch and format exception information, send alert message to Feishu."""
+
+    filtered_trace = traceback.format_exc().split('\n')[-15:]
+    format_trace = ''
+    for line in filtered_trace:
+        format_trace += '\n' + line
+
+    # try to add error message into logger else directly print message
+    try:
+        print_log(format_trace, logger='current')
+    except Exception:
+        print(format_trace)
+    return format_trace

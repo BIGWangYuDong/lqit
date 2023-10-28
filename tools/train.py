@@ -10,6 +10,7 @@ from mmengine.registry import RUNNERS
 from mmengine.runner import Runner
 
 from lqit.common.utils.lark_manager import (context_monitor_manager,
+                                            get_error_message,
                                             initialize_monitor_manager)
 from lqit.common.utils.process_lark_hook import process_lark_hook
 from lqit.utils import print_colored_log, setup_cache_size_limit_of_dynamo
@@ -157,6 +158,7 @@ if __name__ == '__main__':
     monitor_manager = None
 
     if args.lark:
+        # report the running status to lark bot
         lark_file = args.lark_file
         if not osp.exists(lark_file):
             warnings.warn(f'{lark_file} not exists, skip.')
@@ -166,23 +168,22 @@ if __name__ == '__main__':
             lark_url = lark.get('lark', None)
             if lark_url is None:
                 warnings.warn(f'{lark_file} does not have `lark`, skip.')
+            else:
+                monitor_interval_seconds = lark.get('monitor_interval_seconds',
+                                                    300)
+                user_name = lark.get('user_name', None)
+                monitor_manager = initialize_monitor_manager(
+                    cfg_file=args.config,
+                    url=lark_url,
+                    task_type='train',
+                    user_name=user_name,
+                    monitor_interval_seconds=monitor_interval_seconds)
 
-            monitor_interval_seconds = lark.get('monitor_interval_seconds',
-                                                None)
-            if monitor_interval_seconds is None:
-                monitor_interval_seconds = 300
-
-            user_name = lark.get('user_name', None)
-
-        monitor_manager = initialize_monitor_manager(
-            cfg_file=args.config,
-            url=lark_url,
-            task_type='train',
-            user_name=user_name,
-            monitor_interval_seconds=monitor_interval_seconds)
     with context_monitor_manager(monitor_manager):
         try:
             main(args)
         except Exception:
             if monitor_manager is not None:
                 monitor_manager.monitor_exception()
+            else:
+                get_error_message()

@@ -1,6 +1,6 @@
 _base_ = [
-    '../_base_/datasets/urpc2020/urpc2020-validation_coco_detection.py',
-    '../_base_/schedules/schedule_1x.py', '../_base_/default_runtime.py'
+    '../../_base_/datasets/rtts_coco.py',
+    '../../_base_/schedules/schedule_1x.py', '../../_base_/default_runtime.py'
 ]
 
 # model settings
@@ -31,7 +31,7 @@ model = dict(
         num_outs=5),
     bbox_head=dict(
         type='RetinaHead',
-        num_classes=4,
+        num_classes=5,
         in_channels=256,
         stacked_convs=4,
         feat_channels=256,
@@ -89,3 +89,17 @@ param_scheduler = [
         milestones=[8, 11],
         gamma=0.1)
 ]
+
+# add WandbVisBackend
+# vis_backends = [
+#     dict(type='LocalVisBackend'),
+#     dict(type='WandbVisBackend',
+#          init_kwargs=dict(
+#             project='rtts_detection',
+#             name='retinanet_r50_fpn_1x_rtts',
+#             entity='lqit',
+#             )
+#         )
+# ]
+# visualizer = dict(
+#     type='DetLocalVisualizer', vis_backends=vis_backends, name='visualizer')

@@ -69,4 +69,4 @@ class EdgeHead(BaseEnhanceHead):
         reshape_gt_imgs = F.interpolate(
             gt_imgs, size=enhance_img.shape[-2:], mode='bilinear')
         enhance_loss = self.loss_enhance(enhance_img, reshape_gt_imgs)
-        return dict(loss_enhance=enhance_loss)
+        return dict(loss_edge=enhance_loss)

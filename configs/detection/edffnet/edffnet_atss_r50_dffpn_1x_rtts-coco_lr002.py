@@ -1,17 +1,10 @@
-_base_ = '../edffnet/atss_r50_fpn_1x_2xb8_rtts.py'
+_base_ = ['./atss_r50_dffpn_1x_rtts-coco_lr002.py']
 
 model = dict(
+    _delete_=True,
     type='lqit.EDFFNet',
-    backbone=dict(norm_eval=True),
-    neck=dict(
-        type='lqit.DFFPN',
-        in_channels=[256, 512, 1024, 2048],
-        out_channels=256,
-        start_level=1,
-        add_extra_convs='on_input',
-        shape_level=2,
-        num_outs=5),
-    enhance_head=dict(
+    detector={{_base_.model}},
+    edge_head=dict(
         _scope_='lqit',
         type='EdgeHead',
         in_channels=256,
@@ -23,7 +16,8 @@ model = dict(
             mean=[128],
             std=[57.12],
             pad_size_divisor=32,
-            element_name='edge')))
+            element_name='edge')),
+    vis_enhance=False)
 
 # dataset settings
 train_pipeline = [
@@ -41,19 +35,3 @@ train_pipeline = [
     dict(type='lqit.PackInputs', )
 ]
 train_dataloader = dict(dataset=dict(pipeline=train_pipeline))
-
-optim_wrapper = dict(
-    optimizer=dict(type='SGD', lr=0.02, momentum=0.9, weight_decay=0.0001))
-
-param_scheduler = [
-    dict(
-        type='LinearLR', start_factor=0.001, by_epoch=False, begin=0,
-        end=1000),
-    dict(
-        type='MultiStepLR',
-        begin=0,
-        end=12,
-        by_epoch=True,
-        milestones=[8, 11],
-        gamma=0.1)
-]
