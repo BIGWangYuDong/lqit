@@ -1,6 +1,6 @@
 import copy
 import warnings
-from typing import Dict, Optional, Tuple, Union
+from typing import Dict, Tuple, Union
 
 import torch
 from mmdet.models import SingleStageDetector, TwoStageDetector
@@ -34,7 +34,7 @@ class DetectorWithEnhanceHead(BaseModel):
                  detector: ConfigType,
                  enhance_head: OptConfigType = None,
                  process_gt_preprocessor: bool = True,
-                 vis_enhance: Optional[bool] = False,
+                 vis_enhance: bool = False,
                  init_cfg: OptMultiConfig = None) -> None:
         super().__init__(init_cfg=init_cfg)
 

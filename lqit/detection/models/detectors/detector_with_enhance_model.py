@@ -1,5 +1,5 @@
 import copy
-from typing import Any, Dict, Optional, Tuple, Union
+from typing import Any, Dict, Tuple, Union
 
 from mmengine.model import BaseModel
 from mmengine.model.wrappers import MMDistributedDataParallel as MMDDP
@@ -48,7 +48,7 @@ class DetectorWithEnhanceModel(BaseModel):
                  detector: ConfigType,
                  enhance_model: OptConfigType = None,
                  loss_weight: list = [0.5, 0.5],
-                 vis_enhance: Optional[bool] = False,
+                 vis_enhance: bool = False,
                  train_mode: str = 'enhance',
                  pred_mode: str = 'enhance',
                  detach_enhance_img: bool = False,
