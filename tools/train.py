@@ -13,7 +13,8 @@ from lqit.common.utils.lark_manager import (context_monitor_manager,
                                             get_error_message,
                                             initialize_monitor_manager)
 from lqit.common.utils.process_lark_hook import process_lark_hook
-from lqit.utils import print_colored_log, setup_cache_size_limit_of_dynamo
+from lqit.utils import (print_colored_log, process_debug_mode,
+                        setup_cache_size_limit_of_dynamo)
 
 
 def parse_args():
@@ -63,6 +64,13 @@ def parse_args():
         default='configs/lark/lark.py',
         type=str,
         help='lark bot config file path')
+    parser.add_argument(
+        '--debug',
+        default=False,
+        action='store_true',
+        help='Debug mode, used for code debugging, specifically, turning '
+        'data processing into single process (`num_workers`), adding '
+        '`indices=10` in datasets, and other debug-friendly settings.')
     # When using PyTorch version >= 2.0.0, the `torch.distributed.launch`
     # will pass the `--local-rank` parameter to `tools/train.py` instead
     # of `--local_rank`.
@@ -84,6 +92,13 @@ def main(args):
     cfg.launcher = args.launcher
     if args.cfg_options is not None:
         cfg.merge_from_dict(args.cfg_options)
+
+    # process debug mode if args.debug is True
+    if args.debug:
+        # force set args.lark = False
+        args.lark = False
+        # set necessary params for debug mode
+        cfg = process_debug_mode(cfg)
 
     # work_dir is determined in this priority: CLI > segment in file > filename
     if args.work_dir is not None:
