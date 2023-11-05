@@ -139,7 +139,6 @@ class LarkHook(Hook):
     def before_test(self, runner) -> None:
         if self.silent:
             return
-        # TODO: Check
         title = 'Task Initiation Report'
         content = f"{self.user_name}'s task has started testing!\n" \
                   f'Config file: {self.cfg_file}\n' \

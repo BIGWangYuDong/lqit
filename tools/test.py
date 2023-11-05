@@ -108,8 +108,6 @@ def main(args):
 
     # process debug mode if args.debug is True
     if args.debug:
-        # force set args.lark = False
-        args.lark = False
         # set necessary params for debug mode
         cfg = process_debug_mode(cfg)
 
@@ -148,6 +146,10 @@ if __name__ == '__main__':
     args = parse_args()
 
     monitor_manager = None
+
+    if args.debug:
+        # force set args.lark = False
+        args.lark = False
 
     if not args.lark:
         main(args)

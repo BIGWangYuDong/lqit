@@ -195,6 +195,7 @@ class MonitorManager(metaclass=SingletonMeta):
         self.cfg_file = None
         self.task_type = None
         self.url = None
+        self.ckpt_path = None
 
     def monitor_exception(self) -> None:
         """Catch and format exception information, send alert message to
@@ -267,6 +268,7 @@ class MonitorManager(metaclass=SingletonMeta):
         content = f"{self.user_name}'s {self.task_type} task has started!\n" \
                   f'Config file: {self.cfg_file}\n'
         if ckpt_path is not None:
+            self.ckpt_path = ckpt_path
             content += f'Checkpoint file: {ckpt_path}'
         rank = get_rank()
         if rank == '0' or rank == 0 or rank is None:
@@ -283,6 +285,8 @@ class MonitorManager(metaclass=SingletonMeta):
 
         content = f"{self.user_name}'s {self.task_type} task completed!\n" \
                   f'Config file: {self.cfg_file}\n'
+        if self.ckpt_path is not None:
+            content += f'Checkpoint file: {self.ckpt_path}\n'
         if os.getenv('LAST_METRIC_RESULTS') is not None:
             metric_content = os.getenv('LAST_METRIC_RESULTS')
             content += metric_content
